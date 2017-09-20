@@ -1,0 +1,168 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 527: Stochastic Calculus \\ Homework 2}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{03}{03}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  (Continuous local martingales) Let $M$ be a continuous local martingale. Show the following statements.
+  \begin{enumerate}[label=\alph*)]
+      \item If there exists a constant $C_1 > -\infty$ such that $M_t \geq C_1$ for all $t \geq 0$, then $M$ is a supermartingale.
+      \item If there exists constants $-\infty < C_1 \leq C_2 < \infty$ such that $C_1 \leq M_t \leq C_2$ for all $t \geq 0$, then $M$ is a martingale.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+      \item We wish to apply Fatou's lemma which only works for nonnegative random variables. Thus, we define $M' = M + C_1$ so that $M' \geq 0$. Since $M$ is in $\mathcal{M}_{loc}^c$ then so is $M'$ as it is simply shifted by a constant. Thus, there exists a sequence of stopping times $\tau_n$ such that $M_{t \land \tau_n}$ are martingales. We now show that $M'$ is integrable. Recall, it is nonnegative so,
+      \begin{gather*}
+        \mathbb{E}[\lvert M_t' \rvert] = \mathbb{E}[ M_t' ] \\
+        = \mathbb{E}[ \lim_{n \rightarrow \infty} \inf M_{t \land \tau_n}' ]
+      \end{gather*}
+      By Fatou's lemma,
+      \begin{gather*}
+        \leq \lim_{n \rightarrow \infty} \inf \mathbb{E}[ M_{t \land \tau_n}' ]
+      \end{gather*}
+      Now, since $M_{t \land \tau_n}$ is a martingale for all $n$, then we have by the martingale property
+      \begin{gather*}
+        = \mathbb{E}[ M_0' ] < \infty
+      \end{gather*}
+      Thus, we have that $M'$ is integrable. Now, to show it has the supermartingale property. Let $A \in \mathcal{F}_s$. Then,
+      \begin{gather*}
+        \mathbb{E}[ M_t' \cdot 1_{\{A\}} ] = \mathbb{E}[ \lim_{n \rightarrow \infty} \inf M_{t \land \tau_n}' \cdot 1_{\{A\}} ]
+      \end{gather*}
+      Again, by Fatou's lemma
+      \begin{gather*}
+        \leq \lim_{n \rightarrow \infty} \inf \mathbb{E}[ M_{t \land \tau_n}' \cdot 1_{\{A\}} ]
+      \end{gather*}
+      Now, since $M_{t \land \tau_n}$, we apply the martingale property,
+      \begin{gather*}
+        = \lim_{n \rightarrow \infty} \inf M_{s \land \tau_n}' = M_s'
+      \end{gather*}
+      Thus, we have $\mathbb{E}[ M_t' | \mathcal{F}_s ] \leq M_s'$ and so we have that $M'$ is a supermartingale. Since $M = M' - C_1$, then we have that $M$ must also be a supermartingale since
+      \begin{gather*}
+        \mathbb{E}[ M_t | \mathcal{F}_s ] = \mathbb{E}[ M_t' | \mathcal{F}_s ] - C_1 \leq M_s' - C_1 = M_s
+      \end{gather*}
+
+    \item Since $C_1 \leq M_t \leq C_2$ we have that $M_t$ is a supermartingale by part a). Since $M_t$ is a supermartingale, then $-M_t$ is a submartingale. But we also have that $M_t \leq C_2$ is equivalent to $C_2 \leq -M_t$. Thus, we have that $-M_t$ is also a supermartingale. The only way that $-M_t$ is both a supermartingale and a submartingale is if it is a martingale. Since $-M_t$ is a martingale, then so is $M_t$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Exponential local martingale) For $f \in L^2([0,T])$ and a standard Brownian motion $B$ show from scratch that the process
+  \begin{gather*}
+      \text{exp}(\int_0^t f(s) d B_s - \frac{1}{2} \int_0^t f(s)^2 ds), \ t \in [0,T]
+  \end{gather*}
+  is a martingale. Conclude that the law of the process $B_t + \int_0^t f(s) ds$, $t \in [0,T]$ is absolutely continuous with respect to the law of the process $B_t$, $t \in [0,T]$. Is the law of the process $B_t$, $t \in [0,T]$ absolutely continuous with respect to the law of the process $B_t + \int_0^t f(s) ds$, $t \in [0,T]$ as well?
+\end{exercise}
+
+\begin{answer}
+  First, let us note that $\int_0^t f(s) d B_s$ is a Gaussian process with mean 0 and variance $\int_0^t f(s)^2 ds$. Thus, let us define $M_t = \int_0^t f(s) d B_s$. We have then that $e^{M_t - \frac{1}{2} \int_0^t f(s)^2 ds)}$ is clearly $\mathcal{F}_{t}$ adapted since it is a continuous function of an $\mathcal{F}_t$ adapted process and a deterministic function. Now, for integrability.
+  \begin{gather*}
+    \mathbb{E}[ \lvert e^{M_t - \frac{1}{2} \int_0^t f(s)^2 ds} \rvert] = \mathbb{E}[ e^{M_t - \frac{1}{2} \int_0^t f(s)^2 ds} ] \\
+    \leq \mathbb{E}[ e^{M_t} ] = e^{\frac{1}{2} \int_0^t f(s)^2 ds} < \infty
+  \end{gather*}
+  Where the last part comes from the fact that it is the MGF of a Gaussian process. The martingale property follows similarly. Since $M_s$ is $\mathcal{F}_s$ adapted, we can pull any measurable function of $M_s$ out of the conditional expectation,
+  \begin{gather*}
+    \mathbb{E}[ e^{M_t - \frac{1}{2} \int_0^t f(u)^2 du} | \mathcal{F}_s] \\
+    = e^{M_s - \frac{1}{2} \int_0^s f(u)^2 du} \cdot \mathbb{E}[ e^{M_t - \frac{1}{2} \int_0^t f(u)^2 du} \cdot e^{-M_s + \frac{1}{2} \int_0^s f(u)^2 du} | \mathcal{F}_s] \\
+    = e^{M_s - \frac{1}{2} \int_0^s f(u)^2 du} \cdot \mathbb{E}[ e^{M_t - M_s - \frac{1}{2} \int_s^t f(u)^2 du} | \mathcal{F}_s]
+  \end{gather*}
+  Thus, if we can show that $\mathbb{E}[ e^{M_t - M_s - \frac{1}{2} \int_s^t f(u)^2 du} | \mathcal{F}_s] = 1$, we will have shown the martingale property. This is done by noting that $M_t - M_s$ is again Gaussian with mean 0 and variance $\int_s^t f(u)^2 du$ and that increments are independent. Thus, we have
+  \begin{gather*}
+    \mathbb{E}[ e^{M_t - M_s - \frac{1}{2} \int_s^t f(u)^2 du} | \mathcal{F}_s] \\
+    = e^{- \frac{1}{2} \int_s^t f(u)^2 du} \cdot \mathbb{E}[ e^{M_t - M_s} ] \\
+    = e^{- \frac{1}{2} \int_s^t f(u)^2 du} \cdot e^{\frac{1}{2} \int_s^t f(u)^2 du} \\
+    = 1
+  \end{gather*}
+  Where, again, we used the fact that the MGF of a Gaussian is $\mathbb{E}[e^{t X}] = e^{\mu t + \frac{1}{2} \sigma^2 t^2}$. Thus, we conclude that $\text{exp}(\int_0^t f(s) d B_s - \frac{1}{2} \int_0^t f(s)^2 ds)$ is a martingale.
+
+  We now conclude that $B_t + \int_0^t f(s) ds$, $t \in [0,T]$ is absolutely continuous with respect to the law of the process $B_t$, $t \in [0,T]$ by applying Girsanov's theorem to $X_t = -f(t)$. Since $Z_t(-f)$ is a martingale (as just shown), we have that the Radon-Nikodym derivative $\frac{d \tilde{\mathbb{P}}_T}{d \mathbb{P}} = Z_T(-f)$ exists between $B_t$ and $B_t + \int_0^t f(s) ds$ which means that $B_t + \int_0^t f(s) ds$, $t \in [0,T]$ is absolutely continuous with respect to the law of the process $B_t$.
+
+  Since we have that $Z_T(-f) > 0$ almost surely, we know that the inverse Radon-Nikodym derivative exists ($\frac{d \mathbb{P}}{d \tilde{\mathbb{P}}_T} = 1/Z_T(-f)$) and so we must also have the converse statement also be true.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (More martingales) Let $B^{(1)}, B^{(2)}, B^{(3)}$ be independent standard Brownian motions and define
+  \begin{gather*}
+      X_t = \int_0^t \sin (s) d B_s^{(1)} + \int_0^t \sin (s + 2\pi/3) d B_s^{(2)} + \int_0^t \sin (s + 4\pi/3) d B_s^{(3)}
+  \end{gather*}
+  For $t \geq 0$. Find the distribution of $\max_{0 \leq t \leq T} X_t$ for any given $T \geq 0$.
+\end{exercise}
+
+\begin{answer}
+  First, we calculate the quadratic variation of $X_t$. Note that the variation terms are as follows $\langle B^{(i)}, B^{(i)} \rangle = t$ and $\langle B^{(i)}, B^{(j)} \rangle = 0$ if $i \neq j$. Thus, we have that
+
+  \begin{gather*}
+    \langle X \rangle_t = \int_0^t \sin^2 (s) + \sin^2 (s + 2\pi/3) + \sin^2 (s + 4\pi/3) ds
+  \end{gather*}
+
+  Using the trigonometric equality $\sin^2 (s) = \frac{1 - \cos (2s)}{2}$, we get
+  \begin{gather*}
+    = \frac{1}{2} \int_0^t 3 - \cos (2s) - \cos (2s + 4\pi/3) - \cos (2s + 8\pi/3) ds \\
+    = \frac{3}{2} t
+  \end{gather*}
+
+  Thus, by Levy's characterization, $X_t$ is a Brownian motion scaled by $3/2$. Now, following the reflection principle, we have
+
+  \begin{gather*}
+    \mathbb{P}(\max_{0 \leq t \leq T} X_t \geq x) = 2 \mathbb{P}( X_T \geq x) = 2 (1 - \mathbb{P}( X_T < x))
+  \end{gather*}
+  However, we know the distribution of $X_T$, it is Gaussian with mean 0 and variance $3/2 T$. Thus, we have $\mathbb{P}( X_T < x) = \Phi(\frac{\sqrt{2}x}{\sqrt{3T}})$.
+  \begin{gather*}
+    = 2 \left[1 - \Phi \left( \frac{\sqrt{2}x}{\sqrt{3T}} \right) \right] = 2 - 2\Phi \left( \frac{\sqrt{2}x}{\sqrt{3T}} \right)
+  \end{gather*}
+  Recall that $X_0 = 0$ and so $x \in [0, \infty)$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Changing the variances) Show that for a standard Brownian motion $B$, real constants $\sigma_1 \neq \sigma_2$, and any $T \in (0, \infty)$ the law of the process $\sigma_2 B_t$, $t \in [0,T]$ is not absolutely continuous with respect to the law of the process $\sigma_1 B_t$, $t \in [0,T]$. In other words, even though one can change the means of the increments of a Brownian motion by a change of measure, the same is not the case for their variances.
+\end{exercise}
+
+\begin{answer}
+  Let $\mathbb{P}_1$ be the law of the process $\sigma_1 B_t$ and let $\mathbb{P}_2$ be the law of the process $\sigma_2 B_t$. Now, define the two events $A = \{ \text{ quadratic variation } = \sigma_1^2 t \}$ and $B = \{ \text{ quadratic variation } = \sigma_2^2 t \}$. Then we have the following probabilities
+  \begin{gather*}
+    \mathbb{P}_1(A) = 1, \quad \mathbb{P}_2(A) = 0 \\
+    \mathbb{P}_1(B) = 0, \quad \mathbb{P}_2(B) = 1
+  \end{gather*}
+  Since, by definition, the quadratic variances of $\sigma_1 B_t$ and $\sigma_2 B_t$ are $\sigma_1^2 t$ and $\sigma_2^2 t$ respectively. However, this shows that neither law is absolutely continuous with respect to the other one. Thus, there does not exist a Radon-Nikodym derivative $\frac{d \mathbb{P}_2}{d \mathbb{P}_1}$ as
+  \begin{gather*}
+    1 = \mathbb{P}_2(B) = \int_B \frac{d \mathbb{P}_2}{d \mathbb{P}_1} d \mathbb{P}_1 = 0
+  \end{gather*}
+  Which is a contradiction.
+\end{answer}
+
+\end{document}

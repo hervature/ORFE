@@ -1,0 +1,217 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 4}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{18}{10}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $X$ be an integrable random variable. Show that any sequence of events $H_n$ such that $P(H_n) \rightarrow 0$ as $n \rightarrow \infty$, has the property $\lim_{n \rightarrow \infty} \mathbb{E}[\lvert X \rvert \cdot 1_{\{H_n\}}] = 0$. Does the converse hold true? (Consider the converse with the conclusion ``$X$ is an integrable random variable'').
+\end{exercise}
+
+\begin{answer}
+  Consider $\lvert X \rvert \leq b$, then
+  \begin{gather*}
+    E [\lvert X \rvert \cdot 1_{\{H_n\}} ] \leq b \cdot E [ 1_{\{H_n\}} ] = b \cdot P(H_n)
+  \end{gather*}
+  Now consider $\lvert X \rvert > b$,
+  \begin{gather*}
+    E [\lvert X \rvert \cdot 1_{\{H_n\}} ] \leq E[ \lvert X \rvert \cdot 1_{\{ \vert X \rvert > b \} }]
+  \end{gather*}
+  Putting these together,
+  \begin{gather*}
+    E [\lvert X \rvert \cdot 1_{\{H_n\}} ] \leq b \cdot P(H_n) + E[ \lvert X \rvert \cdot 1_{\{ \vert X \rvert > b \} }]
+  \end{gather*}
+  Since $X$ is integrable, there is a large enough $b'$ such that $E[ \lvert X \rvert \cdot 1_{\{ \vert X \rvert > b \} }] < \frac{\epsilon}{2}$,
+  \begin{gather*}
+    E [\lvert X \rvert \cdot 1_{\{H_n\}} ] \leq b' \cdot P(H_n) + \frac{\epsilon}{2}
+  \end{gather*}
+  Thus,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} E [\lvert X \rvert \cdot 1_{\{H_n\}} ] \leq \lim_{n \rightarrow \infty} b' \cdot P(H_n) + \frac{\epsilon}{2}
+  \end{gather*}
+  Since $P(H_n) \rightarrow 0$, we can find $N$ sufficiently large such that $P(H_n) < \frac{\epsilon}{2b'}$,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} E [\lvert X \rvert \cdot 1_{\{H_n\}} ] < \frac{\epsilon}{2b'} b' + \frac{\epsilon}{2} < \epsilon, \quad \forall \ \epsilon > 0
+  \end{gather*}
+  This proves the direct result.
+
+  The converse certainly does hold true. Define $H_n$ to be $\{\lvert X \rvert > n\}$. Then we have that $\lim_{n \rightarrow \infty} P(H_n) = 0$ and so we have $\lim_{n \rightarrow \infty} \mathbb{E}[\lvert X \rvert \cdot 1_{\{\lvert X \rvert > n\}}] = 0$ by assumption. This is equivalent to integrable as proven in class. Thus, the converse is true. Note that I assumed that $X$ can only take finite values.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Assume $\sum_{n \geq 1} P \left( \lvert X_n - X \rvert > \frac{1}{n} \right) < \infty$. Show that $X_n \rightarrow X$ almost surely.
+\end{exercise}
+
+\begin{answer}
+  We are going to use Borel-Cantelli lemma,
+  \begin{gather*}
+    \sum_{n \geq 1} P \left( \lvert X_n - X \rvert > \epsilon \right) < \infty \ \forall \ \epsilon > 0 \Longleftrightarrow X_n \rightarrow X \ \text{a.s.}
+  \end{gather*}
+  For every $\epsilon > 0$, there exists $N$ sufficient large such that $\frac{1}{N} < \epsilon$ (namely, $ N > \frac{1}{\epsilon}$), then
+  \begin{gather*}
+    \sum_{n \geq 1} P \left( \lvert X_n - X \rvert > \epsilon \right) = \sum_{n = 1}^N P \left( \lvert X_n - X \rvert > \epsilon \right) + \sum_{n = N}^\infty P \left( \lvert X_n - X \rvert > \epsilon \right) \\
+    \leq \sum_{n = 1}^N P \left( \lvert X_n - X \rvert > \epsilon \right) + \sum_{n = N}^\infty P \left( \lvert X_n - X \rvert > \frac{1}{n} \right)
+  \end{gather*}
+  Since $\sum_{n \geq 1} P \left( \lvert X_n - X \rvert > \frac{1}{n} \right) < \infty$ by assumption, then the second sum is finite, and the first sum is clearly finite since it is a finite sum. Thus,
+  \begin{gather*}
+    \sum_{n \geq 1} P \left( \lvert X_n - X \rvert > \epsilon \right) < \infty \ \forall \ \epsilon > 0
+  \end{gather*}
+  Which is equivalent to $X_n \rightarrow X$ almost surely by the above Borel-Cantelli lemma.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the probability space $(\Omega, \mathcal{H}, P)$ with $\Omega = [0,1], \mathcal{H} = \mathcal{B}([0,1]),$ and $P$ the Lebesgue measure on $[0,1]$. Define the sequence $X_n$ by
+  \begin{gather*}
+    X_{2n}(\omega) = \begin{cases}
+      0, & \text{if } \omega < 1/2 \\
+      1, & \text{if } \omega \geq 1/2
+    \end{cases} \quad X_{2n+1}(\omega) = \begin{cases}
+      1, & \text{if } \omega < 1/2 \\
+      0, & \text{if } \omega \geq 1/2
+    \end{cases}
+  \end{gather*}
+  \begin{enumerate}[label=\roman*)]
+    \item Find the distribution functions of $X_{2n}$ and $X_{2n+1}$.
+    \item Find the characteristic functions of $X_{2n}$ and $X_{2n+1}$.
+    \item Show that $X_n$ converges in distribution.
+    \item Show that $X_n$ does not converge in probability to 0.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\roman*)]
+    \item We consider the sets $X_{2n}^{-1}((-\infty,x])$ and $X_{2n+1}^{-1}((-\infty,x])$. It is easy to see that the measures are equal,
+      \begin{gather*}
+        \mu_{2n}((-\infty,x]) = \mu_{2n+1}((-\infty,x]) = \begin{cases}
+          0 , & \text{if } x < 0 \\
+          1/2, & \text{if } 0 \leq x < 1 \\
+          1, & \text{if } 1 \leq x
+        \end{cases}
+      \end{gather*}
+      Recognize that this is the distribution of $Bernoulli(1/2)$. That is, $X_n \sim Bernoulli(1/2)$ for all $n$.
+    \item The characteristic functions are,
+      \begin{gather*}
+        \phi_{X_{n}}(t) = \mathbb{E}[e^{itX_n}] = e^{it0} \cdot \frac{1}{2} + e^{it} \cdot \frac{1}{2} = \frac{1 + e^{it}}{2}
+      \end{gather*}
+    \item Notice that the $\mu_n$ defined in part i) does not depend on $n$. Thus, $\mu_n = \mu$ and so $\mu_n \rightarrow \mu$ and so $X_n$ converges in distribution to $X \sim Bernoulli(1/2)$.
+    \item Consider $P(\lvert X_n - 0 \rvert > 1/2) = P(\lvert X_n \rvert > 1/2) = 1/2$ for all $n$. Thus, $X_n$ does not converge in probability to 0.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X_n$ be a sequence of random variables. Assume there is a constant $l$ such that $\lim_{n \rightarrow \infty}\mathbb{E[X_n]} = k$ and $\lim_{n \rightarrow \infty} Var(X_n) = 0$. Show that $X_n \rightarrow k$ in $L^2$ (i.e. in the mean square).
+\end{exercise}
+
+\begin{answer}
+  We know that,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} Var(X_n) = 0
+  \end{gather*}
+  Rewriting the variancee,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} \mathbb{E}[X_n^2] - (\mathbb{E}[X_n])^2 = 0
+  \end{gather*}
+  $f(x) = x^2$ is continuous, so we can take the limit inside,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} \mathbb{E}[X_n^2] - (\lim_{n \rightarrow \infty} \mathbb{E}[X_n])^2 = 0 \Longleftrightarrow \lim_{n \rightarrow \infty} \mathbb{E}[X_n^2] - k^2 = 0 \\
+    \Longleftrightarrow \lim_{n \rightarrow \infty} \mathbb{E}[X_n^2] = k^2
+  \end{gather*}
+  But $X_n^2 = \lvert X_n \rvert^2$ so,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} \mathbb{E}[\lvert X_n \rvert^2] = \lim_{n \rightarrow \infty} \lVert X_n \rVert_2 = k^2
+  \end{gather*}
+  We now show this implies convergence in $L_2$,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} \mathbb{E}[\lvert X_n - k \rvert^2] = \lim_{n \rightarrow \infty} \mathbb{E}[\lvert X_n \rvert^2 - 2k X_n + k^2 ] \\
+    = \lim_{n \rightarrow \infty} \mathbb{E}[\lvert X_n \rvert^2] - 2k \mathbb{E}[X_n] + k^2 = \lim_{n \rightarrow \infty} \mathbb{E}[\lvert X_n \rvert^2] - k^2
+  \end{gather*}
+  From before, $\lim_{n \rightarrow \infty} \mathbb{E}[\lvert X_n \rvert^2] = k^2$,
+  \begin{gather*}
+    \implies \lim_{n \rightarrow \infty} \mathbb{E}[\lvert X_n - k \rvert^2] = 0
+  \end{gather*}
+  So we conclude $\lVert X_n -k \rVert_2 \rightarrow 0$ in $L^2$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  If $X_n \rightarrow X$ and $X_n \rightarrow Y$, both in probability, show that $X = Y$ almost surely.
+\end{exercise}
+
+\begin{answer}
+  Since $X_n \rightarrow X$ in probability, then there exists a subsequence $n_{k_1}$ such that $X_{n_{k_1}} \rightarrow X$ almost surely. Since this is a subsequence of $X_n$, we also have that $X_{n_{k_1}} \rightarrow Y$ in probability. Thus pick another subsequence $n_{k_2}$ that converges to $Y$ almost surely. Since this is a subsequence of $n_{k_1}$, we have that $X_{n_{k_2}} \rightarrow X$ almost surely as well. Hence,
+  \begin{gather*}
+    P(X-Y = 0) = P(\lim_{n_{k_2} \rightarrow \infty} X_{n_{k_2}} - \lim_{n_{k_2} \rightarrow \infty} X_{n_{k_2}} = 0) \\
+    = P(\lim_{n_{k_2} \rightarrow \infty} X_{n_{k_2}} - X_{n_{k_2}} = 0) = P(0 = 0) = 1
+  \end{gather*}
+  So, $X = Y$ almost surely.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X_n \rightarrow 0$ in probability. Show that $X_n^3 \rightarrow 0$ in probability.
+\end{exercise}
+
+\begin{answer}
+  We know that if $X_n \rightarrow X$ and $Y_n \rightarrow Y$ in probability, then $X_n Y_n \rightarrow XY$ in probability. So, using $X_n$ above and $Y_n = X_n$, then
+  \begin{gather*}
+    X_n X_n = X_n^2 \rightarrow 0 \text{ in probability}
+  \end{gather*}
+  Now let $Y_n = X_n^2$, by the same property,
+  \begin{gather*}
+    X_n X_n^2 = X_n^3 \rightarrow 0 \text{ in probability}
+  \end{gather*}
+  Also, $f(x) = x^3$ is continuous, thus if $X_n \rightarrow X$ in probability, then $f(X_n) \rightarrow f(X)$ in probability. In this case, $X_n^3 \rightarrow 0^3 = 0$ in probability.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider a sequence of random variables $X_n$ such that there is another random variable $X$ such that $\sum_n \lVert X_n - X \rVert_{L^2}^2 < M < \infty$ a.s. Show that $X_n \rightarrow X$ almost surely.
+\end{exercise}
+
+\begin{answer}
+  We have that,
+  \begin{gather*}
+    M > \sum_n \lVert X_n - X \rVert_{L^2}^2 = \sum_n \mathbb{E}[\lvert X_n - X \rvert^2]
+  \end{gather*}
+  By Markov's inequality,
+  \begin{gather*}
+    \sum_n \mathbb{E}[\lvert X_n - X \rvert^2] \geq \sum_n \epsilon^2 P(|X_n - X| > \epsilon)
+  \end{gather*}
+  Thus,
+  \begin{gather*}
+    \sum_n P(|X_n - X| > \epsilon) < \frac{M}{\epsilon^2} < \infty \ \forall \ \epsilon > 0
+  \end{gather*}
+  By Borel-Cantelli, then $X_n \rightarrow X$ almost surely.
+\end{answer}
+
+\end{document}

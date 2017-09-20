@@ -1,0 +1,412 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 527: Stochastic Calculus \\ Homework 7}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{07}{05}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  (Scaling property of local times) Let $B$ be a standard Brownian motion and $\ell(t,a)$, $t \geq 0$, $a \in \mathbb{R}$ be the associated process of local times. Prove that, for any $c > 0$, the process $(B_{ct}/\sqrt{c}, \ell(ct, \sqrt{c}a/\sqrt{c}))$, $t \geq 0$, $a \in \mathbb{R}$ has the same law as $(B_t, \ell(t,a))$, $t \geq 0$, $a \in \mathbb{R}$.
+\end{exercise}
+
+\begin{answer}
+  First, we show that $B_t \stackrel{d}{=} B_{ct}/\sqrt{c}$. We note that $B_{ct} - B_{cs}$ will be distributed normal with mean zero and variance $c(t-s)$ by the properties of Brownian motion. Taking $s$ to be 0, we have that
+  \begin{gather*}
+    B_{ct}/\sqrt{c} \sim \mathcal{N}(0,t)
+  \end{gather*}
+  and so we conclude that $B_t \stackrel{d}{=} B_{ct}/\sqrt{c}$. Now we use the fact that $X \stackrel{d}{=} Y$ and $f(X) | X \stackrel{d}{=} f(Y) | Y$ iff $(X, f(X)) \stackrel{d}{=} (Y,f(Y))$. This comes from the fact that
+  \begin{align*}
+    &(X, f(X)) \stackrel{d}{=} (Y, f(Y)) \\
+    &\Longleftrightarrow \mathbb{P}(X, f(X)) = \mathbb{P}(Y, f(Y)) \\
+    &\Longleftrightarrow \mathbb{P}(f(X) | X) \mathbb{P}(X) = \mathbb{P}(f(Y) | Y) \mathbb{P}(Y)
+  \end{align*}
+  As we have shown $X \stackrel{d}{=} Y$, all we have to show is that $f(X) | X$ and $f(Y) | Y$ have the same functional form. By definition, we have
+  \begin{gather*}
+    \ell(t,a) = \lim_{\epsilon \downarrow 0} \frac{1}{2 \epsilon} \int_0^t 1_{\{\lvert B_s - a \rvert \leq \epsilon \}} \text{d}s
+  \end{gather*}
+  Now, we aim to retrieve this from the other conditional law.
+  \begin{gather*}
+    \ell(ct,\sqrt{c}a) | B_{ct}/\sqrt{c} = \lim_{\epsilon \downarrow 0} \frac{1}{2 \epsilon} \int_0^{ct} 1_{\{\lvert B_{s} - \sqrt{c}a \rvert \leq \epsilon \}} \text{d}s
+  \end{gather*}
+  Now, doing a change of variable of $s' = s/c$, we get
+  \begin{align*}
+    \ell(ct,\sqrt{c}a) &= \lim_{\epsilon \downarrow 0} \frac{1}{2 \epsilon} \int_0^{t} c 1_{\{\lvert B_{cs} - \sqrt{c}a \rvert \leq \epsilon \}} \text{d}s \\
+    \ell(ct,\sqrt{c}a) &= \lim_{\epsilon \downarrow 0} \frac{1}{2 \epsilon} \int_0^{t} c 1_{\{\lvert B_{cs}/\sqrt{c} - a \rvert \leq \epsilon/\sqrt{c} \}} \text{d}s
+  \end{align*}
+  Again, we do a change of variable from $\epsilon$ to $\epsilon/\sqrt{c}$ which doesn't change the limit
+  \begin{align*}
+    \ell(ct,\sqrt{c}a) &= \lim_{\epsilon \downarrow 0} \frac{1}{2 \epsilon} \int_0^{t} \sqrt{c} 1_{\{\lvert B_{cs}/\sqrt{c} - a \rvert \leq \epsilon \}} \text{d}s \\
+    \Longleftrightarrow \ell(ct,\sqrt{c}a)/\sqrt{c} &= \lim_{\epsilon \downarrow 0} \frac{1}{2 \epsilon} \int_0^{t} 1_{\{\lvert B_{cs}/\sqrt{c} - a \rvert \leq \epsilon \}} \text{d}s
+  \end{align*}
+  Now conditioning the above on $B_{cs}/\sqrt{c}$ and conditioning $\ell(t,a)$ on $B_t$ gives the same functional form. Thus, we have that $\ell(ct,\sqrt{c}a)/\sqrt{c} | B_{cs}/\sqrt{c} \stackrel{d}{=} \ell(t,a) | B_t$ and we conclude that
+  \begin{gather*}
+    (\ell(t,a), B_t) \stackrel{d}{=} (\ell(ct,\sqrt{c}a)/\sqrt{c}, B_{cs}/\sqrt{c})
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Local time at zero) Let $B$ be a standard Brownian motion and $\ell(t,0)$, $t \geq 0$ be the local time it accumulates at 0.
+  \begin{enumerate}[label=\alph*)]
+    \item Show that the event $\{\ell(t,0) > 0  \text{ for all } t > 0\}$ has probability one. Conclude that for any stopping time $\tau$ with $\mathbb{P}(0 < \tau < \infty) = 1$ it holds $\ell(\tau,0) > 0$  with probability one.
+    \item Find the distribution of the random vector $(B_t, \ell(t,0))$ for any given $t \geq 0$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \begin{enumerate}[label=\alph*)]
+    \item First, we know from class that
+      \begin{gather*}
+        \ell(t,0) \stackrel{d}{=} \max_{0 \leq s \leq t} B_s
+      \end{gather*}
+      From the reflection principle, we also have that
+      \begin{align*}
+        \mathbb{P}(\max_{0 \leq s \leq t} B_s \geq a) &= 2 \mathbb{P}(B_t \geq a) \\
+        &= \mathbb{P}(\lvert B_t \rvert \geq a)
+      \end{align*}
+      Thus, we have $\lvert B_t \rvert \stackrel{d}{=} \ell(t,0)$. Since $\mathbb{P}(\lvert B_t \rvert = 0) = 0$ for all $t > 0$, we have
+      \begin{gather*}
+        \mathbb{P}(\ell(t,0) > 0) = 1, \ \forall \ t > 0
+      \end{gather*}
+      We wish to bring the universal quantifier inside the probability. Take a sequence $t_n > 0$ with $t_n \searrow 0$ as $n \rightarrow \infty$. Now, as $\ell(t,0)$ is non-decreasing in $t$, $\ell(t_n, 0) > 0$ implies $\ell(t,0) > 0$ for all  $t_n > t$. So we have the following equivalence of events
+      \begin{gather*}
+        \{ \ell(t,0) > 0, \ \forall \ t > 0 \} = \bigcap_n \{ \ell(t_n,0) > 0 \}
+      \end{gather*}
+      As all the events in the intersection have probability 1, then the intersection occurs with probability 1. Hence,
+      \begin{gather*}
+        \mathbb{P}(\ell(t,0) > 0, \ \forall \ t > 0) = 1
+      \end{gather*}
+      Now, since we have
+      \begin{gather*}
+        \{ \ell(t,0) > 0, \ \forall \ t > 0 \} \cap \{0 < \tau < \infty\} \subset \{ \ell(\tau,0) > 0 \}
+      \end{gather*}
+      The left side is an intersection of events that occur with probability 1, so we conclude
+      \begin{gather*}
+        \mathbb{P}(\ell(\tau,0) > 0) = 1
+      \end{gather*}
+
+    \item First, let us find the distribution of $(M_t, B_t)$ where $M_t = \max_{0 \leq s \leq t} B_s$. Working through the various cases and applying the reflection principle yields,
+      \begin{align*}
+        F = \mathbb{P}(M_t \geq x, B_t \geq y) &= 1_{\{x < 0 \text{ or } y \geq x\}} \mathbb{P}(B_t \geq y) \\
+        &+ 1_{\{x \geq 0 \text{ and } y < x\}} (\mathbb{P}(B_t \geq x) + \mathbb{P}(B_t \in [x, 2x-y])) \\
+        &= 1_{\{x < 0 \text{ or } y \geq x\}} (1 - \Phi(\frac{y}{\sqrt{t}})) \\
+        &+ 1_{\{x \geq 0 \text{ and } y < x\}} (1 - 2 \Phi(\frac{x}{\sqrt{t}}) + \Phi(\frac{2x - y}{\sqrt{t}}))
+      \end{align*}
+      Now, to find the pdf, we take the partial derivatives with respect to $y$ and $x$. First, take the derivative with respect to $x$,
+      \begin{gather*}
+        \frac{\partial F}{\partial x} = 1_{\{x \geq 0 \text{ and } y < x\}} (-\frac{2}{\sqrt{t}} \phi(\frac{x}{\sqrt{t}}) + \frac{2}{\sqrt{t}}\phi(\frac{2x - y}{\sqrt{t}}))
+      \end{gather*}
+      Now the with respect to $y$,
+      \begin{gather*}
+        \frac{\partial^2 F}{\partial x \partial y} = -1_{\{x \geq 0\}} 1_{\{y < x\}} \frac{2}{t}\phi'(\frac{2x - y}{\sqrt{t}})
+      \end{gather*}
+      So we have that
+      \begin{gather*}
+        \mathbb{P}(M_t \geq x, B_t \geq y) = \int_y^\infty \int_x^\infty 1_{\{u \geq 0\}} 1_{\{v < u\}} \frac{-2}{t}\phi'(\frac{2u - v}{\sqrt{t}}) du dv
+      \end{gather*}
+      From class, we have shown that $(M_t - B_t, M_t) \stackrel{d}{=} (\lvert B_t \rvert, \ell(t,0))$. Let us relate these two by finding the pdf of $(\lvert B_t \rvert, \ell(t,0))$. By definition of being equal in distribution, we have for all $h$ postive measurable function
+      \begin{gather*}
+        \mathbb{E}[h(M_t - B_t, M_t)] = \mathbb{E}[h(\lvert B_t \rvert, \ell(t,0))]
+      \end{gather*}
+      We calculate both sides of this equation, first the left side
+      \begin{gather*}
+        \mathbb{E}[h(M_t - B_t, M_t)] = \int_{-\infty}^\infty \int_{-\infty}^\infty h(x-y, x) 1_{\{x \geq 0\}} 1_{\{y < x\}} \frac{-2}{t}\phi'(\frac{2x - y}{\sqrt{t}}) dx dy
+      \end{gather*}
+      Now, we want to extract another $f(\cdot,\cdot)$ so we do the change of variable $z = x - y$ which yields
+      \begin{gather*}
+        \mathbb{E}[h(M_t - B_t, M_t)] \\= \int_{-\infty}^\infty \int_{-\infty}^\infty h(z, x) 1_{\{x \geq 0\}} 1_{\{z > 0\}} \frac{-2}{t}\phi'(\frac{x + z}{\sqrt{t}}) dx dz
+      \end{gather*}
+      Since this equals $\mathbb{E}[h(\lvert B_t \rvert, \ell(t,0))]$, we conclude that the pdf of \\ $(\lvert B_t \rvert, \ell(t,0))$ is
+      \begin{gather*}
+        f(z,x) = 1_{\{x \geq 0\}} 1_{\{z > 0\}} \frac{-2}{t}\phi'(\frac{x + z}{\sqrt{t}})
+      \end{gather*}
+      Now, by Tanaka's formula, we have the following equivalence
+      \begin{align*}
+        \ell(t,0) &= \lvert B_t \rvert - \int_0^t \text{sign}(B_s) \text{d}B_s
+        &= \lvert -B_t \rvert - \int_0^t \text{sign}(-B_s) \text{d}(-B_s)
+      \end{align*}
+      Thus we have
+      \begin{gather*}
+        (-B_t, \ell(t,0)) \stackrel{d}{=} (B_t, \ell(t,0)) \\
+        \Longleftrightarrow \mathbb{P}(-B_t \leq x, \ell(t,0) \leq y) = \mathbb{P}(B_t \leq x, \ell(t,0) \leq y) \\
+        \Longleftrightarrow \mathbb{P}(B_t \geq -x, \ell(t,0) \leq y) = \mathbb{P}(B_t \leq x, \ell(t,0) \leq y)
+      \end{gather*}
+      Now, we use this fact to get
+      \begin{align*}
+        &\mathbb{P}(\lvert B_t \rvert  \leq \lvert x \rvert , \ell(t,0) \leq y) \\
+        &= \mathbb{P}(B_t \leq x, \ell(t,0) \leq y) + \mathbb{P}(B_t \geq -x, \ell(t,0) \leq y) \\
+        &= 2 \mathbb{P}(B_t \leq x, \ell(t,0) \leq y)
+      \end{align*}
+      Thus, to get the pdf of $(B_t, \ell(t,0))$, we differentiate \\ $\frac{1}{2} \mathbb{P}(\lvert B_t \rvert  \leq \lvert x \rvert , \ell(t,0) \leq y)$ with respect to $x$ and $y$. This gets us
+      \begin{gather*}
+        g(x,y) = \frac{1}{2} f(\lvert x \rvert, y) = -\frac{1}{t} 1_{\{y \geq 0\}} \phi'\left(\frac{\lvert x \rvert + y}{\sqrt{t}}\right)
+      \end{gather*}
+      Plugging in the defition of $\phi'(\cdot)$ yields the resulting pdf of $(B_t, \ell(t,0))$
+      \begin{gather*}
+        g(x,y) = \frac{1}{t} \frac{1}{\sqrt{2 \pi}} \frac{\lvert x \rvert + y}{\sqrt{t}} e^{-\frac{1}{2} (\frac{\lvert x \rvert + y}{\sqrt{t}})^2} 1_{\{y \geq 0\}}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Yet another definition of local time) Let $B$ be a standard Brownian motion and $\ell(t,0)$, $t \geq 0$ be the local time it accumulates at 0. Prove that
+  \begin{gather*}
+    \ell(t,0) = \lim_{\epsilon \downarrow 0} \frac{1}{\epsilon} \int_0^t  \mathbb{E}[\lvert B_{s+\epsilon} \rvert | B_s ] - \lvert B_s \rvert \text{d}s
+  \end{gather*}
+  almost surely.
+
+  \textit{Hint:} apply the occupation time formula to the integral on the right-hand side.
+\end{exercise}
+
+\begin{answer}
+  To begin, we calculate what $\mathbb{E}[\lvert B_{s+\epsilon} \rvert | B_s ]$ is. We note that
+  \begin{gather*}
+    \lvert B_{s+\epsilon} \rvert | B_s = \lvert B_\epsilon + x \rvert
+  \end{gather*}
+  Where we condition on $B_s = x$. We know that $B_\epsilon + x \sim \mathcal{N}(x, \epsilon)$ and so, taking the absolute values, we have that $\lvert B_\epsilon + x \rvert$ is a folded normal distribution. Thus, the expectation becomes
+  \begin{gather*}
+    \mathbb{E}[\lvert B_\epsilon + x \rvert] = \sqrt{\frac{2 \epsilon}{\pi}} e^{-\frac{x^2}{2 \epsilon}} + x - 2 x \Phi\left(\frac{-x}{\sqrt{\epsilon}} \right)
+  \end{gather*}
+  Using the fact that $\Phi(-x) = 1 - \Phi(x)$, we write the above equivalently as
+  \begin{gather*}
+    \mathbb{E}[\lvert B_\epsilon + x \rvert] = \sqrt{\frac{2 \epsilon}{\pi}} e^{-\frac{x^2}{2 \epsilon}} + \lvert x \rvert  - 2 \lvert x \rvert \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right)
+  \end{gather*}
+  Now we apply the occupation time formula to get
+  \begin{align*}
+    &\int_0^t  \mathbb{E}[\lvert B_{s+\epsilon} \rvert | B_s ] - \lvert B_s \rvert \text{d}s \\
+    &= \int_{-\infty}^\infty \left(\mathbb{E}[\lvert B_{s+\epsilon} \rvert | B_s = x ] - \lvert x \rvert \right) \ell(t,x) \text{d}x \\
+    &= \int_{-\infty}^\infty \left(\sqrt{\frac{2 \epsilon}{\pi}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \lvert x \rvert \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x
+  \end{align*}
+  Dividing by $\epsilon$ yields
+  \begin{gather*}
+    \int_{-\infty}^\infty \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x
+  \end{gather*}
+  Now, we note that
+  \begin{gather*}
+    \int_{-\infty}^\infty \sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}} \text{d}x = 2 \int_{-\infty}^\infty \frac{1}{\sqrt{2 \pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}} \text{d}x = 2
+  \end{gather*}
+  We also have that
+  \begin{align*}
+    &\int_{-\infty}^\infty -2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \text{d}x \\
+    &= -2 \int_{-\infty}^\infty \frac{\lvert x \rvert}{\epsilon} \int_{-\infty}^{-\lvert x \rvert/\sqrt{\epsilon}} \frac{1}{\sqrt{2 \pi}} e^{-y^2/2} \text{d}y \text{d}x \\
+    &= -1
+  \end{align*}
+  Where the last line is reached using your favourite symbolic solver (or Fubini's to exchange the order of integration). Thus, we have the nice result that
+  \begin{gather*}
+    \int_{-\infty}^\infty \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \text{d}x = 1
+  \end{gather*}
+  With these in hand, let us try to compute the integral with the local time. Let us note that $\ell(t,x)$ is integrable as
+  \begin{gather*}
+    \int_{-\infty}^\infty \ell(t,x) = \int_0^t 1 \text{d}s = t
+  \end{gather*}
+  Now, for all $c > 0$, define
+  \begin{align*}
+    (\star) &\equiv \int_{c}^\infty \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x \\
+    &+ \int_{-\infty}^{-c} \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x
+  \end{align*}
+  Then
+  \begin{gather*}
+    \lvert (\star) \rvert \leq \int_{-\infty}^\infty \ell(t,x) \text{d} x \cdot \left( \sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}} \right) \\
+    + \int_{c}^\infty \left( 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x \\
+    + \int_{-\infty}^{-c} \left( 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x
+  \end{gather*}
+  The first term yields
+  \begin{align*}
+    &\lim_{\epsilon \downarrow 0} \int_{-\infty}^\infty \ell(t,x) \text{d} x \cdot \left( \sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}} \right) \\
+    &= \lim_{\epsilon \downarrow 0} t \sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}} \\
+    &= 0
+  \end{align*}
+  Likewise, we have that
+  \begin{gather*}
+    2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) = O(e^{-\frac{\lvert x \rvert}{\sqrt{\epsilon}}}) \leq D e^{-\frac{\lvert x \rvert}{\sqrt{\epsilon}}}
+  \end{gather*}
+  For some constant $D$. Then, the remaining two terms yield (using the appropriate bounds of integration)
+  \begin{align*}
+    &\lim_{\epsilon \downarrow 0} \int_{c}^\infty \left( 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x \\
+    &\leq \lim_{\epsilon \downarrow 0} De^{-\frac{\lvert x \rvert}{\sqrt{\epsilon}}} \int_{c}^\infty \ell(t,x) \text{d}x \\
+    &\leq Dte^{-\frac{\lvert x \rvert}{\sqrt{\epsilon}}} \\
+    &= 0
+  \end{align*}
+  Thus, we have that $(\star) \rightarrow 0$ as $\epsilon \rightarrow 0$. Now, by continuity, we have that there is a $c > 0$ such that $\lvert \ell(t,x) - \ell(t,0) \rvert \leq \delta$ for all $x \in [-c,c]$. We now show that the limit in question approaches $\ell(t,0)$.
+  \begin{align*}
+    &\lim_{\epsilon \downarrow 0} \left\lvert \ell(t,0) - \int_{-\infty}^\infty \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x \right\rvert \\
+    &\leq \lim_{\epsilon \downarrow 0} \int_{-\infty}^\infty \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \lvert \ell(t,0) - \ell(t,x) \rvert \text{d}x
+  \end{align*}
+  Where this results from the convexity of $\lvert \cdot \rvert$ and that the large term integrates to 1. Now, we break up the integrand into four parts
+  \begin{align*}
+    \leq \lim_{\epsilon \downarrow 0} (\star) &+ \int_{-\infty}^{-c} \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \text{d} x \cdot \lvert \ell(t,0) \rvert \\
+    &+ \int_c^\infty \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \text{d} x \cdot \lvert \ell(t,0) \rvert \\
+    &+ \int_{-c}^c \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \text{d} x \cdot \delta
+  \end{align*}
+  Now, we take the limit as $\epsilon \rightarrow 0$. We know that $(\star) \rightarrow 0$. For the same reason, we have that the next two integrals also go to 0. Now, the last terms is less than $\delta$ since the integrand is bounded by $1$. Thus, we conclude that
+  \begin{gather*}
+    \lim_{\epsilon \downarrow 0} \left\lvert \ell(t,0) - \int_{-\infty}^\infty \left(\sqrt{\frac{2}{\pi \epsilon}} e^{-\frac{x^2}{2 \epsilon}}  - 2 \frac{\lvert x \rvert}{\epsilon} \Phi\left(\frac{-\lvert x \rvert }{\sqrt{\epsilon}}\right) \right) \ell(t,x) \text{d}x \right\rvert \leq \delta
+  \end{gather*}
+  And so we have that
+  \begin{gather*}
+    \ell(t,0) = \lim_{\epsilon \downarrow 0} \frac{1}{\epsilon} \int_0^t  \mathbb{E}[\lvert B_{s+\epsilon} \rvert | B_s ] - \lvert B_s \rvert \text{d}s
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Two-sided Skorokhod problem) Given a continuous function $f : [0,\infty) \rightarrow \mathbb{R}$ with $f(0) \in (0,1)$, show that there is a unique pair of function $g,h : [0,\infty) \rightarrow \mathbb{R}$ with the following three properties:
+  \begin{enumerate}[label=\roman*)]
+    \item $r(t) := f(t) + g(t) - h(t) \in [0,1], t \geq 0$
+    \item $g(0) = h(0) = 0$ and $g, h$ are non-decreasing
+    \item $\int_0^\infty 1_{\{r(t) > 0\}} \text{d}g(t) = 0$, $\int_0^\infty 1_{\{r(t) < 1\}} \text{d}h(t) = 0$
+  \end{enumerate}
+  The mapping $\Gamma : f \rightarrow r$ is called the \textit{two-sided Skorokhod map} and the image of a standard Brownian motion under $\Gamma$ is called a \textit{reflected Brownian motion on} $[0,1]$.
+\end{exercise}
+
+\begin{answer}
+  By the guidance of God (and a paper by Shreve et al. in 2005) let's suppose the functions are
+  \begin{gather*}
+    g(t) = \max_{s \in [0,t]} (h(s) - f(s))_+ \\
+    h(t) = \max_{s \in [0,t]} (f(s) + g(s) - 1)_+
+  \end{gather*}
+  Let's show that these satisfy the three properties.
+  \begin{enumerate}[label=\roman*)]
+    \item $r(t) = f(t) + g(t) - h(t)$. We have that $g(t) \geq h(t) - f(t)$ so
+      \begin{gather*}
+        r(t) \geq f(t) + h(t) - f(t) - h(t) = 0
+      \end{gather*}
+      Likewise, $-h(t) \leq - f(t) - g(t) + 1$ which implies
+      \begin{gather*}
+        r(t) \leq f(t) + g(t) - f(t) - g(t) + 1 = 1
+      \end{gather*}
+      Thus, we have $r(t) \in [0,1]$ for all $t \geq 0$.
+
+    \item We have that $g(0) = (h(0) - f(0))_+$ and $h(0) = (f(0)+g(0)-1)_+$. From this, the only way these are simultaneously satisfied is if
+      \begin{gather*}
+        g(0) = h(0) = 0
+      \end{gather*}
+      This comes from the fact that if $g(0) > 0$, then $h(0) > f(0)$. But if $h(0) > f(0)$ then $g(0) > 1$ which is impossible by the previous part. Thus, $g(0) = 0$. As $f(0) \in (0,1)$ and $g(0) = 0$, then $h(0) = 0$. Also, since these are running maximums, then the functions are non-decreasing.
+
+    \item We use the same tactic from class and use Fatou's lemma
+      \begin{gather*}
+        \int_0^\infty 1_{\{r(t)>0\}} \text{d}g(t) \leq \liminf_{\epsilon \downarrow 0} \int_0^\infty 1_{\{r(t)>\epsilon\}} \text{d}g(t)
+      \end{gather*}
+      Now, we have that $\{t : r(t) > \epsilon \} = \bigcap_{i=1}^\infty (s_i, t_i)$. So,
+      \begin{gather*}
+        \forall i \ \int_{s_i}^{t_i} 1_{\{r(t)>\epsilon\}} \text{d}g(t) = g(t_i) - g(s_i)
+      \end{gather*}
+      We now have that $r(t) > \epsilon$ if and only if $h(t) - f(t) < g(t) - \epsilon$ which implies,
+      \begin{align*}
+        g(t_i) &= \max(g(s_i), \max_{s \in [s_i, t_i]} h(s) - f(s)) \\
+        &\leq \max(g(s_i), \max_{s \in [s_i, t_i]} g(s) - \epsilon)
+      \end{align*}
+      Now, we cannot have $g(t_i) \leq g(t_i) - \epsilon$ and so we have that $g(t_i) = g(s_i)$ and we conclude that
+      \begin{gather*}
+        \forall i \ \int_{s_i}^{t_i} 1_{\{r(t)>\epsilon\}} \text{d}g(t) = g(t_i) - g(s_i) = 0
+      \end{gather*}
+      And so
+      \begin{gather*}
+        \int_0^\infty 1_{\{r(t)>0\}} \text{d}g(t) = 0
+      \end{gather*}
+      We now repeat the steps for
+      \begin{gather*}
+        \int_0^\infty 1_{\{r(t)<1\}} \text{d}h(t) \leq \liminf_{\epsilon \downarrow 0} \int_0^\infty 1_{\{r(t)<1-\epsilon\}} \text{d}h(t)
+      \end{gather*}
+      We again have for $\{t : r(t) > \epsilon \} = \bigcap_{i=1}^\infty (s_i, t_i)$,
+      \begin{gather*}
+        \forall i \ \int_{s_i}^{t_i} 1_{\{r(t)<1-\epsilon\}} \text{d}h(t) = h(t_i) - h(s_i)
+      \end{gather*}
+      We now have that $r(t) < 1 - \epsilon$ if and only if $f(t) + g(t) - 1 < h(t) - \epsilon$ which implies,
+      \begin{align*}
+        h(t_i) &= \max(h(s_i), \max_{s \in [s_i, t_i]} f(s) + g(s) - 1) \\
+        &\leq \max(g(s_i), \max_{s \in [s_i, t_i]} h(s) - \epsilon)
+      \end{align*}
+      Now, we cannot have $h(t_i) \leq h(t_i) - \epsilon$ and so we have that $h(t_i) = h(s_i)$ and we conclude that
+      \begin{gather*}
+        \forall i \ \int_{s_i}^{t_i} 1_{\{r(t)<1-\epsilon\}} \text{d}h(t) = h(t_i) - h(s_i) = 0
+      \end{gather*}
+      And so
+      \begin{gather*}
+        \int_0^\infty 1_{\{r(t)<1\}} \text{d}h(t) = 0
+      \end{gather*}
+      This proves existence. Now for uniqueness. Consider two possible pairs $(g,h)$ and $(g',h')$. Following the steps done in class, we prove that $r = r'$. By contradiction, assume that $r \neq r'$. Then, wlog, there is a $T$ such that $r(T) > r'(T)$. Now define
+      \begin{gather*}
+        \tau = \max (t < T :  r(t) = r'(t))
+      \end{gather*}
+      Thus, we have that $r(t) > r'(t)$ on $t \in (\tau, T]$. Hence we have
+      \begin{gather*}
+        0 \leq r'(t) < r(t) \leq 1 \ \forall \ t \in (\tau, T]
+      \end{gather*}
+      So $r'(t) < 1$ and $r(t) > 0$ for $t \in (\tau, T]$ and by property iii)
+      \begin{gather*}
+        h'(\tau) = h'(T) \\
+        g(\tau) = g(T)
+      \end{gather*}
+      Now, putting this all together,
+      \begin{align*}
+        0 < r(T) - r'(T) &= g(T) - h(T) - g'(T) + h'(T) \\
+        &= g(\tau) - g'(T) + h'(\tau) - h(T) \\
+        &\leq g(\tau) - g'(\tau) + h'(\tau) - h(\tau) \\
+        &= r(\tau) - r'(\tau) = 0
+      \end{align*}
+      This is a contradiction and so $r = r'$. Note that $r = r'$ implies that $g - h = g' - h'$. Now we show that $h = h'$. Again, wlog, assume by contradiction that there exists $T$ such that $h(T) > h'(T)$. Define
+      \begin{gather*}
+        \tau = \max (t < T :  h(t) = h'(t))
+      \end{gather*}
+      Then we have $h(t) > h'(t)$ for $t \in (\tau, T]$. Using this,
+      \begin{align*}
+        &h(T) - h(\tau) - h'(T) - h'(\tau) \\
+        &= h(T) - h'(T) \\
+        &= \int_\tau^T \text{d}(h(t) - h'(t)) \\
+        &= \underbrace{ \int_\tau^T 1_{\{r(t) < 1\}} \text{d}(h(t) - h'(t)) }_{= 0} + \int_\tau^T 1_{\{r(t) = 1\}} \text{d}(h(t) - h'(t)) \\
+        &= \int_\tau^T 1_{\{r(t) = 1\}} \text{d}(h(t) - h'(t)) > 0
+      \end{align*}
+      However, as this is positive, then there exists some interval $[a,b] \subset (\tau, T]$ where $r(t) = 1$ and so
+      \begin{gather*}
+        h(a) - h'(a) < h(b) - h'(b)
+      \end{gather*}
+      But this would imply also that
+      \begin{gather*}
+        g(a) - g'(a) < g(b) - g'(b)
+      \end{gather*}
+      But, by property iii), and $r(t) > 0$ on $[a,b]$ we have that
+      \begin{gather*}
+        \int_a^b \text{d} (g(t) - g'(t)) = 0 \\
+        \implies g(b) - g(a) = g'(b) - g'(a)
+      \end{gather*}
+      Which is a contradiction and so we conclude $h = h'$. As $r = r'$ and $h = h'$, then $g = g'$. We conclude that the pair $(g,h)$ is unique.
+  \end{enumerate}
+\end{answer}
+
+\end{document}

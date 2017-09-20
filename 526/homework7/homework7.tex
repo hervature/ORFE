@@ -1,0 +1,219 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 7}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{22}{11}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  An inhomogeneous Poisson process with intensity function $\lambda(t)$ $> 0$ is a non-decreasing, integer-valued process with initial value $N(0) = 0$ whose increments are independent and satisfy
+  \begin{gather*}
+    P(N_T - N_t = n) = \frac{1}{n!} \left( \int_t^T \lambda(s)ds \right)^n e^{-\int_t^T \lambda(s)ds}
+  \end{gather*}
+  The intensity $\lambda(t)$ is a non-negative function on time only. Consider the filtration $\mathcal{F}_t$ defined by the process $N_t$.
+  \begin{enumerate}[label=\alph*)]
+    \item Find $\mathbb{E}[N_{t+s} - N_t | \mathcal{F}_t]$
+    \item Prove that $M_t = N_t - \int_0^t \lambda(s) ds$ is an $\mathcal{F}_t$-martingale.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Calculating the conditional expectation,
+      \begin{gather*}
+        \mathbb{E}[N_{t+s} - N_t | \mathcal{F}_t] = \sum_{n-0}^\infty n P(N_{t+s} - N_t = n | \mathcal{F}_t) \\
+        = \sum_{n=0}^\infty \frac{n}{n!} \left( \int_t^{t+s} \lambda(s)ds \right)^n e^{-\int_t^{t+s} \lambda(s)ds} \\
+        = \left( \int_t^{t+s} \lambda(s)ds \right)e^{-\int_t^{t+s} \lambda(s)ds} \sum_{n=0}^\infty \frac{1}{(n-1)!} \left( \int_t^{t+s} \lambda(s)ds \right)^{n-1} \\
+        = \left( \int_t^{t+s} \lambda(s)ds \right)e^{-\int_t^{t+s} \lambda(s)ds}e^{\int_t^{t+s} \lambda(s)ds} \\
+        = \int_t^{t+s} \lambda(s)ds
+      \end{gather*}
+      Where I used the fact that $\sum_{n = 0}^\infty \frac{x^n}{n!} = e^x$ and the fact that the finite integral is well defined.
+    \item First we show $M_t$ is integrable.
+      \begin{gather*}
+        \mathbb{E}[ \lvert M_t \rvert ] = \mathbb{E}[ \lvert N_t - \int_0^t \lambda(s) ds \rvert ] \\
+        \leq \mathbb{E}[ \lvert N_t \rvert ] + \mathbb{E}[ \lvert \int_0^t \lambda(s) ds \rvert ] \\
+        = \mathbb{E}[ \lvert N_t - N_0 \rvert | \mathcal{F}_0] + \lvert \int_0^t \lambda(s) ds \rvert \\
+        = \lvert \int_0^{t} \lambda(s)ds \rvert + \lvert \int_0^t \lambda(s) ds \rvert \\
+        = 2 \lvert \int_0^t \lambda(s) ds \rvert < \infty
+      \end{gather*}
+      Since it is a finite integral.
+
+      Also, $M_t$ is continuous as it is a continuous function of $N_t$ and $\int_0^t \lambda(s) ds$ which are both continuous.
+
+      Now, we check the last property of martingales,
+      \begin{gather*}
+        \mathbb{E}[ M_{t+r} - M_t | \mathcal{F}_t ] = \mathbb{E}[ N_{t+r} - N_t - \int_0^{t+r} \lambda(s) ds + \int_0^{t} \lambda(s)ds | \mathcal{F}_t ] \\
+        = \mathbb{E}[ N_{t+r} - N_t | \mathcal{F}_t ] - \int_0^{t+r} \lambda(s) ds + \int_0^{t} \lambda(s)ds \\
+        = \int_t^{t+r} \lambda(s)ds - \int_t^{t+1} \lambda(s) ds = 0
+      \end{gather*}
+      Thus, $\mathbb{E}[ M_{t+r} - M_t | \mathcal{F}_t ] = 0$ implies that $\mathbb{E}[ M_{t+r} | \mathcal{F}_t ] = M_t$. Thus, $M_t$ is and $\mathcal{F}_t$-martingale.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Denote by $T_k$ the time of the $k^{th}$ jump of a Poisson process $N_t$ with rate $\lambda > 0$. Let $\tau_1 = T_1, \tau_k = T_k - T_{k-1}$, for $k \geq 1$, be the interarrival times (the time elapsed between two consecutive jumps).
+  \begin{enumerate}[label=\alph*)]
+    \item Show that the random variable $\tau_k$ are independent.
+    \item Prove that the random variables $\tau_k$ are exponentially distributed.
+    \item Show that $\mathbb{E}[\tau_k] = 1/\lambda$.
+    \item Verify that the probability density of $T_k$ is a gamma distribution. What is its mean and variance.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item We have
+      \begin{gather*}
+        P(\tau_k = k, \tau_l = l) = P( T_k - T_{k-1} = k, T_l - T_{l-1} = l ) \\
+        = P( N_{T_k} - N_{T_{k-1}} = 0, N_{T_l} - N_{T_{l-1}} = 0) \\
+        = P( N_{T_k} - N_{T_{k-1}} = 0)P(N_{T_l} - N_{T_{l-1}} = 0)
+      \end{gather*}
+      Where the last equality holds because increments are independent in Poisson processes.
+      \begin{gather*}
+        = P( \tau_k = k) P( \tau_l = l )
+      \end{gather*}
+      Thus, the $\tau_k$'s are independent.
+    \item We have that,
+      \begin{gather*}
+        P(T_1 > t) = P(N_t = 0) = e^{- \lambda t}
+      \end{gather*}
+      Thus, $T_1$ is exponential with rate $\lambda$. Now, for $s < t$,
+      \begin{gather*}
+        P(T_2 > t | T_1 = s) = P(N_{T_2} > t-s) = e^{- \lambda (t-s)}
+      \end{gather*}
+      Which gives us
+      \begin{gather*}
+        P(T_2 > t) \\
+        = P(T_2 > t | T_1 = s < t)P(T_1 = s) + P(T_2 > t | T_1 = s \geq t)P(T_1 = s) \\
+        = e^{- \lambda (t-s)}e^{-\lambda s} + 0 = e^{-\lambda t}
+      \end{gather*}
+      By induction, all $P(T_k)$ are distributed exponentially with rate $\lambda$ and independent. Finally,
+      \begin{gather*}
+        P(\tau_k > t)
+        = P(T_k -T_{k-1} > t) \\
+        = P(T_k > t - s | T_{k-1} = s)P(T_{k-1} = s) \\
+        = e^{-\lambda (t-s)}e^{-\lambda s} = e^{-\lambda t}
+      \end{gather*}
+    \item We know that $\tau_k$ is distributed exponentially with rate $\lambda$. So,
+      \begin{gather*}
+        \mathbb{E}[\tau_k] = \int_0^\infty t \lambda e^{- \lambda t} dt
+      \end{gather*}
+      Which is readily integrated by parts,
+      \begin{gather*}
+        = \left[ -t e^{- \lambda t} \right]_0^\infty + \int_0^\infty e^{-\lambda t}dt \\
+        = 0 - \left[ \frac{e^{- \lambda t}}{\lambda} \right]_0^\infty \\
+        = \frac{1}{\lambda}
+      \end{gather*}
+    \item First note that $T_k = \tau_k + T_{k-1} = \mathellipsis = \tau_k + \tau_{k+1} + \mathellipsis + \tau_1$. Thus $T_k$ is distributed as a sum of i.i.d. exponentials. We will show that this is a gamma distribution by using MGF's.
+      \begin{gather*}
+        \mathbb{E}[e^{t \tau_k}] = \mathbb{E}[e^{t (\sum T_n)}] \\
+        = \mathbb{E}[\prod e^{t T_n} ] \\
+        = \prod_{n=1}^k \mathbb{E}[e^{t T_n}] \\
+        = \mathbb{E}[e^{t T_1}]^k
+      \end{gather*}
+      Since the $T_k$'s are independent, we can break up the expectation by pieces. The last part is due to the fact that they are identically distributed. The inside term is the MGF of the exponential distribution.
+      \begin{gather*}
+        \mathbb{E}[e^{t T_1}] = \int_0^\infty e^{t x} \lambda e^{-\lambda x} dx \\
+        = \int_0^\infty \lambda e^{(t-\lambda) x} dx \\
+        = \frac{\lambda}{\lambda-t}
+      \end{gather*}
+      Where $t < \lambda$.
+      Thus, the MGF of the sum is $\left( \frac{\lambda}{\lambda-t} \right)^k$ which is precisly the MGF for the gamma distribution with rate $\lambda$ and shape $k$.
+
+      For the expectation of $T_k$, we use linearity of expectation to get
+      \begin{gather*}
+        \mathbb{E}[T_k] = \mathbb{E}[\sum_{n = 1}^k \tau_n] \\
+        = \sum_{n = 1}^k \mathbb{E}[\tau_n] = \frac{k}{\lambda}
+      \end{gather*}
+
+      Likewise, since they are independent, the variance of $T_k$ is the sum of all the variances of $\tau_n$'s. Since they are exponential, the variance of $\tau_k$ is $\frac{1}{\lambda^2}$. Thus,
+      \begin{gather*}
+        Var(T_k) = Var(\sum_{n = 1}^k \tau_n) = \sum_{n = 1}^k Var(\tau_n) \\
+        = \frac{k}{\lambda^2}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $(M_n)_{n \geq 1}$ be a process such that:
+  \begin{enumerate}[label=\roman*)]
+    \item $M_n$ is $\mathcal{F}_n$-martingale
+    \item $M_n$ is $\mathcal{F}_n$-predictable
+  \end{enumerate}
+  \begin{enumerate}[label=\alph*)]
+    \item Show that $M_n$ is constant, $M_n = M_0$ a.s.
+    \item What happens if i) is replaced by the condition ``$M_n$ is $\mathcal{F}_n$ submartingale''
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Since we have that $M_n$ is a martingale, we have
+      \begin{gather*}
+        \mathbb{E}[ X_{n+1} | \mathcal{F}_n ] = X_n
+      \end{gather*}
+      However, we also have that $M_n$ is predictable,
+      \begin{gather*}
+        \mathbb{E}[ X_{n+1} | \mathcal{F}_n ] = X_{n+1}
+      \end{gather*}
+      Thus, $X_{n+1} = X_n$. And in particular, $X_1 = X_0$. By induction, $X_n = X_0$ for all $n$.
+    \item If we replace the first condition with submartingale,
+      \begin{gather*}
+        \mathbb{E}[ X_{n+1} | \mathcal{F}_n ] \geq X_n
+      \end{gather*}
+      So, $X_{n+1} \geq X_n$. Thus, $X_n$ is non-decreasing.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X$ be an integrable random variable. Show that
+  \begin{gather*}
+    E[ \lvert X \rvert ] = \int_0^\infty P( \lvert X \rvert > y) dy
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+  Starting with the right hand side,
+  \begin{gather*}
+    \int_0^\infty P( \lvert X \rvert > y) dy \\
+    = \int_0^\infty \int_{-\infty}^\infty 1_{ \{ \lvert x \rvert > y \} } P(x) dx dy
+  \end{gather*}
+  Since $X$ is integrable, the above integral is finite and so we can exchange the itegrals due to Fubini's theorem,
+  \begin{align*}
+    &= \int_{-\infty}^\infty \int_0^\infty 1_{ \{ \lvert x \rvert > y \} } P(x) dy dx \\
+    &= \int_{-\infty}^\infty P(x) \int_0^\infty 1_{ \{ \lvert x \rvert > y \} } dy dx \\
+    &= \int_{-\infty}^\infty P(x) \int_0^{\lvert x \rvert } dy dx \\
+    &= \int_{-\infty}^\infty P(x) \lvert x \rvert dx \\
+    &= \mathbb{E}[ \lvert X \rvert ]
+  \end{align*}
+\end{answer}
+
+\end{document}

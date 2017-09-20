@@ -1,0 +1,408 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 524: Statistical Theory and Methods \\ Homework 4}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{21}{11}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $\phi$ denote the c.d.f. of $N(0,1)$, and let $z_\alpha \in \mathbb{R}$ denote the critical value satisfying $\phi(z_\alpha) = 1 - \alpha$. Consider the following regression with fixed design:
+  \begin{gather*}
+    y = X \beta + \eta
+  \end{gather*}
+  where $X \in \mathbb{R}^{n \times d}$ is a nonrandom matrix, $\beta \in \mathbb{R}^d$, and $\eta \sim N(0,I_n)$. Suppose that $X^T X$ has full rank, so that $\widehat{\beta} = (X^T X)^{-1} X^T y$ is well defined.
+  \begin{enumerate}[label=\arabic*)]
+    \item Derive an ellipsoidal $(1-\alpha)$-confidence set for $\beta \in \mathbb{R}^d$ in terms of $z_\alpha$. Remember that $\{ X: \lVert Ax \rVert \leq r \}$, $A \succeq 0$ is an ellipsoid.
+    \item Derive a hypercubic $(1-\alpha)$-confidence set for $\beta \in \mathbb{R}^d$, which is of the form $\{ \beta : \lVert \beta - c \rVert_\infty < r \}$. Assume now that $\eta \sim N(0, \sigma^2 I_n)$, where $\sigma^2 > 0$ is unknown.
+    \item Suppose now that the design matrix $X$ is also random. Are the confidence sets in 1) and 2) still of $1-\alpha$?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We first note that
+      \begin{gather*}
+        \widehat{\beta} \sim N(\beta, (X^T X)^{-1})
+      \end{gather*}
+      Which means that
+      \begin{gather*}
+        \widehat{\beta} - \beta \sim N(0, X^T X)^{-1}) \\
+        (X^T X)^{1/2} (\widehat{\beta} - \beta) \sim N(0, I_d) \\
+        (\widehat{\beta} - \beta)^T (X^T X) (\widehat{\beta} - \beta) \sim N(0, I)_d^2
+      \end{gather*}
+      Noting that $(\widehat{\beta} - \beta)^T (X^T X) (\widehat{\beta} - \beta) = \lVert (X^T X)^{1/2} (\widehat{\beta} - \beta) \rVert^2$. Hence, the confidence set becomes
+      \begin{gather*}
+        \{ \beta : \lVert (X^T X)^{1/2} (\widehat{\beta} - \beta) \rVert \leq z_{\alpha/2} \}
+      \end{gather*}
+    \item Now that $\sigma$ is unknown, we have
+      \begin{gather*}
+        \widehat{\beta} \sim N(\beta, (X^T X)^{-1} \sigma^2)
+      \end{gather*}
+      Thus, we have for all $j$
+      \begin{gather*}
+        \frac{\widehat{\beta}_j - \beta_j}{\widehat{\sigma} \sqrt{v_j}} \sim N(0, 1)
+      \end{gather*}
+      where $v_j$ is the $j^{th}$ entry on the diagonal of $(X^T X)^{-1}$.
+
+      Now, $\lVert \cdot \rVert_\infty < r$ implies we must have all entries less than $r$. Thus to ensure that all entries have a probability less than $r$, we must have each individual probability less than $r^{1/d}$. Thus the confidence set is
+      \begin{gather*}
+        \{ \beta : \lVert \widehat{\beta} - \beta \rVert_\infty < z_{\alpha/2}^{1/d} \cdot \widehat{\sigma} \cdot \sqrt{v} \}
+      \end{gather*}
+      Where all the inequality is element-wise.
+    \item Yes, the confidence set are still $1-\alpha$. Since we conditioned on $X$ in the previous parts, if we further condition that $X$ is random, by the tower property, it simply returns the equivalent probabilities.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+   Suppose that in 1), $\beta$ is $k$-sparse, i.e., having exactly $k$ nonzero coordinates $i_1,\mathellipsis,i_k$. We further assume that $X^T X = n I_d$. Design a procedure that identifies supp($\beta$) = $\{ i_1,\mathellipsis,i_k \}$. How large should $n$ be for the procedure to be successful with probability greater than $1-\alpha$? Try to find an $n$ as small as possible, and express that quantity in terms of $\kappa := \min_k \lvert \beta_{i_k} \rvert$.
+\end{exercise}
+
+\begin{answer}
+  The procedure we will use is to sort the $\beta_i$'s by absolute value and pick the $k$ largest. From question 1), we have
+  \begin{gather*}
+    \widehat{\beta} \sim N(\beta, (X^T X)^{-1}) = N(\beta, \frac{1}{n} I_d)
+  \end{gather*}
+  In particular,
+  \begin{gather*}
+    \widehat{\beta}_j \sim N(\beta_j, \frac{1}{n}) \\
+    \sqrt{n} (\widehat{\beta}_j - \beta_j) \sim N(0, 1)
+  \end{gather*}
+  Thus, we want all the $\beta_j = 0$ such that
+  \begin{gather*}
+    P( \lvert \beta_j \rvert < \lvert \beta_{i_k} \rvert) = 1 - \alpha
+  \end{gather*}
+  Which we know is the confidence set for the zero $\beta_j$'s are
+  \begin{gather*}
+    \widehat{\beta}_j \in 0 \pm z_{\alpha/2}/n \\
+  \end{gather*}
+  Thus we pick $z_{\alpha/2}/n < \kappa$ or pick n sufficiently large such that $z_{\alpha/2} < \kappa n$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Let $x \sim \text{Uniform}^n [0,  \theta]$. Find a $(1-\alpha)$-confidence set for $\theta$.
+    \item Suppose that each $P \in \mathcal{P}$ has median $m = m(P)$, $x \sim P^n$. What is the confidence coefficient of the intervals $[x_{(1)}, \infty)$, $(-\infty, x_{(n)}]$, and $[x_{(1)}, x_{(n)}]$?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Recall that $x_{(n)}$ has pdf
+      \begin{gather*}
+        P(x_{(n)} \leq x) = \left( \frac{x}{\theta} \right)^{n}
+      \end{gather*}
+      Then we note the following
+      \begin{gather*}
+        P(x_{(n)} \leq \theta) = 1 \\
+        P(x_{(n)} \geq \alpha^{1/n} \theta) = 1 - P(x_{(n)} \leq \alpha^{1/n} \theta) = 1 - \left( \frac{\alpha^{1/n} \theta}{\theta} \right)^{n} = 1 - \alpha
+      \end{gather*}
+      Thus, the $(1-\alpha)$-confidence interval is $\theta \in [x_{(n)}, x_{(n)}/\alpha^{1/n}]$
+    \item We define a new random variable $Y = $ \# of $X_{i} < m$. That is, the number of samples less than the median. $Y$ is distributed as Binom($n$, 1/2) because each $X_i$ has a 1/2 probability being below $m$ since it is the median. Also, each sample is independent, thus it becomes a sum of Bernoulli trials. Then,
+      \begin{gather*}
+        P(X_{(1)} < m < \infty) = \sum_{i = 1}^\infty P(Y=i) \\
+        = \sum_{i = 1}^n P(Y=i) = \sum_{i = 1}^n \binom{n}{i} \frac{1}{2^n} \\
+        = 1 - \binom{n}{0} \frac{1}{2^n} = 1 - \frac{1}{2^n}
+      \end{gather*}
+      Following the same logic,
+      \begin{gather*}
+        P(-\infty < m < X_{(n)}) = 1 - P(X_{(n)} \leq m) \\
+        = 1 - P(Y = n) = 1 - \binom{n}{n}\frac{1}{2^n} \\
+       = 1 - \frac{1}{2^n}
+      \end{gather*}
+      Finally,
+      \begin{gather*}
+        P(X_{(1)} < m < X_{(n)}) = P(1 < Y < n) \\
+        = \sum_{i = 1}^{n-1} \binom{n}{i} \frac{1}{2^n} \\
+       = 1 - \frac{1}{2^n} - \frac{1}{2^n} \\
+       = 1 - \frac{1}{2^{n-1}}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Suppose that we have observed $x := \{ x_i \} \sim N^n (\mu, \sigma^2)$, where $\sigma^2$ is known. Consider the hypothesis test: $H_0: \mu = \mu_0$, $H_1 : \mu \neq \mu_0$. We know that, $T(x) = 1$ (rejecting the null hypothesis) iff $\lvert \sqrt{n}(\bar{x} - \mu_0)/\sigma \rvert > z_{\alpha/2}$ has size $\alpha$. Let $\beta_T(\mu)$ be the power function. Derive $\beta_T(\mu)$ in terms of $\phi$, the standard normal cdf. Draw an outline of this function. How does $B_T(\mu)$ behave as $n \rightarrow \infty$?
+\end{exercise}
+
+\begin{answer}
+  Recall the definition of the power of a test,
+  \begin{gather*}
+    P(T(x) = 1 | \mu \neq \mu_0) \\
+    P(\lvert \sqrt{n}(\bar{x} - \mu_0)/\sigma \rvert > z_{\alpha/2} | \mu \neq \mu_0) \\
+    = 1 - P( -z_{\alpha/2} < \sqrt{n}(\bar{x} - \mu_0 + \mu - \mu)/\sigma < z_{\alpha/2} | \mu \neq \mu_0) \\
+    = 1 - P( -z_{\alpha/2} + (\mu_0-\mu) \sqrt{n}/\sigma < \sqrt{n}(\bar{x} - \mu)/\sigma  < z_{\alpha/2} + (\mu_0-\mu) \sqrt{n}/\sigma | \mu \neq \mu_0)
+  \end{gather*}
+  But since $\mu \neq \mu_0$, then $\sqrt{n}(\bar{x} - \mu)/\sigma \sim N(0,1)$. Thus,
+  \begin{gather*}
+    = 1 - \phi(z_{\alpha/2} + (\mu_0-\mu) \sqrt{n}/\sigma) + \phi(-z_{\alpha/2} + (\mu_0-\mu) \sqrt{n}/\sigma)
+  \end{gather*}
+  As $n \rightarrow \infty$, both cdf's will tend to 1 and thus the power will tend to 1 as well. Also note that at as $\mu \rightarrow \mu_0$, we get that the power tends to $\alpha$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $x = \{ x_i \} \sim \text{Bern}^n(p)$, where $0 < p < 1$. Consider the following hypothesis testing problem: $H_0 : p \geq p_0$, versus $H_1 : p < p_0$.
+  \begin{enumerate}[label=\arabic*)]
+    \item Construct an $\alpha$-level test $T_\alpha$ depending on $\bar{x}$.
+    \item Derive another $\alpha$-level test using the $p$-value for $\{ T_\alpha \}$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \item We shall use Hoeffding's inequality which states for bounded random variables,
+    \begin{gather*}
+      P( \lvert \bar{x} - p \rvert \geq t) \leq 2 e^{-2 n t^2}
+    \end{gather*}
+    Thus pick $t = \sqrt{-\frac{1}{2n} \log (\alpha/2)}$
+    \begin{gather*}
+      P( \lvert \bar{x} - p \rvert \geq t) \leq \alpha \\
+      P( \lvert \bar{x} - p \rvert \leq t) \geq 1 - \alpha
+    \end{gather*}
+    This is a two-tailed test, but we only need one.
+
+    Thus construct the test
+    \begin{gather*}
+      T_\alpha = 1_{ \{ \bar{x} > p_0 + \sqrt{-\frac{1}{2n} \log (\alpha)} \} }
+    \end{gather*}
+    Which has level $\alpha$.
+  \item We just use the definition of the $p$-value.
+    \begin{gather*}
+      \inf_\alpha P(x > t_\alpha) \leq \alpha
+    \end{gather*}
+    And define the test
+    \begin{gather*}
+      T_\alpha = 1_{ \{ x > t_\alpha \} }
+    \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Suppose that $T_{\theta_0}$ is an $\alpha$-size for any $H_0 : \theta = \theta_0$ versus $H_1 : \theta \in \Theta_1$ where $\theta_0 \notin \Theta_1$. Let
+      \begin{gather*}
+        S(x) = \{ \theta : T_\theta(x) = 0, \text{i.e. } x \in \mathcal{A}(T_\theta) \}
+      \end{gather*}
+      Is it true that the confidence coefficient for $S$ is $1-\alpha$? Argue for your answer.
+    \item Let $x \sim N^n(\mu, \sigma^2)$, where $\mu$ and $\sigma^2$ are unknown. Obtain a $(1-\alpha)$ confidence set by inverting some $T$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We have since $x \in \mathcal{A}(T_\theta) \implies \theta \in S(X)$,
+      \begin{gather*}
+        P(\theta \in S(X)) \geq P(x \in \mathcal{A}(T_\theta)) = 1 - P(x \in \mathcal{R}(T_\theta)) = 1 - \alpha
+      \end{gather*}
+      Since $T_{\theta_0}$ is an $\alpha$-size means $P(x \in \mathcal{R}(T_\theta)) = \alpha$. Thus,
+      \begin{gather*}
+        P(\theta \in S(X)) \geq 1 - \alpha
+      \end{gather*}
+      And so $S(X)$ is a $(1-\alpha)$confidence set.
+    \item Define the test
+      \begin{gather*}
+        H_0 : \mu = \mu_0, H_1 : \mu \neq \mu_0
+      \end{gather*}
+      Since we have $\sigma^2$ unknown, we have
+      \begin{gather*}
+        \frac{\bar{x} - \mu}{S_{n-1}/\sqrt{n}} \sim \text{t-distribution}(n-1)
+      \end{gather*}
+      Thus, the test becomes,
+      \begin{gather*}
+        T = 1_{ \{ \lvert \bar{x} - \mu \rvert \geq t_{\alpha/2} S_{n-1}/\sqrt{n} \} }
+      \end{gather*}
+      Which has probability of rejection of $\alpha$. So,
+      \begin{gather*}
+        P(\mathcal{A}(T)) = 1 - \alpha = P(\lvert \bar{x} - \mu \rvert \leq t_{\alpha/2} S_{n-1}/\sqrt{n})
+      \end{gather*}
+      Thus the confidence set is
+      \begin{gather*}
+        \mu \in \bar{x} \pm t_{\alpha/2} S_{n-1}/\sqrt{n}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider a hypothesis test $H_0 : \theta = \theta_0$ versus $H_1 : \theta < \theta_0$ for $X \sim P_\theta \in \mathcal{P}$. Let
+  \begin{gather*}
+    T(x) = 1_{\{ \tau(x) \leq \tau_0 \}}
+  \end{gather*}
+  be a test function with size $\alpha$, where $\tau$ is sufficient and $\tau_0 \in \mathbb{R}$. Suppose $X$ and $\tau$ have densities $f_X^\theta$ and $f_\tau^\theta$ with respect to some measure $\sigma$ for all $\theta$.
+  \begin{enumerate}[label=\arabic*)]
+    \item Consider a new hypothesis test $H_0' : \theta = \theta_0$ versus $H_1' : \theta = \theta_1$. Give a simple argument why an $\alpha$-size test
+      \begin{gather*}
+        T(x) = 1_{\{ f_\tau^{\theta_0} (\tau(x)) \leq C \cdot f_\tau^{\theta_1} (\tau(x)) \}}
+      \end{gather*}
+      is UMP, where $C$ is a constant.
+    \item Assume $X$ and $\tau$ are continuous random variables. Derive and argue sufficient conditions on $f_\tau^\theta / f_\tau^{\theta'}$ to ensure the test function $T$ defined in above is UMP.
+    \item Give a concrete example where your conditions hold.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Let $T''$, $P_{\theta_0}(R(T'')) \leq \alpha = P_{\theta_0}(R(T'))$. Which implies,
+      \begin{gather*}
+        P_{\theta_0}(R(T'') \backslash R(T')) \leq P_{\theta_0}(R(T') \backslash R(T'))
+      \end{gather*}
+      Now we show $P_{\theta_1}(R(T') \backslash R(T')) \leq P_{\theta_1}(R(T') \backslash R(T''))$
+      \begin{gather*}
+        P_{\theta_1}(R(T') \backslash R(T')) \leq \frac{1}{c} P_{\theta_0}(R(T') \backslash R(T')) \\
+        \leq \frac{1}{c} P_{\theta_0}(R(T') \backslash R(T')) \leq \frac{c}{c} P_{\theta_1}(R(T') \backslash R(T''))
+      \end{gather*}
+      Thus,
+      \begin{gather*}
+        P_{\theta_1}(R(T'') \backslash R(T')) + P(R(T') \cap R(T'')) \\
+        \leq P_{\theta_1}(R(T') \backslash R(T'')) + P(R(T') \cap R(T'')) \\
+        \implies P_{\theta_1}(R(T'')) \leq P_{\theta_1}(R(T'))
+      \end{gather*}
+      Thus, $T'$ is UMP.
+    \item This is a version of Karl-Rubin and so we require for $\theta > \theta'$, $\phi_{\theta, \theta'} = \frac{f_\theta(x)}{f_{\theta'}(x)}$ is increasing on $\mathbb{R}$.
+    \item A concrete example is $x = \{ x_i \} \sim N^n(\mu, \sigma^2)$, known $\sigma^2$, $\bar{x} \sim N(\mu, \sigma^2/n)$. Here, $H_0 : \mu \leq \mu_0$, $H_1 : \mu > \mu_0$. If $\mu > \mu'$, then dividing the Gaussians will yield a function that is increasing.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Let $\{ x_i \} \sim N^n(\mu_1, 1)$, and $\{ y_i \} \sim N^n(\mu_2, 1)$. Suppose that $\{ x_i \}$ and $\{ y_i \}$ are independent. Derive a $\alpha$-size test for $H_0 : \mu_1 = \mu_2$ versus $H_1 : \mu_1 \neq \mu_2$.
+    \item Let $\{ x_i \} \sim N(\mu,1)$, and consider the testing problem $H_0 : \mu = \mu_0$ versus $H_1 : \mu \neq \mu_0$. Consider $\alpha$-size tests of the form $T_> (x) = 1_{\{ \bar{x} \geq t \}}$, $T_>(x) = 1_{\{ \bar{x} \leq t \}}$, and $T(x) = 1_{\{ \lvert \bar{x} - \mu_0 \rvert \geq t \}}$, each with an appropriate value of $t$. Discuss their relative power and order them by power (over regions of the real line).
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item First note that we can rewrite the test as $H_0 : \mu_1 - \mu_2 = 0$ versus $H_1 : \mu_1 - \mu_2 \neq 0$. Thus defining $z_i = x_i - y_i \sim N^n(\mu_1 - \mu_2, 1)$. We obtain that this test is the typical test for Gaussians. Thus, the $\alpha$-size test is
+      \begin{gather*}
+        T_\alpha(z) = 1_{\{ \lvert \sqrt{n}(\bar{x} - (\mu_1 - \mu_2)) \rvert > z_\alpha \}}
+      \end{gather*}
+    \item Computing the power of $T_>$
+      \begin{gather*}
+        P(T_>(x) = 1 | \mu \neq \mu_0) \\
+        = P( \sqrt{n}(\bar{x} - \mu_0) > z_{\alpha} | \mu \neq \mu_0) \\
+        = 1 - P(\sqrt{n}(\bar{x} - \mu_0 + \mu - \mu) < z_{\alpha} | \mu \neq \mu_0) \\
+        = 1 - P(\sqrt{n}(\bar{x} - \mu)  < z_{\alpha} + (\mu_0-\mu) \sqrt{n} | \mu \neq \mu_0) \\
+        = 1 - \phi(z_{\alpha} + (\mu_0-\mu) \sqrt{n})
+      \end{gather*}
+      Likewise for $T_<$
+      \begin{gather*}
+        P(T_<(x) = 1 | \mu \neq \mu_0) \\
+        = P( \sqrt{n}(\bar{x} - \mu_0) < -z_{\alpha} | \mu \neq \mu_0) \\
+        = P(\sqrt{n}(\bar{x} - \mu_0 + \mu - \mu) < -z_{\alpha} | \mu \neq \mu_0) \\
+        = P(\sqrt{n}(\bar{x} - \mu)  < -z_{\alpha} + (\mu_0-\mu) \sqrt{n} | \mu \neq \mu_0) \\
+        = \phi(-z_{\alpha} + (\mu_0-\mu) \sqrt{n})
+      \end{gather*}
+      Then using our result from question 4)
+      \begin{gather*}
+        P(T(x) = 1 | \mu \neq \mu_0) \\
+        = 1 - \phi(z_{\alpha/2} + (\mu_0-\mu) \sqrt{n}) + \phi(-z_{\alpha/2} + (\mu_0-\mu) \sqrt{n})
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $Y$ be a continuous r.v. with density $f$, and $E[Y] = \mu_Y$, $var(Y) - \sigma^2_Y$. A location-scale family based on $f$ is
+  \begin{gather*}
+    \mathcal{P} = \{ P_{\mu, \sigma} \text{ with density } f_{\mu, \sigma}(x) = \frac{1}{\sigma} f \left( \frac{x-\mu}{\sigma} \right), \sigma > 0, \mu \in \mathbb{R} \}
+  \end{gather*}
+  \begin{enumerate}[label=\arabic*)]
+    \item Let $x \sim P_{\mu, \sigma}$. Derive $E[X]$ and $var(X)$ in terms of $\mu_y$ and $\sigma_Y^2$.
+    \item Let $\{ x_i \} \sim P_{\mu, \sigma}^n$, where $\sigma$ is known. Argue for a pivotal quantity $Z$ based on $\bar{x}$. Note that $f$ is known.
+    \item Suppose $n=2$. Derive the density $f_Z$ of $Z$ based on $f$. Derive a $(1-\alpha)$ confidence interval based on critical values of $f_Z$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item From the formula of transformation of random variables, it is evident that
+      \begin{gather*}
+        X = \sigma Y + \mu
+      \end{gather*}
+      Thus, by linearity of expectation
+      \begin{gather*}
+        E[X] = \sigma \mu_Y + \mu
+      \end{gather*}
+      As well,
+      \begin{gather*}
+        Var(X) = Var(\sigma Y + \mu) = \sigma^2 Var(Y) = \sigma^2 \sigma_Y^2
+      \end{gather*}
+    \item We define $Z = \frac{X - \mu}{\sigma}$ which means, that $Z \sim Y$ thus $Z$ has density $f$. Thus, $\bar{Z} = \frac{\bar{x} - \mu}{\sigma}$ is also a pivot variable since it is a sum of pivots.
+    \item We have that the confidence interval becomes
+      \begin{gather*}
+        \{ \mu : \bar{x} - z_{\alpha/2}\sigma < \mu < \bar{x} + z_{\alpha/2} \sigma \}
+      \end{gather*}
+      where $z_\alpha$ are the critical values for the pivot variable.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider testing $H_0 : \theta = \theta_0$ versus $H_1 : \theta > \theta_0$, where, for $ 0 < p < 1$, $X \sim pN_1(0,\sigma_1^2) + (1-p)N_2(\theta, \sigma_2^2)$. Assume we always know whether $X$ is generated from $N_1$ or $N_2$. Let $l = 1$ or 2 denote which normal distribution $x$ comes from. We also know $\sigma_1$ and $\sigma_2$. Suppose $\alpha > p$. Consider the following two tests:
+  \begin{itemize}
+      \item $T(x) = 1_{\{ x > \theta_0 + z_\alpha \sigma_l \}}$, and
+      \item $T'(x) = 1_{\{ x > \theta_0 + z_{(\alpha-p)/(1-p)} \sigma_2, \text{ or } l = 1 \}}$
+  \end{itemize}
+  where $z_\alpha$ is the $(1-\alpha)$ quantile of a normal distribution. Show that these twi tests are of size $\alpha$.
+\end{exercise}
+
+\begin{answer}
+  We first show that $T(x)$ is of size $\alpha$.
+  \begin{gather*}
+    P(T(x) = 1) = P(x > \theta_0 + z_\alpha \sigma_l) \\
+    = P(x > \theta_0 + z_\alpha \sigma_1)P(l = 1) + P(x > \theta_0 + z_\alpha \sigma_2)P(l = 2) \\
+    = \alpha p + \alpha (1-p) = \alpha
+  \end{gather*}
+  Now for $T'(x)$,
+  \begin{gather*}
+    P(T'(x) = 1) = P(\{ x > \theta_0 + z_{(\alpha-p)/(1-p)} \sigma_2, \text{ or } l = 1 \}) \\
+    = P(\{ x > \theta_0 + z_{(\alpha-p)/(1-p)} \sigma_2, \text{ or } l = 1 \})P(l = 1) \\
+    \quad + P(\{ x > \theta_0 + z_{(\alpha-p)/(1-p)} \sigma_2, \text{ or } l = 1 \})P(l = 2) \\
+    = 1 \cdot p + (\alpha-p)/(1-p) (1-p) = p + \alpha - p = \alpha
+  \end{gather*}
+\end{answer}
+
+\end{document}

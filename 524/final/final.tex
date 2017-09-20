@@ -1,0 +1,580 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 524: Statistical Theory and Methods \\ Final Homework}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{12}{01}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Consider the nonparametric regression model $Y = f(X) + \nu$, $X \in \mathcal{X} \subseteq \mathbb{R}^2$, $Y \in \mathbb{R}$, where the noise $\nu$ is independent of $X$ and satisfies $\mathbb{E}[\nu] = 0$. We assume that $f: \mathcal{X} \rightarrow \mathbb{R}$ belongs to a function class $\mathcal{F} \doteq$ span$\{f_k : \mathcal{X} \rightarrow \mathbb{R}\}_{k=1}^\infty$, i.e., every $g \in \mathcal{F}$ is obtained as $g = \sum_{k=1}^\infty \alpha_k f_k$.
+
+  Let $\{(X_i, Y_i)\}_{i=1}^n$ be $n$ i.i.d. observations of the nonparametrix regression model; our goal is to estimate the function $f$, in other words, the unknown coefficients $\alpha_k$. The point of this problem is to compare two different estimators defied as follows: for a fixed integer $N \geq 1$, let
+
+  \begin{center}
+    $\widehat{f}_N = \sum_{k=1}^N \widehat{\alpha}_k f_k$, and $\tilde{f}_N = \sum_{k=1}^N \tilde{\alpha}_k f_k$,
+  \end{center}
+
+  where $\widehat{\alpha}_k = n^{-1} \sum_{i=1}^n Y_i f_k(X_i)$ and $\{\tilde{\alpha}_k\}_{k=1}^N$ is the least-squares estimator (LSE) defined by
+
+  \begin{equation}
+    \{\tilde{\alpha}_k\}_{k=1}^N \in \arg\min_{\alpha_1, \mathellipsis, \alpha_N} \frac{1}{2n} \sum_{i=1}^n \left[Y_i - \sum_{k=1}^N \alpha_k f_k(X_i) \right]^2
+  \end{equation}
+
+  Let $\widehat{\alpha} = (\widehat{\alpha}_1, \mathellipsis, \widehat{\alpha}_N)^T$ and $\tilde{\alpha} = (\tilde{\alpha}_1, \mathellipsis, \tilde{\alpha}_N)^T$.
+
+  \begin{enumerate}[label=\arabic*)]
+    \item Give a sufficient condition so that the minimization in equation (1) has a unique solution $\tilde{\alpha}$.
+    \item Under the condition of question (1), express $\tilde{\alpha}$ in terms of $\widehat{\alpha}$.
+    \item Suppose $\{f_k\}_{k=1}^\infty$ is an orthonormal system with respect to the distribution of $X$, i.e.,
+      \begin{center}
+        $\langle f_j, f_k \rangle \doteq \mathbb{E}[ f_j(X)f_k(X)] = 0$ for $j \neq k$, $\lVert f_j \rVert^2 \doteq \langle f_j, f_j \rangle = \mathbb{E}[f_j^2(X)] = 1$
+      \end{center}
+      Show that for fixed $N$ and $x \in \mathbb{R}^d$, $\lvert \widehat{f}_N(x) - \tilde{f}_N(x) \rvert \xrightarrow{p} 0$ as $n \rightarrow \infty$.
+    \item If in addition $\mathcal{X}$ is compact, argue that for fixed $N$, $\sup_{x \in \mathcal{X}} \lvert \widehat{f}_N(x) - \tilde{f}_N(x) \rvert \xrightarrow{a.s.} 0$ as $n \rightarrow \infty$.
+
+      \textbf{Remark:} \textit{You would need to show, for the last two questions, that the condition (1) holds in probability, respectively a.s., as $n \rightarrow \infty$}.
+    \item Now suppose that $f \in $ span$\{f_k\}_{k=1}^N$, i.e., $f$ has a finite expansion up to $N$. Show that $\widehat{f}_N$, $\tilde{f}_N$ are both unbiased for $f$, i.e., for any $x \in \mathcal{X}$, $f(x) = \mathbb{E}[\widehat{f}_N(x)] = \mathbb{E}[\tilde{f}_N(x)]$.
+
+      \textbf{Remark:} \textit{For $\widehat{f}_N$}, you can directly use the results of a previous homework.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item First, let us write the least-squares estimator in matrix form
+      \begin{gather*}
+        \tilde{\alpha} = \arg\min_\alpha \frac{1}{2n} \lVert Y - f(X) \alpha \rVert
+      \end{gather*}
+      Where $\tilde{\alpha}$ is $N \times 1$, $Y$ is $n \times 1$, $f(X)$ is $n \times N$ and $f(X)_{ij} = f_j(X_i)$, and $\alpha$ is $N \times 1$. Now, this is the standard LSE problem which has the result that
+      \begin{gather*}
+        \tilde{\alpha} = (f(X)^T f(X))^{-1} f(X)^T Y
+      \end{gather*}
+      This yields a unique solution when $f(X)^T f(X)$ is invertible, i.e., full rank.
+
+    \item Again, we write $\widehat{\alpha}$ in matrix form for simplicity
+      \begin{gather*}
+        \widehat{\alpha} = \frac{1}{n} f(X)^T Y
+      \end{gather*}
+      Now it is easy to see that
+      \begin{gather*}
+        \tilde{\alpha} = n(f(X)^T f(X))^{-1} \widehat{\alpha}
+      \end{gather*}
+
+    \item We need to show that condition 1) holds in probability. The general goal is to pick enough samples to guarantee that $f(X)^T f(X)$ is invertible. First, let's assume that the $f_k$'s are not equal almost everywhere. That is, there is some measurable set that is different between them. Then, there is some non zero probability, say $p$, that $X_i$ is picked in this region. Thus, every sample taken is a Bernoulli trial whether or not the $f_k$'s are equal. The question can then be phrased, do these Bernoulli trials hit success $N$ times? The answer is of course yes and is due to the law of large number that the sample average will converge to $p$. Thus, if we need $N$ successes, we will need on the order of $N/p$ of samples. For a large number of functions, one needs to pick the smallest overlap among all pairwise combinations but the same reasoning holds since $N$ is finite. Therefore, the first condition holds almost surely and hence in probability.
+
+      We now write out the problem
+      \begin{gather*}
+        \lvert \widehat{f}_N(x) - \tilde{f}_N(x) \rvert = \lvert f(x)^T \widehat{\alpha} - f(x)^T \tilde{\alpha} \rvert
+      \end{gather*}
+      However, we just showed that $\tilde{\alpha} \xrightarrow{p} n(f(X)^T f(X))^{-1} \widehat{\alpha}$. So
+      \begin{gather*}
+        \lvert f(x)^T \widehat{\alpha} - f(x)^T \tilde{\alpha} \rvert \xrightarrow{p} \lvert f(x)^T \widehat{\alpha} - f(x)^T n(f(X)^T f(X))^{-1} \widehat{\alpha} \rvert
+      \end{gather*}
+      By the law of large numbers $n(f(X)^T f(X))^{-1} \xrightarrow{p} \mathbb{E}[f(X)^T f(X))]^{-1}$. By the orthogonality assumption, $\mathbb{E}[f(X)^T f(X))]^{-1} = I$. This yields
+      \begin{gather*}
+        \lvert f(x)^T \widehat{\alpha} - f(x)^T n(f(X)^T f(X))^{-1} \widehat{\alpha} \rvert \xrightarrow{p} \lvert f(x)^T \widehat{\alpha} - f(x)^T \widehat{\alpha} \rvert = 0
+      \end{gather*}
+
+    \item By invoking the law of large numbers in the previous question, almost sure convergence is also achieved for condition 1). The same proof then follows but the supremum may be taken since it is on a compact set and thus a supremum will be achieved.
+
+    \item We showed that $\widehat{f}_N$ is unbiased in Homework 6. Then, we know that $\tilde{f}_N$ is the solution to the LSE which we know is unbiased since there is only a finite number of terms.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider a function $f: \mathbb{R} \rightarrow \mathbb{R}$, twice continuously differentiable on $[-1,1]$. Let's elucidate properties of $f$ on the compact set $[-1,1]$.
+
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that $f$ is $(\lambda, 2)$-Holder, for some $\lambda$, i.e.,
+      \begin{center}
+        $\exists \lambda > 0$ such that $\forall x, x' \in [-1,1]$, $\lvert f'(x) - f'(x') \rvert \leq \lambda \lvert x - x' \rvert$ (Condition (1))
+      \end{center}
+    \item For any $x_0 \in [-1,1]$, let $f_{x_0}(x) = f(x_0) + f'(x_0)(x-x_0)$ be the Taylor expansion of $f$ at $x_0$. Show that $f$ satisfies
+      \begin{center}
+        $\exists \lambda > 0$ such that $\forall x, x' \in [-1,1]$, $\lvert f_x(x') - f(x') \rvert \leq \lambda \lvert x - x' \rvert^2$ (Condition (2))
+      \end{center}
+    \item Let $\mathcal{F}_1$ and $\mathcal{F}_2$ be the classes of functions $\mathbb{R} \rightarrow \mathbb{R}$ satisfying conditions (1) and (2) respectively. Consider a regression setting on variables $(X,Y)$, where $X \sim$ Uniform $[-1,1]$, $f(x) = \mathbb{E}[Y | X = x]$ is in $\mathcal{F}_1$, or alternatively is in $\mathcal{F}_2$. How do the minimax rates for these two classes $(\mathcal{F}_1, \mathcal{F}_2)$ compare and why? (One should be of equal or larger order).
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item The result follows from the fact that $f$ is twice continuously differentiable. Because the second derivative is continuous on a compact set, it is bounded. That is, $f''(x) \leq \lambda$. By the mean value theorem, for all $x,x' \in [-1,1]$ there exists some $c$ such that
+      \begin{center}
+        $\lvert f'(x) - f'(x') \rvert \leq \lvert f''(c) \rvert \lvert x - x' \rvert \leq \lambda \lvert x - x' \rvert$
+      \end{center}
+
+    \item We first note that $f_x(x') - f(x')$ is simply the remainder term of the Taylor expansion. So
+      \begin{gather*}
+        \lvert f_x(x') - f(x') \rvert = \lvert R_1(x') \rvert
+      \end{gather*}
+      This is upper bounded by
+      \begin{gather*}
+         \lvert R_1(x') \rvert \leq \frac{\lvert f''(c) \rvert}{2!} \lvert x' - x \rvert^2 = \lambda \lvert x' - x \rvert^2
+      \end{gather*}
+      Which is exactly the result we desired.
+
+    \item We note that the second class has the following peculiarity.
+      \begin{gather*}
+        \lvert f_x(x') - f(x') \rvert \leq \lambda \lvert x' - x \rvert^2 \\
+        \Leftrightarrow \frac{\lvert f_x(x') - f(x') \rvert}{\lvert x' - x \rvert} \leq \lambda \lvert x' - x \rvert
+      \end{gather*}
+      Taking the limit as $x' \rightarrow x$ produces the definition of the derivative on the left hand side. Thus
+      \begin{gather*}
+        f'(x) = \lim_{x' \rightarrow x} \lambda \lvert x' - x \rvert = 0
+      \end{gather*}
+      So, $\mathcal{F}_2$ is the family of constants. Obviously, constants satisfy condition 1). Thus, $\mathcal{F}_1$ is a much ``richer'' family than $\mathcal{F}_2$. This also means that the minimax rate for $\mathcal{F}_1$ is much slower than $\mathcal{F}_2$. That is, the rate is of equal or larger order than $\mathcal{F}_2$ since it takes longer to get to 0.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider a nonparametric classification problem over jointly distributed $(X,Y)$, where $X$ is in some space $\mathcal{X}$, and $Y \in \{-1, 1\}$. We consider the following plug-in classifier:
+
+  Define the regression function $f(x) = \mathbb{E}[Y | X = x]$, and let $\widehat{f} : \mathcal{X} \rightarrow \mathbb{R}$ be an estimator of $f$ based on i.i.d. observations $\{(X_i, Y_i)\}_{i=1}^n$ of $(X,Y)$. The classifier at $x_0 \in \mathcal{X}$ is then obtained as $\widehat{g}(x_0) =$ sign$(\widehat{f}(x_0))$. We define the $\ell_2$-regression error and the 0-1 classification error at a fixed $x_0$ as:
+  \begin{gather*}
+    \ell_2[\widehat{f}(x_0)] := \mathbb{E}_{Y|X=x_0}[(\widehat{f}(x_0) - Y)^2] \\
+    \ell_{0,1}[\widehat{g}(x_0)] := \mathbb{E}_{Y|X=x_0}[ 1\{ \widehat{g}(x_0) \neq Y \} ]
+  \end{gather*}
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that the best possible classifier at $x_0$ is $g(x_0) =$ sign$(\widehat{f}(x_0))$, i.e., $g(x_0)$ minimizes $\ell_{0,1}(y)$ over any value $y \in \{ -1, 1 \}$.
+    \item Show that $\lvert \widehat{f}(x_0) - f(x_0) \rvert = \sqrt{\ell_2[\widehat{f}(x_0)] - \ell_2[f(x_0)]}$.
+    \item Show that the ``excess'' classification error can be bounded as:
+      \begin{gather*}
+        \ell_{0,1}[\widehat{g}(x_0)] - \ell_{0,1}[g(x_0)] \leq \lvert \widehat{f}(x_0) - f(x_0) \rvert
+      \end{gather*}
+    \item Now we consider the general case where $Y \in \{a, b\}$ with $a < b$. Similarly, let $f(x) = \mathbb{E}[Y | X = x]$, and let $\widehat{f}: \mathcal{X} \rightarrow \mathbb{R}$ be an estimator. The best possible classifier at $x_0 \in \mathcal{X}$ is given as
+      \begin{gather*}
+        g(x_0) = \begin{cases}
+            a & \text{if } f(x_0) \leq (a+b)/2 \\
+            b & \text{if } f(x_0) > (a+b)/2
+        \end{cases}, \\
+        \text{ and an estimate is } \widehat{g}(x_0) = \begin{cases}
+            a & \text{if } \widehat{f}(x_0) \leq (a+b)/2 \\
+            b & \text{if } \widehat{f}(x_0) > (a+b)/2
+        \end{cases}
+      \end{gather*}
+      Show that the excess classification error is now bounded as:
+      \begin{gather*}
+        \ell_{0,1}[\widehat{g}(x_0)] - \ell_{0,1}[g(x_0)] \leq \frac{2}{b-a} \cdot \lvert \widehat{f}(x_0) - f(x_0) \rvert
+      \end{gather*}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We write the $\ell_{0,1}$ loss in integral form
+      \begin{align*}
+        \ell_{0,1}[\widehat{g}(x_0)] &= \mathbb{E}_{Y|X=x_0}[ 1\{ \widehat{g}(x_0) \neq Y \} ] \\
+        &= \int_{\{-1,1\}} 1\{ \widehat{g}(x_0) \neq Y | x_0 \} dP(y | x_0) \\
+        &=1_{\{ \widehat{g}(x_0) = 1 \}}p(y = -1 | x_0) + 1_{\{ \widehat{g}(x_0) = -1 \}}p(y = 1 | x_0)
+      \end{align*}
+      We wish to minimize this expression. Thus, we set $\widehat{g}(x_0)$ to be the indicator of the smaller conditional probability. Or
+      \begin{gather*}
+        \arg\min_{\widehat{g}(x_0)} \ell_{0,1}[\widehat{g}(x_0)] = g(x_0) = \begin{cases}
+            1 & \text{if } p(y = -1 | x_0) \leq p(y = 1 | x_0) \\
+            -1 & \text{if } p(y = -1 | x_0) > p(y = 1 | x_0)
+        \end{cases}
+      \end{gather*}
+      Which is precisly sign$(f(x_0))$. Since
+      \begin{align*}
+         f(x_0) &= \mathbb{E}[Y | X = x_0] = \int_{\{-1,1\}} y dP(y | x_0)\\
+         &= p(y = 1 | x_0) - p(y = -1 | x_0)
+      \end{align*}
+      Thus, sign$(f(x_0))$ is precisely $g(x_0)$.
+
+    \item We start with the right hand side
+      \begin{align*}
+        &  \sqrt{\ell_2[\widehat{f}(x_0)] - \ell_2[f(x_0)]} \\
+        &= \sqrt{\mathbb{E}_{Y|X=x_0}[(\widehat{f}(x_0) - Y)^2] - \mathbb{E}_{Y|X=x_0}[(f(x_0) - Y)^2]} \\
+        &= \sqrt{\mathbb{E}_{Y|X=x_0}[\widehat{f}(x_0)^2 -2 \widehat{f}(x_0) Y  + Y^2] - \mathbb{E}_{Y|X=x_0}[f(x_0)^2 -2 f(x_0) Y  + Y^2]} \\
+        &= \sqrt{\widehat{f}(x_0)^2 -2 \widehat{f}(x_0) f(x_0)  + 1 - f(x_0)^2 + 2 f(x_0)^2  - 1}
+      \end{align*}
+      Where in the last step we used linearity of conditional expectation and that $f(x_0)$ and $\widehat{f}(x_0)$ is measurable w.r.t. $x_0$. Also, we used the facts that $f(x_0) = \mathbb{E}[Y | X = x_0]$ and finally that $\mathbb{E}[Y^2 | X = x_0] = 1$. Now simplifying
+      \begin{align*}
+        &= \sqrt{\widehat{f}(x_0)^2 -2 \widehat{f}(x_0) f(x_0)  + f(x_0)^2} \\
+        &= \sqrt{(\widehat{f}(x_0) - f(x_0))^2} \\
+        &= \lvert \widehat{f}(x_0) - f(x_0) \rvert
+      \end{align*}
+
+    \item Start by writing the definition of $\ell_{0,1}$ as done in part 1)
+      \begin{align*}
+        & \ell_{0,1}[\widehat{g}(x_0)] - \ell_{0,1}[g(x_0)] \\
+        &= 1_{\{ \widehat{g}(x_0)= 1 \}}p(y = -1 | x_0) + 1_{\{ \widehat{g}(x_0)= -1 \}}p(y = 1 | x_0) \\
+        &\quad - 1_{\{ g(x_0)= 1 \}}p(y = -1 | x_0) - 1_{\{ g(x_0)= -1 \}}p(y = 1 | x_0) \\
+        &= (1_{\{ \widehat{g}(x_0)= 1 \}} - 1_{\{ g(x_0)= 1 \}})p(y = -1 | x_0) \\
+        &\quad + (1_{\{ \widehat{g}(x_0)= -1 \}} - 1_{\{ g(x_0)= -1 \}})p(y = 1 | x_0) \tag{$\star$}
+      \end{align*}
+      Now consider the following two cases. If $\widehat{g}(x_0) = g(x_0)$, then the above is 0 and the inequality is trivially satisfied. Now consider the case when $\widehat{g}(x_0) \neq g(x_0)$. Then we have
+      \begin{gather*}
+          \widehat{g}(x_0) = 1 \implies (\star) = p(y = -1 | x_0) - p(y = 1 | x_0) = -f(x_0) \\
+          \widehat{g}(x_0) = -1 \implies (\star) = - p(y = -1 | x_0) + p(y = 1 | x_0) = f(x_0)
+      \end{gather*}
+      In both case, we have the following inequalities since $\widehat{f}(x_0) \geq 0$ when $\widehat{g}(x_0) = 1$ and $-\widehat{f}(x_0) \geq 0$ when $\widehat{g}(x_0) = -1$.
+      \begin{gather*}
+          \widehat{g}(x_0) = 1 \implies (\star) = p(y = -1 | x_0) - p(y = 1 | x_0) \leq \widehat{f}(x_0) - f(x_0) \\
+          \widehat{g}(x_0) = -1 \implies (\star) = - p(y = -1 | x_0) + p(y = 1 | x_0) \leq f(x_0) - \widehat{f}(x_0)
+      \end{gather*}
+      Combining these inequalities yield the result $\ell_{0,1}[\widehat{g}(x_0)] - \ell_{0,1}[g(x_0)] \leq \lvert \widehat{f}(x_0) - f(x_0) \rvert$.
+
+    \item The proof is similar to part 3). First we note that
+      \begin{gather*}
+        f(x_0) = a p(y = a | x_0) + b p(y = b | x_0).
+      \end{gather*}
+      Following the same steps as part 3) we get
+      \begin{align*}
+        & \ell_{0,1}[\widehat{g}(x_0)] - \ell_{0,1}[g(x_0)] \\
+        &= (1_{\{ \widehat{g}(x_0)= b \}} - 1_{\{ g(x_0)= b \}})p(y = a | x_0) \\
+        &\quad + (1_{\{ \widehat{g}(x_0)= a \}} - 1_{\{ g(x_0)= a \}})p(y = b | x_0) \tag{$\star$}
+      \end{align*}
+      Again, if $\widehat{g}(x_0) = g(x_0)$ then $(\star)$ is trivially satisfied. Now consider the case when $\widehat{g}(x_0) \neq g(x_0)$. For the first inequality, assume $\widehat{g}(x_0) = a$. Then
+      \begin{gather*}
+        (\star) = -p(y = a | x_0) + p(y = b | x_0)
+      \end{gather*}
+      Note that
+      \begin{gather*}
+        a \cdot (\star) = -f(x_0) + (a+b)p(y=b | x_0) \\
+        \text{and } -b \cdot (\star) = -f(x_0) + (a+b)p(y=a | x_0)
+      \end{gather*}
+      Adding the above equations yield
+      \begin{gather*}
+        (a-b) \cdot (\star) = -2f(x_0) + (a+b) \\
+        (\star) = \frac{2}{b-a}f(x_0) - \frac{a+b}{b-a}
+      \end{gather*}
+      Note that since $\widehat{g}(x_0) = a$ by assumption, then $\widehat{f}(x_0) \leq (a+b)/2$. This is equivalent to $2\widehat{f}(x_0)/(b-a) \leq (a+b)/(b-a)$. We conclude that
+      \begin{gather*}
+        (\star) \leq \frac{2}{b-a} (f(x_0) - \widehat{f}(x_0))
+      \end{gather*}
+      Now we assume $\widehat{g}(x_0) = b$. Following the same logic. We have
+      \begin{gather*}
+        (\star) = p(y = a | x_0) - p(y = b | x_0)
+      \end{gather*}
+      Then
+      \begin{gather*}
+        (b-a)(\star) = -2f(x_0) +(a+b) \\
+        (\star) = \frac{a+b}{b-a} - \frac{2}{b-a}f(x_0)
+      \end{gather*}
+      Now, since $\widehat{g}(x_0) = b$, this implies $\widehat{f}(x_0) > (a+b)/2$ which is equivalent to $2\widehat{f}(x_0)/(b-a) > (a+b)/(b-a)$. We conclude that
+      \begin{gather*}
+        (\star) \leq \frac{2}{b-a} (\widehat{f}(x_0) - f(x_0))
+      \end{gather*}
+      Putting both inequalities together yields the result
+      \begin{gather*}
+        \ell_{0,1}[\widehat{g}(x_0)] - \ell_{0,1}[g(x_0)] \leq \frac{2}{b-a} \cdot \lvert \widehat{f}(x_0) - f(x_0) \rvert
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  The problem builds on the last one. We are now interested in bounding the classification error at a fixed point $x_0$. Assume throughout that the marginal $X \sim$ Uniform$[-1,1]$, and $x_0 = 0$. Again, $Y \in \{-1, 1\}$ is to be predicted at $x_0 = 0$. We now assume that the regression function $f: \mathbb{R} \rightarrow \mathbb{R}$ is twice continuously differentiable on $[-1,1]$ (as in the previous problem above). We consider a \textit{local linear} classifier (over i.i.d. observations $\{(X_i, Y_i\}_{i=1}^n$ of $(X,Y)$) obtained as follows:
+
+  First, for a bandwidth $h > 0$ , we define a new data representation by mapping any $x \in [-1,1]$ to a vector $\tilde{x} = (1, x/h)^T$. Thus we map $x_0 = 0$ to $\tilde{x}_0 = (1,0)^T$ and $X_i$ to $\tilde{X}_i$, $i \in [n]$. Then we define a local linear regression estimate $f_h(0) = \widehat{\theta}^T \tilde{x}_0$ for $f(0)$, where $\widehat{\theta}$ is obtained by weighted-least-squares as
+  \begin{gather*}
+    \widehat{\theta} \in \arg\min_{\theta \in \mathbb{R}^2} \sum_{i=1}^n [Y_i - \theta^T \tilde{X}_i]^2 \cdot \omega_{h,i}
+  \end{gather*}
+
+  Here the weight $\omega_{h,i}$ is determined as follows. Let $n_h := \sum_{i=1}^n 1\{ \lvert X_i \rvert \leq h \}$, i.e., the number of sample points in the interval $[-h,h]$ containing $x_0 = 0$, then
+  \begin{gather*}
+    \omega_{h,i} = \frac{1}{n_h} 1\{ \lvert X_i \rvert \leq h \} \text{ if } n_h > 0, \text{ otherwise } \omega_{h,i} = \frac{1}{n} \text{ if } n_h = 0
+  \end{gather*}
+
+  The final classifier is obtained as $g_h(0) =$ sign$(f_h(0))$, estimating $g(0) =$ sign$(f(0))$. In what follows, we evaluate the performance of this estimate by considering the $\ell_2$-regression error and 0-1 classification error defined in problem 3).
+
+  To simplify the notation, let $\textbf{X} = (X_1, \mathellipsis, X_n)^T$ and $\textbf{Y} = (Y_1, \mathellipsis, Y_n)^T$ denote the random samples viewed as vectors, and let the $n \times 2$ matrix $\tilde{\textbf{X}} = (\tilde{X}_1, \mathellipsis, \tilde{X}_n)^T$ denote the corresponding transformation of $\textbf{X}$. Also, define the $2 \times 2$ matrix $B_h = \tilde{\textbf{X}}^T W_h \tilde{\textbf{X}}$.
+
+  \begin{enumerate}[label=\arabic*)]
+    \item Assume $B_h \succ 0$. Show that $\widehat{\theta} = B_h^{-1} (\tilde{\textbf{X}}^T W_h)\textbf{Y}$
+    \item Assume $B_h \succ 0$. Show that $f_h(0)$ is linear in $\textbf{Y}$, i.e.,
+      \begin{gather*}
+        f_h(0) = \sum_{i=1}^n \alpha_{h,i} \cdot Y_i, \text{ where } \alpha_{h,i} = \omega_{h,i} \cdot \tilde{x}_0^T B_h^{-1} \tilde{X}_i
+      \end{gather*}
+    \item Reproducibility of linear functions:
+      Assume $B_h \succ 0$. Suppose, only for this question, that $f(x)$ were affine, and that we were to regress on $\{ X_i, f(X_i) \}_{i=1}^n$; then since $\alpha_{h,i}$ depends only on $X_i$'s, we would obtain $f_h(0) = \sum_{i=1}^n \alpha_{h,i} \cdot f(X_i)$.
+      \begin{enumerate}[label=\alph*)]
+        \item Show that, in this case, we have $f_h(0) = f(0)$.
+          (Hint: $f(X_i) = f(0) + X_i \cdot f'(0)$ since $f$ is affine, i.e., $f(X_i) = \theta^T \tilde{X}_i$ for some $\theta$. Show that $\widehat{\theta} = \theta$).
+        \item Since $f$ were assumed to be an arbitrary affine function, deduce from above that $\sum_{i=1}^n \alpha_{h,i} = 1$.
+      \end{enumerate}
+
+    \item Regression variance:
+      Suppose $n_h > 0$ and $\lambda_{min}(B_h) \geq \lambda_0$ for some $\lambda_0$ independent of $X_i$'s.
+      \begin{enumerate}[label=\alph*)]
+        \item Show that $\sum_{i=1}^n \lvert \alpha_{h,i} \rvert \leq C(\lambda_0)$ and that $\max_i \lvert \alpha_{h,i} \rvert \leq C(\lambda_0)/n_h$ for some constant $C(\lambda_0)$.
+        \item Fix $\textbf{X} = \{ X_i \}_{i=1}^n$. Let $\tilde{f}_h(0) = \mathbb{E}_{\textbf{Y} | \textbf{X} } [f_h(0)] = \sum_{i=1}^n \alpha_{h,i} \cdot f(X_i)$. Deduce from the above that
+          \begin{gather*}
+            \mathbb{E}_{\textbf{Y} | \textbf{X} } [(f_h(0) - \tilde{f}_h(0))^2] \leq \frac{C(\lambda_0)}{n_h} \text{ for some constant } C(\lambda_0)
+          \end{gather*}
+      \end{enumerate}
+
+    \item Regression bias:
+      Let $\tilde{f}_h(0)$ be defined as in the previous question. Assume that $n_h > 0$ and that $\lambda_{\min}(B_h) \geq \lambda_0$ for some $\lambda_0$ independent of the $X_i$'s. Show that
+      \begin{gather*}
+        \lvert \tilde{f}_h(0) - f(0) \rvert \leq C(\lambda_0) \cdot \lVert f'' \rVert_\infty \cdot h^2, \text{ where } \lVert f'' \rVert_\infty = \sup_{x \in [-1,1]} \lvert f''(x) \rvert
+      \end{gather*}
+      Hint: consider parts 3), 4), and Problem 2).
+
+    \item We are now ready to conclude. First, we need to check that the above conditions, hold for sufficiently large $n$, namely that $n_h > 0$, and $\lambda_{\min}(B_h) \geq \lambda_0$.
+      \begin{enumerate}[label=\alph*)]
+        \item Let $h \in (0,1)$ be fixed. Notice that $n_h/n \xrightarrow{p} h$. Why? Deduce from this that
+          \begin{gather*}
+            P \left( \frac{1}{n_h} \leq \frac{1}{n \cdot h} \right) \xrightarrow{n \rightarrow \infty} 1, \text{ and therefore that } P(n_h > 0) \xrightarrow{n \rightarrow \infty} 1
+          \end{gather*}
+
+        \item Show that there exists $\lambda_0 > 0$ such that $P(\lambda_{\min}(B_h) \geq \lambda_0) \xrightarrow{n \rightarrow \infty} 1$.
+          Hint: $B_h = B_{h,1} 1\{ n_h > 0\} + B_{h,2} 1\{ n_h = 0 \}$, where $B_{h,1}$ is a sample counterpart to the conditional ``covariance-type'' matrix
+          \begin{gather*}
+            \mathbb{E} [ \tilde{X} \tilde{X}^T | X \in [-h,h]] \doteq (1/h) \cdot \mathbb{E} [ \tilde{X} \tilde{X}^T 1\{ X \in [-h,h] \} ] = \begin{bmatrix} 1 & 0 \\ 0 & 1/3 \end{bmatrix}
+          \end{gather*}
+
+        \item Conclude that, for fixed $h \in (0,1)$, $\exists N_0$, such that, $\forall n > N_0$
+          \begin{gather*}
+            \mathbb{E}_{\textbf{X}, \textbf{Y}} \left[ \ell_{0,1}[g_h(0)] - \ell_{0,1}[g(0)] \right] \leq C \left( \frac{1}{n \cdot h} + h^4 \right)^{1/2}
+          \end{gather*}
+          for a constant $C$ independent of $n$ and $h$.
+
+          (In other words, we can make the excess classification error arbitrarily small by picking $h$ sufficiently small, and $n$ sufficiently large w.r.t. $h$. In fact, much stronger results hold ... if you're curious).
+      \end{enumerate}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We first note that
+      \begin{gather*}
+        \widehat{\theta} \in \arg\min_{\theta \in \mathbb{R}^2} \sum_{i=1}^n [Y_i - \theta^T \tilde{X}_i]^2 \cdot \omega_{h,i} = \arg\min_{\theta \in \mathbb{R}^2} \sum_{i=1}^n [Y_i' - \theta^T \tilde{X}_i']^2
+      \end{gather*}
+      where $Y_i' = Y_i \sqrt{w_{i,h}}$ and $\tilde{X}_i' = \tilde{X}_i \sqrt{w_{i,h}}$. Then the solution is simply the solution to normal least squares regression, $(\tilde{\textbf{X'}}^T \tilde{\textbf{X'}})^{-1} \tilde{\textbf{X'}}^T Y'$ where $\textbf{Y'} = \sqrt{W_h} \textbf{Y}$ and $\tilde{\textbf{X'}} = \sqrt{W_h} \tilde{\textbf{X}}$ where $\sqrt{W_h} =$ diag$(\sqrt{w_{1,h}}, \mathellipsis, \sqrt{w_{n,h}})$. Pluggin this in results in
+      \begin{align*}
+        \widehat{\theta} &= ((\sqrt{W_h} \tilde{\textbf{X}})^T \sqrt{W_h} \tilde{\textbf{X}})^{-1} (\sqrt{W_h} \tilde{\textbf{X}})^T \sqrt{W_h} \textbf{Y} \\
+        &= (\tilde{\textbf{X}}^T \sqrt{W_h}^T \sqrt{W_h} \tilde{\textbf{X}})^{-1} \tilde{\textbf{X}}^T \sqrt{W_h} \sqrt{W_h} \textbf{Y} \\
+        &= (\tilde{\textbf{X}}^T W_h \tilde{\textbf{X}})^{-1} \tilde{\textbf{X}}^T W_h \textbf{Y} \\
+        &= B_h^{-1} (\tilde{\textbf{X}}^T W_h)\textbf{Y}
+      \end{align*}
+
+    \item Using the previous result, we have
+      \begin{align*}
+        f_h(0) &= \widehat{\theta}^T \tilde{x}_0 \\
+        &= (B_h^{-1}(\tilde{\textbf{X}}^T W_h)Y)^T \tilde{x}_0
+      \end{align*}
+      This is a scalar so we can take the transpose without changing the answer.
+      \begin{gather*}
+        = \tilde{x}_0^T B_h^{-1}(\tilde{\textbf{X}}^T W_h)Y
+      \end{gather*}
+      Since $W_h$ is diagonal, we have the nice simplification that $\tilde{\textbf{X}}^T W_h = (\tilde{X}_1 w_{1,h}, \mathellipsis, \tilde{X}_n w_{n,h})$. Writing as sum notation,
+      \begin{gather*}
+        f_h(0) = \sum_{i=1}^n \alpha_{h,i} \cdot Y_i, \text{ where } \alpha_{h,i} = \omega_{h,i} \cdot \tilde{x}_0^T B_h^{-1} \tilde{X}_i
+      \end{gather*}
+
+    \item
+      \leavevmode
+      \begin{enumerate}[label=\alph*)]
+        \item Writing down the optimization problem again
+          \begin{gather*}
+            \widehat{\theta} \in \arg\min_{\theta' \in \mathbb{R}^2} \sum_{i=1}^n [Y_i - \theta'^T \tilde{X}_i]^2 \cdot \omega_{h,i}
+          \end{gather*}
+          However, since we are regressing on $f(X_i)$ we have
+          \begin{gather*}
+            \widehat{\theta} \in \arg\min_{\theta' \in \mathbb{R}^2} \sum_{i=1}^n [f(X_i) - \theta'^T \tilde{X}_i]^2 \cdot \omega_{h,i}
+          \end{gather*}
+          By the hint and the fact that $f(x)$ is affine, we have $f(X_i) = \theta^T \tilde{X}_i$.
+          \begin{gather*}
+            \widehat{\theta} \in \arg\min_{\theta' \in \mathbb{R}^2} \sum_{i=1}^n \theta^T \tilde{X}_i - \theta'^T \tilde{X}_i]^2 \cdot \omega_{h,i}
+          \end{gather*}
+          It is obvious from this statement that $\theta' = \theta$ minimizes the problem. Thus, $\widehat{\theta} = \theta$ as desired. We conclude that $f_h(0) = \widehat{\theta}^T \tilde{x}_0 = \theta^T \tilde{x}_0 = f(0)$.
+
+        \item Since $f(x)$ is affine, we have that $f_h(0) = \sum_{i=1}^n \alpha_{h,i} \cdot f(X_i)$. However, $f(X_i) = \theta^T \tilde{x}_0$ and $f_h(0) = \widehat{\theta}^T \tilde{x}_0$ by definition. Since $\widehat{\theta} = \theta$ from the previous part, we have
+          \begin{gather*}
+            f_h(0) = \sum_{i=1}^n \alpha_{h,i} \theta^T \tilde{x}_0 = \theta^T \tilde{x}_0 \\
+            \implies \sum_{i=1}^n \alpha_{h,i} = 1
+          \end{gather*}
+      \end{enumerate}
+
+    \item
+      \leavevmode
+      \begin{enumerate}[label=\alph*)]
+        \item We wish to upper bound $\sum_{i=1}^n \lvert \alpha_{h,i} \rvert$. Begin with the definition of
+          \begin{gather*}
+            \sum_{i=1}^n \lvert \alpha_{h,i} \rvert = \sum_{i=1}^n \lvert w_{h,i} \tilde{x}_0^T B_h^{-1} \tilde{X}_i \rvert
+          \end{gather*}
+          Since $n_h > 0$, then $w_{h,i} = \frac{1}{n_h} 1\{ \lvert X_i \rvert \leq h \}$. We want to upper bound this expression, in the worse case $X_i = h$ for all $i$ that satisfy the indicator. So we have $w_{h,i} = \frac{1}{n_h}$ for all $i$.
+          \begin{gather*}
+            \leq \sum_{i=1}^{n_h} \lvert \frac{1}{n_h} \tilde{x}_0^T B_h^{-1} \tilde{X}_i \rvert
+          \end{gather*}
+          Now, we know that $\tilde{x}_0^T = (1,0)$ and $\tilde{X}_i = (1, X_i/h)^T = (1,1)$ since we upper bounded $X_i$ by $h$. Multiplying the matrices yields
+          \begin{gather*}
+            \leq \frac{1}{n_h} \sum_{i=1}^{n_h} \lvert B_{h_{11}}^{-1} + B_{h_{12}}^{-1} \rvert \\
+            \leq \lvert B_{h_{11}}^{-1} \rvert + \lvert B_{h_{12}}^{-1} \rvert \tag{$\star)(\star$}
+          \end{gather*}
+          If one calculates $B_h = \tilde{\textbf{X}}^T W_h \tilde{\textbf{X}}$, the result is
+          \begin{gather*}
+            \begin{bmatrix}
+              \sum_i w_{i,h} & \sum_i w_{i,h} x_i/h \\
+              \sum_i w_{i,h} x_i/h & \sum_i w_{i,h} x_i^2/h^2
+            \end{bmatrix}
+          \end{gather*}
+          Thus, after inversion, the top row is the smallest row sum. It is a well known result that the minimal row sum is a lower bound of $\lambda_{\max}$. Thus,
+          \begin{gather*}
+            \leq \lambda_{\max}(B_h^{-1})
+          \end{gather*}
+          Since $B \succ 0$ then all the eigenvalues are positive and $\lambda_{\max}(B_h^{-1}) = 1/\lambda_{\min}(B_h)$. Which is lesser than $\lambda_0$ by assumption. We finish it off with
+          \begin{gather*}
+            \leq \lambda_{\max}(B_h^{-1}) = 1/\lambda_{\min}(B_h) \leq C(\lambda_0)
+          \end{gather*}
+
+          For $\max_i \lvert \alpha_{h,i} \rvert$ one can use all the steps but simply use $\max$ instead of summing across all $i$. Without the sum, $\frac{1}{n_h}$ does not disappear at $(\star)(\star)$ and so we are left with the result $\max_i \lvert \alpha_{h,i} \rvert \leq C(\lambda_0)/n_h$.
+
+        \item We expand the variance
+          \begin{gather*}
+            \mathbb{E}_{\textbf{Y} | \textbf{X} } [(f_h(0) - \tilde{f}_h(0))^2] \\
+            = \mathbb{E}_{\textbf{Y} | \textbf{X} } [f_h(0)^2] - \mathbb{E}_{\textbf{Y} | \textbf{X} } [f_h(0)]^2
+          \end{gather*}
+          To upper bound, we ignore the second term since it is always negative. So
+          \begin{gather*}
+            \leq \mathbb{E}_{\textbf{Y} | \textbf{X} } [f_h(0)^2] = \mathbb{E}_{\textbf{Y} | \textbf{X} } [(\sum_{i=1}^n \alpha_{h,i} Y_i)^2]
+          \end{gather*}
+          We now note that the $Y_i$'s are independent and so the covariances are 0.
+          \begin{gather*}
+            = \mathbb{E}_{\textbf{Y} | \textbf{X} } [\sum_{i=1}^n \alpha_{h,i}^2 Y_i^2]
+          \end{gather*}
+          Now, $Y_i^2 = 1$ for all $i$. We also now upper bound each $\alpha_{h,i}$ by $\max_i \alpha_{h,i}$. We change the sum from $n$ to $n_h$ to indicate that not all $\alpha_{h,i} \neq 0$.
+          \begin{gather*}
+            \leq \mathbb{E}_{\textbf{Y} | \textbf{X} } [\sum_{i=1}^{n_h} \max_i \alpha_{h,i}^2]
+          \end{gather*}
+          Using the bound in the previous part
+          \begin{gather*}
+            \leq n_h \frac{C(\lambda_0)^2}{n_h^2} = \frac{C(\lambda_0)^2}{n_h}
+          \end{gather*}
+      \end{enumerate}
+
+    \item We rewrite the bias as
+      \begin{gather*}
+        \lvert \tilde{f}_h(0) - f(0) \rvert = \lvert \sum_{i=1}^n \alpha_{h,i} f(X_i) - f(0) \rvert
+      \end{gather*}
+      Approximating $f(X_i)$ using it's Taylor series at 0 results in
+      \begin{gather*}
+        \leq \lvert \sum_{i=1}^n \alpha_{h,i}( f(0) + X_i f'(0) + R_1(X_i) )- f(0) \rvert
+      \end{gather*}
+      Where $R_1(X_i) = f''(z)x^2/2$ is the Lagrange remainder term. Applying triangle inequality
+      \begin{gather*}
+        \leq \lvert \sum_{i=1}^n \alpha_{h,i}f(0) \rvert + \lvert \sum_{i=1}^n \alpha_{h,i} X_i f'(0) \rvert + \lvert \sum_{i=1}^n \alpha_{h,i}R_1(X_i) ) \rvert + \lvert f(0) \rvert
+      \end{gather*}
+      Now we bound each term applying the previous results
+      \begin{align*}
+        &\lvert \sum_{i=1}^n \alpha_{h,i}f(0) \rvert \leq C(\lambda_0) \cdot \lVert f \rVert_\infty \\
+        &\lvert \sum_{i=1}^n \alpha_{h,i} X_i f'(0) \rvert \leq C(\lambda_0) \cdot \lVert f' \rVert_\infty \cdot h \\
+        &\lvert \sum_{i=1}^n \alpha_{h,i}R_1(X_i) ) \rvert \leq C(\lambda_0) \cdot \lVert f'' \rVert_\infty \cdot h^2/2 \\
+        &\lvert f(0) \rvert \leq \lVert f \rVert_\infty
+      \end{align*}
+      Thus, we can encapsulate all the other terms in some constant $C'(\lambda_0)$ and get the result
+      \begin{gather*}
+        \lvert \tilde{f}_h(0) - f(0) \rvert \leq C'(\lambda_0) \cdot \lVert f'' \rVert_\infty \cdot h^2
+      \end{gather*}
+
+    \item
+      \leavevmode
+      \begin{enumerate}[label=\alph*)]
+        \item Let $h \in (0,1)$ be fixed. Then, since $X_i \sim$ Uniform$[-1,1]$, each $X_i$ has probability $2h/2 = h$ to fall in $[-h,h]$. By the law of large numbers, we get that $n_h/n \xrightarrow{p} h$. Then, since $\lim_{n \rightarrow \infty} n_h \neq 0$, we have that
+        \begin{gather*}
+          P \left( \frac{1}{n_h} \leq \frac{1}{n \cdot h} \right) \xrightarrow{n \rightarrow \infty} 1
+        \end{gather*}
+        Thus taking the limit,
+        \begin{gather*}
+          \lim_{n \rightarrow \infty} P \left( \frac{1}{n_h} \leq \frac{1}{n \cdot h} \right) = \lim_{n \rightarrow \infty} P \left( \frac{1}{n_h} \leq 0 \right) \\
+          = \lim_{n \rightarrow \infty} P \left( \frac{1}{n_h} \leq 0 \right) = 1 \\
+          \implies \lim_{n \rightarrow \infty} P \left( n_h > 0 \right) = 1
+        \end{gather*}
+
+        \item From the previous part, we showed that
+          \begin{gather*}
+            1_{\{ n_h > 0 \}} \xrightarrow{n \rightarrow \infty} 1 \text{ and } \\
+            1_{\{ n_h = 0 \}} \xrightarrow{n \rightarrow \infty} 0
+          \end{gather*}
+          Since $P(n_h > 0) = \mathbb{E}[1_{\{ n_h > 0 \}}]$. Thus, the only way for the left hand side to approach 1 is if the indicator approaches 1. Now, using the hint, this means that
+          \begin{gather*}
+            \lim_{n \rightarrow \infty} B_h = \lim_{n \rightarrow \infty} B_{h,1} 1\{ n_h > 0\} + B_{h,2} 1\{ n_h = 0 \} = B_{h,1}
+          \end{gather*}
+          It is given that
+          \begin{gather*}
+            B_{h,1} = \begin{bmatrix}
+            1 & 0 \\
+            0 & 1/3
+            \end{bmatrix}
+          \end{gather*}
+          From this, it is obvious that the smallest eigenvalue is $1/3$. We put everything together to conclude
+          \begin{gather*}
+            P(\lambda_{\min}(B_h) \geq 1/3) \xrightarrow{n \rightarrow \infty} 1
+          \end{gather*}
+          Where $\lambda_0 = 1/3$.
+
+        \item We begin by using the inequalities shown in Problem 3).
+          \begin{gather*}
+            \mathbb{E}_{\textbf{X}, \textbf{Y}} \left[ \ell_{0,1}[g_h(0)] - \ell_{0,1}[g(0)] \right]
+          \end{gather*}
+          Applying Problem 3) part 3)
+          \begin{gather*}
+            \leq \mathbb{E}_{\textbf{X}, \textbf{Y}} \left[ \lvert f_h(0) - f(0) \rvert \right]
+          \end{gather*}
+          Adding in additional terms
+          \begin{gather*}
+            \leq \mathbb{E}_{\textbf{X}, \textbf{Y}} \left[ \lvert f_h(0) - \tilde{f}_h(0) + \tilde{f}_h(0) - f(0) \rvert \right]
+          \end{gather*}
+          Applying Problem 3) part 2)
+          \begin{gather*}
+            \leq \mathbb{E}_{\textbf{X}, \textbf{Y}} \sqrt{ \ell_2 [f_h(0) - \tilde{f}_h(0)] - \ell_2 [\tilde{f}_h(0) - f(0)] }
+          \end{gather*}
+          Change the subtraction to an addition
+          \begin{gather*}
+            \leq \mathbb{E}_{\textbf{X}, \textbf{Y}} \sqrt{ \ell_2 [f_h(0) - \tilde{f}_h(0)] + \ell_2 [\tilde{f}_h(0) - f(0)] } \\
+            = \mathbb{E}_{\textbf{X}, \textbf{Y}} \sqrt{ \mathbb{E}_{\textbf{Y} | \textbf{X}} [f_h(0) - \tilde{f}_h(0) - Y]^2 + \mathbb{E}_{\textbf{Y} | \textbf{X}} [\tilde{f}_h(0) - f(0) - Y ]^2 }
+          \end{gather*}
+          Since $\lvert Y \rvert$ is dominated by 1, then there exists a constant $C$ such that
+          \begin{gather*}
+            \leq C \mathbb{E}_{\textbf{X}, \textbf{Y}} \sqrt{ \mathbb{E}_{\textbf{Y} | \textbf{X}} [f_h(0) - \tilde{f}_h(0)]^2 + \mathbb{E}_{\textbf{Y} | \textbf{X}} [\tilde{f}_h(0) - f(0)]^2 }
+          \end{gather*}
+          We bound the first term by the results of part 4) and the second term by the results of part 5)
+          \begin{gather*}
+            \leq C \mathbb{E}_{\textbf{X}, \textbf{Y}} \sqrt{ \frac{C'(\lambda_0)}{n_h} + C''(\lambda_0)^2 \cdot \lVert f'' \rVert_\infty^2 \cdot h^4}
+          \end{gather*}
+          We can also apply the results of part 6) to bound $1/n_h$ by $1/(n \cdot h)$. Collecting all the constants and dropping the expectation as there are no more random variables yields
+          \begin{gather*}
+            \leq C^* \sqrt{ \frac{1}{n \cdot h} +  h^4}
+          \end{gather*}
+          Which is the result desired.
+      \end{enumerate}
+  \end{enumerate}
+\end{answer}
+
+\end{document}

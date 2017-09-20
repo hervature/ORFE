@@ -1,0 +1,222 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 2}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{04}{10}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $(E, \mathcal{E})$ be a measurable space and $f: E \rightarrow \mathbb{R}$ a Borel-measurable function taking finitely many real values. Prove the $f$ is a simple function.
+\end{exercise}
+
+\begin{answer}
+  Let $c_1, c_2,\mathellipsis, c_n$ be the distinct values of $f$. The let $A_i = \{ x: f(x) = c_i \}$ where the $A_i$'s are measurable by assumption and disjoint. Thus, we can write $f$ as:
+  \begin{gather*}
+    f(x) = \sum\limits_{i = 1}^n c_i \cdot 1_{\{ x \in A_i \}}
+  \end{gather*}
+  Which is the exact form of a simple function.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $f, g \in \mathcal{E}_+$. Show that:
+  \begin{enumerate}[label=\alph*)]
+    \item $f \land g, f \lor g \in \mathcal{E}_+$
+    \item $f + g \in \mathcal{E}_+$
+    \item $fg \in \mathcal{E}_+$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Clearly, if $f \geq 0$ and $g \geq 0$, then $f \land g \geq 0$ and $f \lor g \geq 0$. We only need to show measurability. Consider the preimages $f^{-1}((-\infty, r])$. Then, for $f \land g$,
+      \begin{gather*}
+        (f \land g)^{-1}([r, \infty)) = f^{-1}([r, \infty)) \bigcap g^{-1}([r, \infty))
+      \end{gather*}
+      Which is an intersection of two measurable sets by assumptions and hence measurable. Likewise,
+      \begin{gather*}
+        (f \lor g)^{-1}((-\infty, r]) = f^{-1}((-\infty, r]) \bigcap g^{-1}((-\infty, r])
+      \end{gather*}
+      Which is the union of two measurable sets and so measurable.
+
+    \item Clearly, if $f \geq 0$ and $g \geq 0$, then $f + g \geq 0$. Again, to show measurability, consider the preimage,
+      \begin{gather*}
+        (f + g)^{-1}((-\infty, r)) \Leftrightarrow f + g < r \Leftrightarrow f < r - g
+      \end{gather*}
+      We know by real analysis, that for every $r \in \mathbb{R}$, we can find a rational $q \in \mathbb{Q}$ s.t.
+      \begin{gather*}
+        f < q < r - g
+      \end{gather*}
+      We then have,
+      \begin{gather*}
+        f < q \text{ and } q < r - g \Leftrightarrow g < r - q
+      \end{gather*}
+      So,
+      \begin{gather*}
+        (f + g)^{-1}((-\infty, r)) = \bigcup_{q \in \mathcal{Q}} f^{-1}((-\infty, r)) \cap g^{-1}((-\infty, r - q))
+      \end{gather*}
+      Which is a countable union of measurable sets, thus it is measurable.
+    \item Again, if $f \geq 0$ and $g \geq 0$, then $fg \geq 0$. We note the following,
+      \begin{gather*}
+        fg = \frac{1}{2} \left[ (f+g)^2 - f^2 - g^2 \right]
+      \end{gather*}
+      We know that adding and subtracting measurable functions does not change measurability. Multiplying by a scalar also doesn't change measurability since for $k \in \mathbb{R}^+$
+      \begin{gather*}
+        (kf)^{-1}((-\infty, r)) = (f)^{-1}((-\infty, r/k))
+      \end{gather*}
+      Which is measurable. For $k \in \mathbb{R}^-$,
+      \begin{gather*}
+        (kf)^{-1}((-\infty, r)) = (f)^{-1}((r/k, \infty))
+      \end{gather*}
+      Finally, for $k = 0$, then $kf = 0$ which is clearly measurable.
+      Thus we only have to show that squaring a function does not change measurability.
+      \begin{gather*}
+        (f^2)^{-1}((-\infty, r)) = f^{-1}((-\sqrt{r}, \sqrt{r})) = f^{-1}((-\infty, \sqrt{r})) \bigcap f^{-1}((-\sqrt{r}, \infty))
+      \end{gather*}
+      Which is the intersection of two measurable sets, thus $f^2$ is measurable and so $fg$ is measurable.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mu_1, \mu_2,\mathellipsis$ be measures on $(E, \mathcal{E})$ and denote $\mu = \sum_{n \geq 1} \mu_n$. Prove that $\mu$ is also a measure on $(E, \mathcal{E})$.
+\end{exercise}
+
+\begin{answer}
+  To show something is a measure, we must show $\mu(\emptyset) = 0$, non-negativity, and countable additivity.
+  \begin{gather*}
+    \mu(\emptyset) = \sum_{n \geq 1} \mu_n(\emptyset) = \sum_{n \geq 1} 0 = 0
+  \end{gather*}
+  Non-negativity,
+  \begin{gather*}
+    \mu(A) = \sum_{n \geq 1} \mu_n(A) \geq \mu_1(A) \geq 0
+  \end{gather*}
+  Since $\mu_n$ are measures, they satisfy non-negativity. Finally, countable additivity,
+  \begin{gather*}
+    \mu \left( \bigcup_{i \geq 1} A_i \right) = \sum_{n \geq 1} \mu_n \left( \bigcup_{i \geq 1} A_i \right) \\
+    = \sum_{n \geq 1} \sum_{i \geq 1} \mu_n (A_i)
+  \end{gather*}
+  Since $\mu_n(A) \geq 0$, Tonelli's theorem  states we can interchange the sums,
+  \begin{gather*}
+    \sum_{n \geq 1} \sum_{i \geq 1} \mu_n (A_i) = \sum_{i \geq 1} \sum_{n \geq 1} \mu_n (A_i) = \sum_{i \geq 1} \mu (A_i)
+  \end{gather*}
+  Thus, we have,
+  \begin{gather*}
+    \mu \left( \bigcup_{i \geq 1} A_i \right) = \sum_{i \geq 1} \mu (A_i)
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  If $\delta_{x_0}$ denotes the Dirac measure sitting at $x_0$, show that $\delta_{x_0} f = f(x_0)$, for any $f \in \mathcal{E}$.
+\end{exercise}
+
+\begin{answer}
+  We write the definition of Dirac measure,
+  \begin{gather*}
+    \delta_{x_0} f = \int_E f d\delta_{x_0}(x) = \int_{\{ x = x_0 \}} f d\delta_{x_0}(x) + \int_{\{ x \neq x_0 \}} f d\delta_{x_0}(x)\\
+    = f(x_0)\int_{\{ x = x_0 \}} d\delta_{x_0}(x) + 0 = f(x_0)
+  \end{gather*}
+  Where $\int_{\{ x \neq x_0 \}} f d\delta_{x_0}(x) = 0$ and $\int_{\{ x = x_0 \}} d\delta_{x_0}(x) = 1$  by definition of the Dirac measure.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $(E, \mathcal{E}, \mu)$ be a measure space, and $p \in \mathcal{E}_+$. Define
+  \begin{gather*}
+    \nu (A) = \int_A p(x) d\mu(x), \quad \forall A \in \mathcal{E}
+  \end{gather*}
+  \begin{enumerate}[label=\alph*)]
+    \item Show that $\nu$ is a measure on $(E, \mathcal{E})$
+    \item Prove that for any $f \in \mathcal{E}_+$ we have
+      \begin{gather*}
+        \int_E f(x) d\nu(x) = \int_E f(x)p(x) d\mu(x)
+      \end{gather*}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item We show the three properties of a measure. First,
+      \begin{gather*}
+        \nu(\emptyset) = \int_\emptyset p(x) d\mu(x) = 0
+      \end{gather*}
+      Also, since $p(x) \geq 0 \implies \int_A p(x) d\mu(x) \geq 0$. Now we show countable additivity. First for indicator functions, then simple functions, and finally $p \in \mathcal{E}_+$. Let $p(x) = 1_{\{ x \in B \}}$,
+      \begin{gather*}
+        \nu \left( \bigcup_{i \geq 1} A_i \right) = \int_{\cup_{i \geq 1} A_i} p(x) d\mu(x) = \int_{\cup_{i \geq 1} A_i} 1_{\{ x \in B \}} d\mu(x) \\
+        = \mu(B \bigcap \cup_{i \geq 1} A_i) = \sum_{i \geq 1} \mu(B \cap A_i) = \sum_{i \geq 1} \int_{B \cap A_i} d\mu(x) = \sum_{i \geq 1} \int_{A_i} 1_{\{ x \in B \}} d\mu(x) \\
+        = \sum_{i \geq 1} \int_{A_i} p(x) d\mu(x) = \sum_{i \geq 1} \nu(A_i)
+      \end{gather*}
+      Now let $p(x) = \sum_{j = 1}^n b_j 1_{\{ x \in B_j \}}$,
+      \begin{gather*}
+        \nu \left( \bigcup_{i \geq 1} A_i \right) = \int_{\cup_{i \geq 1} A_i} p(x) d\mu(x) = \int_{\cup_{i \geq 1} A_i} \sum_{j = 1}^n b_j 1_{\{ x \in B_j \}} d\mu(x) \\
+        = \sum_{j = 1}^n b_j \int_{\cup_{i \geq 1} A_i} 1_{\{ x \in B_j \}} d\mu(x) = \sum_{j = 1}^n b_j \mu(B_i \bigcap \cup_{i \geq 1} A_i) \\
+        = \sum_{j = 1}^n b_j \sum_{i \geq 1} \mu(B_j \cap A_i) = \sum_{j = 1}^n b_j \sum_{i \geq 1} \int_{B_j \cap A_i} d\mu(x) \\
+        = \sum_{j = 1}^n b_j \sum_{i \geq 1} \int_{A_i} 1_{\{ x \in B_j \}} d\mu(x) = \sum_{i \geq 1} \int_{A_i} \sum_{j = 1}^n b_j 1_{\{ x \in B_j \}} d\mu(x) \\
+        = \sum_{i \geq 1} \int_{A_i} p(x) d\mu(x) = \sum_{i \geq 1} \nu(A_i)
+      \end{gather*}
+      Where the swapping of sums is justified since the sum is finite.
+      Now suppose $p(x) \in \mathcal{E}_+$, then there exists $(p_n)$ with $p_n$ simple, $\geq 0$, and $p_n \nearrow p$.
+      \begin{gather*}
+        \nu \left( \bigcup_{i \geq 1} A_i \right) = \int_{\cup_{i \geq 1} A_i} p(x) d\mu(x) = \int_{\cup_{i \geq 1} A_i} \lim_{n \rightarrow \infty} p_n(x) d\mu(x) \\
+        = \lim_{n \rightarrow \infty} \int_{\cup_{i \geq 1} A_i} p_n(x) d\mu(x) \text{ by monotone convergence theorem} \\
+      \end{gather*}
+      Which we proved for simple functions,
+      \begin{gather*}
+        = \lim_{n \rightarrow \infty} \sum_{i \geq 1} \int_{A_i} p_n(x) d\mu(x) \\
+        = \sum_{i \geq 1} \int_{A_i} \lim_{n \rightarrow \infty}  p_n(x) d\mu(x) \text{ by monotone convergence theorem} \\
+        = \sum_{i \geq 1} \int_{A_i} p(x) d\mu(x) = \sum_{i \geq 1} \nu(A_i)
+      \end{gather*}
+      So, $\nu(A)$ satisfies the three properties of a measure, so it is a measure.
+
+    \item To prove this, we do it first for indicator functions, then simple functions, and then for $\mathcal{E}_+$. Let $f$ be an indicator,
+      \begin{gather*}
+        \int_E f(x) d\nu(x) = \int_E 1_{\{ x \in A \}} d\nu(x) = \int_A d\nu(x) = \nu(A) \\
+        = \int_A p(x) d\mu(x) = \int_E 1_{\{ x \in A \}} p(x) d\mu(x) = \int_E f(x)p(x) d\mu(x)
+      \end{gather*}
+      Now suppose $f$ is a simple function,
+      \begin{gather*}
+        \int_E f(x) d\nu(x) = \int_E \sum_{i = 1}^n a_i 1_{\{ x \in A_i \}} d\nu(x) = \sum_{i = 1}^n a_i \int_A 1_{\{ x \in A_i \}} d\nu(x)
+      \end{gather*}
+      Where the last equality holds since the sum is finite. Continuing by definition,
+      \begin{gather*}
+        = \sum_{i = 1}^n a_i \nu(A_i) = \sum_{i = 1}^n a_i \int_{A_i} p(x) d\mu(x) = \int_{A_i} \sum_{i = 1}^n a_i p(x) d\mu(x) \\
+        = \int_E \sum_{i = 1}^n a_i 1_{\{ x \in A_i \}} p(x) d\mu(x) = \int_E f(x) p(x) d\mu(x)
+      \end{gather*}
+      Finally, we consider $f \in \mathcal{E}_+$ where $f_n \nearrow f$, $f_n \geq 0$, and $f_n$ simple.
+      \begin{gather*}
+        \int_E f(x) d\nu(x) = \int_E \lim_{n \rightarrow \infty} f_n(x) d\nu(x) = \lim_{n \rightarrow \infty} \int_E f_n(x) d\nu(x)
+      \end{gather*}
+      We can exchange the limit and integral due to monotone convergence theorem. Now, since $f_n$ is simple, we can use our previous proof,
+      \begin{gather*}
+        = \lim_{n \rightarrow \infty} \int_E f_n(x) p(x) d\mu(x) = \int_E \lim_{n \rightarrow \infty} f_n(x) p(x) d\mu(x) = \int_E f(x) p(x) d\mu(x)
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\end{document}

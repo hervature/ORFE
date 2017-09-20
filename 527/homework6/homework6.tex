@@ -1,0 +1,228 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 527: Stochastic Calculus \\ Homework 6}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{20}{04}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  (Elliptic maximum principle) Let $D \subset \mathbb{R}^m$ be a bounded set with piecewise $C^1$ boundary and suppose that $u \in C^2 (\bar{D})$ satisfies
+  \begin{gather*}
+    \sum_{i=1}^m b_i(x) \partial_{x_i} u(x) + \frac{1}{2} \sum_{i,j = 1}^m \sum_{k=1}^m \sigma_{ki}(x) \sigma_{kj}(x) \partial_{x_i x_j} u(x) = 0
+  \end{gather*}
+  on $D$ for some continuous $b, \sigma$. Show that $u$ satisfies the following \textit{maximum principle}:
+  \begin{gather*}
+    \max_{x \in D} u = \max_{x \in \partial D} u
+  \end{gather*}
+  In words: $u$ attains its maximum on the boundary of $D$.
+\end{exercise}
+
+\begin{answer}
+  As $b, \sigma$ are continuous and $D$ is bounded, then we have that the solution of the above PDE is unique. Also, we have that $u$ satisfies the Feynman-Kac formula with $h = 0$, $g = 0$. Here, $u = f$ on $\partial D$ is unspecified. Thus, the Feynman-Kac formula gives
+  \begin{gather*}
+    u(x_0) = \mathbb{E}[f(x_{\tau_D})]
+  \end{gather*}
+  But, by the setup of the problem, $f(x_{\tau_D}) = u(x_{\tau_D})$ as $x_{\tau_D} \in \partial D$. So,
+  \begin{gather*}
+    u(x_0) = \mathbb{E}[u(x_{\tau_D})]
+  \end{gather*}
+  Now, suppose that
+  \begin{gather*}
+    x^* = \argmax_{x \in \bar{D}} u(x)
+  \end{gather*}
+  Which is achieved as $f$ is continuous and $\bar{D}$ is compact. But, by the above Feynman-Kac,
+  \begin{gather*}
+    u(x^*) = \mathbb{E}[u(x_{\tau_D})]
+  \end{gather*}
+  However, the above implies that
+  \begin{gather*}
+    0 = \mathbb{E}[u(x_{\tau_D}) - u(x^*)]
+  \end{gather*}
+  But, by maximality of $x^*$, we have $u(x_{\tau_D}) - u(x^*) \leq 0$ and so we must have that
+  \begin{gather*}
+    u(x^*) = u(x_{\tau_D}) \in \partial D
+  \end{gather*}
+  We conclude that
+  \begin{gather*}
+    \max_{x \in D} u(x) = \max_{x \in \partial D} u(x)
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Parabolic PDEs) Use the parabolic Feynman-Kac formula to find \textit{explicitly} the unique classical solutions of the following parabolic PDE problems:
+  \begin{enumerate}[label=\alph*)]
+    \item $\partial_t u(t,x) + \frac{1}{2} \partial_{xx} u(t,x) = e^{2x}$, $(t,x) \in [0,1] \times \mathbb{R}$ with $u(1,x) = e^x$, $x \in \mathbb{R}$.
+    \item $\partial_t v(t,x) + x \partial_x v(t,x) + \frac{1}{2} \partial_{xx} v(t,x) = \cos x$, $(t,x) \in [0,1] \times \mathbb{R}$ with $u(1,x) = \sin x$.
+  \end{enumerate}
+
+  \textit{Hint: recall problem 2 of homework 1.}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item We have that $b$ and $\sigma$ here are bounded and continuous so we apply the parabolic Feynman-Kac formula. We have $f(x) = e^x$, $g(x) = -e^{2x}$, $h(x) = 0$. Then,
+      \begin{gather*}
+        u(t, x) = \mathbb{E}_{t,x}[e^{x_1} - \int_t^1 e^{2x_s} ds] \\
+      \end{gather*}
+      Now, we use the fact that $x_1 = x + B_1 - B_t$, which comes from the fact that $x_t = x$, $b = 0$, and $\sigma = 1$. Thus, we get by Fubini's and $\mathbb{E}[e^{\sigma B_t}] = e^{\sigma t}$
+      \begin{align*}
+        u(t, x) &= \mathbb{E}_{t,x}[e^{x + B_1 - B_t}] - \int_t^1 \mathbb{E}[e^{2x_s}] ds] \\
+        u(t, x) &= e^x \mathbb{E}_{t,x}[e^{B_{1-t}}] - \int_t^1 \mathbb{E}[e^{2x + 2B_{1-s}}] ds] \\
+        u(t, x) &= e^x e^{\frac{1}{2}(1-t)} - \int_t^1 e^{2x + 2(1-s)} ds] \\
+        u(t, x) &= e^{x + \frac{1}{2}(1-t)} + \frac{1}{2} e^{2x} \left( 1 - e^{2(1-t)} \right)
+      \end{align*}
+      Where we have the sanity check that $u(1,x) = e^x$. As well, this satisfies the PDE.
+
+    \item We do the same thing as the previous part except now with $f(x) = \sin x$, $g(x) = - \cos x$, $h(x) = 0$. We also have that the SDE is satisfied by $X_t$
+      \begin{gather*}
+        \text{d} X_s = X_s \text{d}s + \text{d} B_s \\
+        X_t = x
+      \end{gather*}
+      From the hint, we have that
+      \begin{gather*}
+        X_s = x e^{s-t} + \int_t^s e^{s-t} \text{d} B_t
+      \end{gather*}
+      solves this SDE. Now, by Feynman-Kac
+      \begin{align*}
+        v(t,x) &= \mathbb{E}_{t,x}[\sin (x_1) - \int_t^1 \cos (x_s) ds] \\
+        v(t,x) &= \text{Real} \left( \mathbb{E}_{t,x}[-i e^{i X_1} - \int_t^1 e^{i x_s} ds] \right) \\
+        v(t,x) &= \text{Real} \left( -i e^{i x e^{1-t} - \frac{1}{4} (e^{2(1-t)-1})} - \int_t^1 e^{i e^{s-t} - \frac{1}{4}(e^{2(s-t) - 1)})} ds \right)
+      \end{align*}
+      Where the last line comes from the fact that
+      \begin{gather*}
+        X_s \sim \mathcal{N}(xe^{s-t}, \frac{1}{2} (e^{2(s-t)}-1))
+      \end{gather*}
+      which is what we used for the expectation. Now, we can simplify this to
+      \begin{gather*}
+        v(t,x) = \sin (x e^{1-t}) e^{-\frac{1}{4} (e^{2(1-t)}-1)} - \int_t^1 \cos(x e^{s-t}) e^{-\frac{1}{4}(e^{2(s-t)}-1)} ds
+      \end{gather*}
+      Finally, a sanity check is that $v(1,x) = \sin(x)$. One can also, with your favourite symbolic solver, verify that this satisfies the PDE.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Black-Scholes formula) In the Black-Scholes model, the price of any given stock is modelled (under a suitable probability measure) as the unique strong solution of the SDE
+  \begin{gather*}
+    \text{d} X_t = r X_t \text{d}t + \sigma X_t \text{d}B_t, \quad X_0 = x_0 > 0
+  \end{gather*}
+  where $r \in \mathbb{R}$ is interpreted as the interest rate and $\sigma$ as the volatility of the stock. Suppose you buy at time 0 a \textit{call option} with strike $K > 0$ and maturity $T > 0$ on the stock, i.e. a contract that pays $\max (X_T - K, 0)$ at time $T$. In this setting, the market efficiency hypothesis implies that the fair price you should pay for the call option is
+  \begin{gather*}
+    p := \mathbb{E}[e^{-r T} \max(X_T - K, 0)]
+  \end{gather*}
+  \begin{enumerate}[label=\alph*)]
+    \item Use the parabolic Feynman-Kac formula to show $p = u(0, x_0)$, where $u$ is the unique classical solution of the parabolic PDE problem
+      \begin{gather*}
+        \partial_t u(t,x) + rx \partial_x u(t,x) + \frac{1}{2} \sigma^2 x^2 \partial_{xx} u(t,x) - r u(t,x) = 0 \\
+        (t,x) \in [0,T] \times (0, \infty), u(T,x) = \max (x - K, 0), x \in (0, \infty)
+      \end{gather*}
+    \item Define the change of variables $s := T - \frac{\sigma^2}{2} (T - t)$, $y := \log x + (r - \frac{\sigma^2}{2})(T-t)$ and find the parabolic PDE problem satisfied by
+      \begin{gather*}
+        v(s, y) := e^{-r \left( T - \frac{2(T-s)}{\sigma^2} \right)} u \left(T - \frac{2(T-s)}{\sigma^2}, e^{y - \left( \frac{2r}{\sigma^2} - 1 \right)(T-s)} \right)
+      \end{gather*}
+    \item Use the parabolic Feynman-Kac formula to find $v$ \textit{explicitly}.
+    \item Compute the price $u(0, x_0)$ of the call option.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Again, all the coefficients satisfy the requirements for the parabolic Feynman-Kac. With $f(x) = \max(X_T - K, 0)$, $g(x) = 0$, and $h(x) = r$. By Feynman-Kac
+      \begin{gather*}
+        u(t,x) = \mathbb{E}_{t,x}[\max(X_T - K, 0) e^{-\int_t^T r ds}]
+      \end{gather*}
+      Thus, $u(0, x_0) = \mathbb{E}_{x_0}[\max(X_T - K, 0) e^{-r T}] = p$.
+
+    \item We first note that we have
+      \begin{gather*}
+        v(s, y) = e^{-r \left( T - \frac{2(T-s)}{\sigma^2} \right)} u \left(T - \frac{2(T-s)}{\sigma^2}, e^{y - \left( \frac{2r}{\sigma^2} - 1 \right)(T-s)} \right) = e^{-r t} u(t,x)
+      \end{gather*}
+      Now, we calculate all the derivatives of the left hand side and right hand side. We denote the RHS as $f(t,x)$. Note, for the LHS, you have to do the toal derivative. As in, $\partial_t v(s,y) = \frac{\partial s}{\partial t} \frac{\partial}{\partial s} v(s,y) + \frac{\partial s}{\partial y} \frac{\partial}{\partial y} v(s,y)$.
+      \begin{align*}
+        \partial_t v(s,y) &= \frac{\sigma^2}{2} \partial_s v(s,y) + \left(\frac{\sigma^2}{2} - 2 \right) \partial_y v(s,y) \\
+        \partial_t f(t,x) &= -re^{-rt} u(t,x) + e^{-rt} \partial_t u(t,x) \\
+        \partial_x v(s,y) &= \frac{1}{x} \partial_y v(s,y) \\
+        \partial_x f(t,x) &= e^{-rt} \partial_x u(t,x) \\
+        \partial_{xx} v(s,y) &= -\frac{1}{x^2} \partial_y v(s,y) + \frac{1}{x^2} \partial_{yy} v(s,y) \\
+        \partial_{xx} f(t,x) &= e^{-rt} \partial_{xx} u(t,x)
+      \end{align*}
+      Since they are two sides of the same equation, the respective pairs of derivatives are equal. Now, we note that
+      \begin{align*}
+        &\quad \ \partial_t f(t,x) + r x \partial_x f(t,x) + \frac{1}{2} \sigma^2 \partial_{xx} f(t,x)\\
+        &= e^{-rt} \left( \partial_t u(t,x) + rx \partial_x u(t,x) + \frac{1}{2} \sigma^2 x^2 \partial_{xx} u(t,x) - r u(t,x) \right) \\
+        &= 0
+      \end{align*}
+      But, by substituting the equivalent derivatives, we get
+      \begin{gather*}
+        \frac{\sigma^2}{2} \partial_s v(s,y) + \left(\frac{\sigma^2}{2} - 2 \right) \partial_y v(s,y) + r \partial_y v(s,y) -\frac{\sigma^2}{2} \partial_y v(s,y) + \frac{\sigma^2}{2} \partial_{yy} v(s,y) \\
+        \implies \partial_s v(s,y) + \partial_{yy} v(s,y) = 0
+      \end{gather*}
+      Where the final condition is direct from $v(T, y) = e^{-rT} u(T, e^y) = \max(e^y - K, 0)$
+
+    \item The PDE generated in the last part generates the SDE according to Feynmac-Kac
+      \begin{gather*}
+        \tilde{X}_s = y + \sqrt{2} (\tilde{B}_s - \tilde{B}_t), \ s \geq t
+      \end{gather*}
+      Hence we have that $\tilde{X}_T \sim \mathcal{N}(y, 2(T-s))$. Now we apply Feynman-Kac equation
+      \begin{align*}
+        v(s,y) &= \mathbb{E}_{s,y} [e^{-rT} \max(e^{\tilde{X}_T} - K, 0)] \\
+        &= e^{-rT} \int_{\log K}^\infty \frac{1}{\sqrt{2 \pi}\sqrt{2(T-s)}} e^{\tilde{X}_T} e^{-\frac{(\tilde{X}_T - y)^2}{4(T-s)}} \text{d} \tilde{X}_T \\
+        &\quad - K \int_{\log K}^\infty \frac{1}{\sqrt{2 \pi}\sqrt{2(T-s)}} e^{-\frac{(\tilde{X}_T - y)^2}{4(T-s)}} \text{d} \tilde{X}_T \\
+        &= e^{-rT} \Bigg( e^{-4y(T-s) - 4(T-s)^2} \Phi \left(-\frac{\log (K) - (y+ 2(T-s))}{\sqrt{2(T-s)}} \right) \\
+        &\quad - K \Phi \left(-\frac{\log (K) - y}{\sqrt{2(T-s)}} \right) \Bigg) \\
+        &= e^{-rT} \Bigg( e^{y+(T-s)} \Phi \left(-\frac{\log (K) - (y+ 2(T-s))}{\sqrt{2(T-s)}} \right) \\
+        &\quad - K \Phi \left(-\frac{\log (K) - y}{\sqrt{2(T-s)}} \right) \Bigg)
+      \end{align*}
+      Where the last step is generated by completing the square of the exponential and generating a new Gaussian distribution.
+
+    \item We have $u(0, x_0) = v(T - \frac{\sigma^2}{2}T, \log(x_0) + (r - \frac{\sigma^2}{2})T)$ and so we plug this into the equation in the previous part and get the incredibly simple price of the call option
+      \begin{gather*}
+        u(0, x_0) = e^{-rT} \Bigg( e^{\log(x_0) + (r - \frac{\sigma^2}{2})T + (\frac{\sigma^2}{2}T)} \\
+        \cdot \Phi \left(-\frac{\log (K) - (\log(x_0) + (r - \frac{\sigma^2}{2})T+ 2(\frac{\sigma^2}{2}T))}{\sqrt{2(\frac{\sigma^2}{2}T)}} \right) \\
+        - K \Phi \left(-\frac{\log (K) - \log(x_0) + (r - \frac{\sigma^2}{2})T}{\sqrt{2(\frac{\sigma^2}{2}T)}} \right) \Bigg) \\
+      \end{gather*}
+      Which simplifies down to
+      \begin{gather*}
+        u(0, x_0) = x_0 \Phi \left(\frac{\log (K/x_0)  + (r + \frac{\sigma^2}{2})T)}{\sigma \sqrt{T}} \right) \\
+        - e^{-rT} K \Phi \left(\frac{\log (K/x_0) + (r - \frac{\sigma^2}{2})T}{\sigma \sqrt{T}} \right) \Bigg)
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\end{document}

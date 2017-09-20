@@ -1,0 +1,190 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 5}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{25}{10}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Toss a fair coin 4 times. Each toss yields either $H$ (heads) or $T$ (tails). Consider the following set:
+
+  $\mathcal{G} = $ we know the outcomes of the tosses but not the order.
+
+  Define the random variables:
+
+  $X = $ number of $H - $ number of $T$
+
+  $Y = $ number of $T$ before the first $H$.
+
+  \begin{enumerate}[label=\roman*)]
+    \item Show that $X$ is $\mathcal{G}$-measurable while $Y$ is not $\mathcal{G}$-measurable.
+    \item Find the expectations $\mathbb{E}[X]$, $\mathbb{E}[Y]$, and $\mathbb{E}[X | \mathcal{G}]$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\roman*)]
+    \item $X$ is $\mathcal{G}$-measurable since if we have the outcome, we have both the number of heads and the number of tails. Thus $\sigma(X) \subset \mathcal{G}$. $Y$ is not $\mathcal{G}$-measurable since for a given outcome (say $\{HHTT\}$) we don't know if the order was $\{TTHH\}$ or $\{THHT\}$ which yields a value of $Y = 2$ and $Y = 1$ respectively.
+    \item Let $G$ be the number of heads. Then the number of tails is $4 - G$ and so $X = G - 4 + G = 2G - 4$
+      \begin{gather*}
+        \mathbb{E}[X] = 2 \mathbb{E}[G] - 4 = 4 - 4 = 0 \\
+        \mathbb{E}[Y] = \frac{1}{2} \cdot 0 + \frac{1}{4} \cdot 1 + \frac{1}{8} \cdot 2 + \frac{1}{16} \cdot 3 + \frac{1}{16} \cdot 4 = \frac{15}{16}
+      \end{gather*}
+      Finally, $X$ is $\mathcal{G}$-measurable so $\mathbb{E}[X|\mathcal{G}] = X$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider $X$ to be a non-negative random variable with the distribution measure $\mu$. Let $\mu$ be absolutely continuous (w.r.t. the Lebesgue measure) and $\mathbb{E}[X|X > t] = t + a$ for some constant $a > 0$ and all $t \geq 0$. Prove that $\mu$ is the exponential distribution with parameter $c = 1/a$.
+\end{exercise}
+
+\begin{answer}
+  Since it is absolutely continuous, we know that there exists a density by Radon-Nykodim theorem. So,
+  \begin{gather*}
+    \mathbb{E}[X|X > t] = \frac{1}{P(X > t)} \int_t^\infty x f(x) dx = \frac{\int_t^\infty x f(x) dx}{\int_t^\infty f(x) dx} =  t+a
+  \end{gather*}
+  Rearranging,
+  \begin{gather*}
+    \int_t^\infty x f(x) dx =  (t+a)\int_t^\infty f(x) dx
+  \end{gather*}
+  By the Lebesgue differentiation theorem, we can differentiate these integrals with respect to $t$,
+  \begin{gather*}
+    -t f(t) =  -(t+a)f(t) + \int_t^\infty f(x) dx \\
+    a f(t) = \int_t^\infty f(x) dx
+  \end{gather*}
+  Which relabelling $F(t) = \int_t^\infty f(x)$ then $F'(t) = -f(t)$,
+  \begin{gather*}
+    -a F'(t) = F(t)
+  \end{gather*}
+  Which by the theory of ODE's has a unique solution. Namely,
+  \begin{gather*}
+    F(t) = De^{-\frac{1}{a}t}
+  \end{gather*}
+  So, $f(t) = -D \frac{1}{a} e^{-\frac{1}{a}t}$, which integrates to $1$ since it is a density,
+  \begin{gather*}
+    \int_0^\infty -D \frac{1}{a} e^{-\frac{1}{a}t} = D (0 - 1) = 1 \\
+    D = -1
+  \end{gather*}
+  Which gives us the density $f(t) = \frac{1}{a} e^{-\frac{1}{a}t}$ which is the exponential distribution with parameter $1/a$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Prove or disprove: For any real valued random variables $X$, $Y$, and $Z$ we have
+  \begin{gather*}
+    \mathbb{E}[Z | X,Y] = \mathbb{E}[\mathbb{E}[Z | X] | Y]
+  \end{gather*}
+  (Note the meaning of the left side as $\mathbb{E}[Z | X,Y] = \mathbb{E}[Z | \sigma(X,Y)]$).
+\end{exercise}
+
+\begin{answer}
+  Consider the case when $\sigma(X) \subset \sigma(Y)$, then by the tower property
+  \begin{gather*}
+    \mathbb{E}[\mathbb{E}[Z | X] | Y] = \mathbb{E}[Z|X]
+  \end{gather*}
+  On the other hand, since $\sigma(X) \subset \sigma(Y)$ then $\sigma(X,Y) = \sigma(Y)$. This yields,
+  \begin{gather*}
+    \mathbb{E}[Z | X,Y] = \mathbb{E}[Z|Y]
+  \end{gather*}
+  In general,
+  \begin{gather*}
+    \mathbb{E}[Z|X] \neq \mathbb{E}[Z|Y]
+  \end{gather*}
+  E.g., $X$ is a constant and $Y$ is non-constant. So $\mathbb{E}[Z | X,Y] = \mathbb{E}[\mathbb{E}[Z | X] | Y]$ does not hold in general.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X$ be a Poisson distributed random variable with parameter $\lambda$. Consider the random variable $Y = \rho^X$, with $\rho > 1$ constant. Find the expectation $\mathbb{E}[Y]$.
+\end{exercise}
+
+\begin{answer}
+  Writting out the expectation,
+  \begin{gather*}
+    \mathbb{E}[Y] = \mathbb{E}[\rho^X] = \sum_{i=0}^\infty \frac{\lambda^i e^{-\lambda}}{i!} \rho^i = e^{-\lambda} \sum_{i=0}^\infty \frac{(\lambda \cdot \rho)^i}{i!}
+  \end{gather*}
+  From calculus, this is the Taylor series for $e^x$, so
+  \begin{gather*}
+    = e^{-\lambda} \cdot e^{\lambda \cdot \rho} = e^{(\rho-1)\lambda}
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{F}$ be a $\sigma$-algebra included in $\mathcal{H}$. If $X$ is a $\mathcal{F}$-measurable random variable such that
+  \begin{gather*}
+    \int_A X dP = 0, \quad \forall A \in \mathcal{F},
+  \end{gather*}
+  show that $X = 0$ almost surely.
+\end{exercise}
+
+\begin{answer}
+  By definition of conditional expectation,
+  \begin{gather*}
+    \int_A X dP = 0, \quad \forall A \in \mathcal{F},
+  \end{gather*}
+  is equivalent to saying,
+  \begin{gather*}
+    \mathbb{E}[X | \mathcal{F}] = 0
+  \end{gather*}
+  Since $X$ is $\mathcal{F}$-measurable we can pull it out,
+  \begin{gather*}
+    X \cdot \mathbb{E}[1 | \mathcal{F}] = X = 0
+  \end{gather*}
+  That is, $X = 0$ almost surely.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  If $\mathcal{F} \subset \mathcal{G}$ prove that
+  \begin{gather*}
+    \mathbb{E}[\mathbb{E}[X|\mathcal{F}]|\mathcal{G}] = \mathbb{E}[X|\mathcal{F}]
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+  We have by the definition of conditional expectation,
+  \begin{gather*}
+    \int_F \mathbb{E}[X|\mathcal{F}] dP = \int_F X dP \quad \forall F \in \mathcal{F}
+  \end{gather*}
+  Since $\mathcal{F} \subset \mathcal{G}$ we also have,
+  \begin{gather*}
+    \int_F \mathbb{E}[X|\mathcal{G}] dP = \int_F X dP \quad \forall F \in \mathcal{F}
+  \end{gather*}
+  Setting these two equations equal,
+  \begin{gather*}
+    \int_F \mathbb{E}[X|\mathcal{F}] dP = \int_F \mathbb{E}[X|\mathcal{G}] dP \quad \forall F \in \mathcal{F}
+  \end{gather*}
+  Which is the definition of conditional expectation on $\mathcal{F}$,
+  \begin{gather*}
+    \mathbb{E}[X|\mathcal{F}] = \mathbb{E}[\mathbb{E}[X|\mathcal{G}]|\mathcal{F}]
+  \end{gather*}
+\end{answer}
+
+\end{document}

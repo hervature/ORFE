@@ -1,0 +1,521 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 522: Linear and Nonlinear Optimization \\ Homework 2}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{17}{10}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Please show that exactly one of the following systems has a solution
+  \begin{enumerate}[label=\arabic*)]
+    \item $A\textbf{x} \leq \textbf{b}$
+    \item $\textbf{y}^T A = 0, \textbf{b}^T \textbf{y} < 0, \textbf{y} \geq 0$
+  \end{enumerate}
+  (Hint: using linear duality, you can show that it can't both have a solution and if the second one is infeasible, the first one must be feasible.)
+\end{exercise}
+
+\begin{answer}
+  Consider the following LP,
+  \begin{align*}
+    \max \quad &\textbf{0}^T \textbf{x} \\
+    \text{subject to} \quad &A\textbf{x} \leq \textbf{b}
+  \end{align*}
+  Then the dual problem becomes,
+  \begin{align*}
+    \min \quad &\textbf{b}^T \textbf{y} \\
+    \text{subject to} \quad &A^T \textbf{y} = \textbf{0} \\
+    &\textbf{y} \geq 0
+  \end{align*}
+  Let us assume that $\{{\textbf{y}: \textbf{y}^T A = 0, \textbf{b}^T \textbf{y} < 0, \textbf{y} \geq 0}\} \neq \emptyset$.
+
+  First note that the dual problem is always feasible (\textbf{y} = \textbf{0}). So, it is either unbounded or there is an optimal solution. If there is an optimal solution, by duality, since the maximum of the primal is 0 and the minimum of the dual is 0. Thus, $\min \textbf{b}^T \textbf{y} = \textbf{0}$. But this contradicts our assumption that the set above is nonempty. Thus, both cannot have optimal solutions. Hence, the dual problem is unbounded and so the primal is infeasible. That is, the conditions for set 2) are met but not for set 1).
+
+  Now assume that $\{{\textbf{y}: \textbf{y}^T A = 0, \textbf{b}^T \textbf{y} < 0, \textbf{y} \geq 0}\} = \emptyset$
+
+  Then min $\textbf{b}^T \textbf{y} = 0$ since $\textbf{b}^T \textbf{y} \nless 0$. By strong duality, the objective functions are equal and so there exists an optimal solution for the primal. Ans so, there exists \textbf{x} such that $A\textbf{x} \leq \textbf{b}$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the max flow problem where the goal is to,
+  \begin{gather*}
+    \max \quad \sum_{v: (s,v)\in E} f(s,v) \\
+    \text{subject to capacity constraint} \quad f(u,v) \leq w(u,v) \text{ for all } (u,v) \in E \\
+    \text{and for all } v \in V, v \notin \{ s,t \}, \sum_{u: (u,v) \in E} f(u,v) =  \sum_{u: (v,u) \in E} f(v,u)
+  \end{gather*}
+  \begin{enumerate}[label=\arabic*)]
+    \item Formulate it as a linear program and solve it by using the simplex method
+    \item Formulate the dual of this LP and solve it by using the simplex method.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  Writing out the LP,
+  \begin{gather*}
+    \max f(s,B) + f(s,D) + f(s,C) \\
+    \text{subject to } \begin{bmatrix}
+      f(s,B) \\
+      f(s,C) \\
+      f(s,D) \\
+      f(B,D) \\
+      f(B,E) \\
+      f(C,F) \\
+      f(D,C) \\
+      f(D,E) \\
+      f(D,F) \\
+      f(E,B) \\
+      f(E,F) \\
+      f(E,t) \\
+      f(F,E) \\
+      f(F,t) \\
+      f(t,F)
+    \end{bmatrix} \leq \begin{bmatrix}
+      5 \\
+      4 \\
+      8 \\
+      1 \\
+      3 \\
+      5 \\
+      3 \\
+      4 \\
+      6 \\
+      2 \\
+      1 \\
+      10 \\
+      1 \\
+      6 \\
+      1
+    \end{bmatrix} \\
+    \text{and } \begin{bmatrix}
+      f(s,B) + f(E,B) - f(B,E) - f(B,D) \\
+      f(s,C) + f(D,C) - f(C,F) \\
+      f(s,D) + f(B,D) - f(D,C) - f(D,E) - f(D,F) \\
+      f(B,E) + f(D,E) + f(F,E) - f(E,B) - f(E,F) - f(E,t) \\
+      f(C,F) + f(D,F) + f(E,F) + f(t,F) - f(F,E) - f(F,t)
+    \end{bmatrix} = \textbf{0} \\
+    \text{and all } f(u,v) \geq 0
+  \end{gather*}
+  One can see the generated matrices in the MATLAB code below.
+  \begin{verbatim}
+    f = [-1;-1;-1;0;0;0;0;0;0;0;0;0;0;0;0];
+    A = eye(15);
+    b = [5;4;8;1;3;5;3;4;6;2;1;10;1;6;1];
+    Aeq = [
+        1,0,0,-1,-1,0,0,0,0,1,0,0,0,0,0;
+        0,1,0,0,0,-1,1,0,0,0,0,0,0,0,0;
+        0,0,1,1,0,0,-1,-1,-1,0,0,0,0,0,0;
+        0,0,0,0,1,0,0,1,0,-1,-1,-1,1,0,0;
+        0,0,0,0,0,1,0,0,1,0,1,0,-1,-1,1;
+    ]
+    beq = [0;0;0;0;0];
+    LB = [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
+    UB = [];
+
+    x = linprog(f,A,b,Aeq,beq,LB,UB)
+    obj = -f'*x
+  \end{verbatim}
+  The code outputs that the object function is 14 and the flow rates are
+  \begin{gather*}
+    \begin{bmatrix}
+          f(s,B) \\
+          f(s,C) \\
+          f(s,D) \\
+          f(B,D) \\
+          f(B,E) \\
+          f(C,F) \\
+          f(D,C) \\
+          f(D,E) \\
+          f(D,F) \\
+          f(E,B) \\
+          f(E,F) \\
+          f(E,t) \\
+          f(F,E) \\
+          f(F,t) \\
+          f(t,F)
+    \end{bmatrix} = \begin{bmatrix}
+      3.8183 \\
+      3.2035 \\
+      6.9782 \\
+      0.8183 \\
+      3 \\
+      3.8218 \\
+      0.6183 \\
+      4 \\
+      3.1782 \\
+      0 \\
+      0 \\
+      8 \\
+      1 \\
+      6 \\
+      0
+    \end{bmatrix}
+  \end{gather*}
+  Using the matrices from the MATLAB program, note that $\textbf{b}^T = [b^T | b_{eq}^T]$ and $A^T = [A^T | A_{eq}^T]$, the dual then becomes,
+  \begin{gather*}
+    \min \textbf{b}^T \textbf{y} = \min 5y_1 + 4y_2 + 8y_3 + y_4 +3y_5 +5y_6 +3y_7 +4y_8 +6y_9 \\
+                                        +2y_{10} +y_{11} +10y_{12} +y_{13} +6y_{14} +y_{15} \\
+    \text{subject to } A^T\textbf{y} \geq \textbf{c} \\
+    \text{where }\textbf{c}^T = \lbrack 1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 \rbrack \\
+    y_i \geq 0 \text{ for } i \in \{ 1,\mathellipsis, 15\} \\
+    y_i \text{ free for } i \in \{ 16,\mathellipsis, 20\}
+  \end{gather*}
+  This constraints are more readily digested in the MATLAB code below.
+  \begin{verbatim}
+    f = [5;4;8;1;3;5;3;4;6;2;1;10;1;6;1;0;0;0;0;0];
+    A = -[eye(15), [
+        1,0,0,-1,-1,0,0,0,0,1,0,0,0,0,0;
+        0,1,0,0,0,-1,1,0,0,0,0,0,0,0,0;
+        0,0,1,1,0,0,-1,-1,-1,0,0,0,0,0,0;
+        0,0,0,0,1,0,0,1,0,-1,-1,-1,1,0,0;
+        0,0,0,0,0,1,0,0,1,0,1,0,-1,-1,1;
+    ]'];
+    b = [-1;-1;-1;0;0;0;0;0;0;0;0;0;0;0;0];
+
+    LB = [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0; ; ; ; ;];
+    UB = [];
+
+    y = linprog(f,A,b,[],[],LB,UB)
+
+    f'*y
+  \end{verbatim}
+  The code outputs that the objective value is 14 which means that both problems have optimal solutions. The solution for the dual is:
+  \begin{gather*}
+    \begin{bmatrix}
+          y_1 \\
+          y_2 \\
+          y_3 \\
+          y_4 \\
+          y_5 \\
+          y_6 \\
+          y_7 \\
+          y_8 \\
+          y_9 \\
+          y_{10} \\
+          y_{11} \\
+          y_{12} \\
+          y_{13} \\
+          y_{14} \\
+          y_{15} \\
+          y_{16} \\
+          y_{17} \\
+          y_{18} \\
+          y_{19} \\
+          y_{20}
+    \end{bmatrix} = \begin{bmatrix}
+      0 \\
+      0 \\
+      0 \\
+      0 \\
+      1 \\
+      0 \\
+      0 \\
+      1 \\
+      0 \\
+      0 \\
+      0 \\
+      0 \\
+      1 \\
+      1 \\
+      0 \\
+      1 \\
+      1 \\
+      1 \\
+      0 \\
+      1
+    \end{bmatrix}
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Use the two-phase simplex method to solve completely the following problem:
+  \begin{gather*}
+    \begin{matrix}
+      \text{minimize } &2x_1 &+x_2 &+3x_3 &+x_4 &-3x_5 & & \\
+      \text{subject to } &x_1 &2x_2 & &4x_4 &-3x_5 &= &2 \\
+      &x_1 &+x_2 & &-3x_4 &+4x_5 &= &2 \\
+      &-x_1 &-3x_2 &+3x_3 & & &= &1 \\
+      &x_1, &x_2, &x_3, &x_4, &x_5 &\geq &0
+    \end{matrix}
+  \end{gather*}
+  For each step, clearly state what is the current basis, the current basic solution, and the corresponding objective values.
+\end{exercise}
+
+\begin{answer}
+  For the two-phase method, we first solve the auxillary problem,
+  \begin{gather*}
+    \begin{matrix}
+      \text{minimize } &y_1 &+y_2 &+y_3 & & & & & \\
+      \text{subject to } &x_1 &2x_2 & &4x_4 &-3x_5 &+y_1 &= &2 \\
+      &x_1 &+x_2 & &-3x_4 &+4x_5 &+y_2 &= &2 \\
+      &-x_1 &-3x_2 &+3x_3 & & &+y_3 &= &1 \\
+      &x_1, &x_2, &x_3, &x_4, &x_5 &\textbf{y} &\geq &0
+    \end{matrix}
+  \end{gather*}
+  We are at (6,7,8) with BFS (0,0,0,0,0,2,2,1). Compute a reduced cost,
+  \begin{gather*}
+    \bar{c_1} = 0 - \begin{bmatrix} 1 & 1 & 1 \end{bmatrix}\begin{bmatrix}
+      1 & 0 & 0 \\
+      0 & 1 & 0 \\
+      0 & 0 & 1
+    \end{bmatrix}^{-1} \begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix} = -1 \\
+    \textbf{d} = \begin{bmatrix} 1 & 0 & 0 & 0 & 0 & -1 & -1 & 1 \end{bmatrix} \\
+    \theta^* = 2
+  \end{gather*}
+  Our new position is thus (1,7,8) with BFS (2,0,0,0,0,0,0,3). Compute reduced cost,
+  \begin{gather*}
+    \bar{c_3} = 0 - \begin{bmatrix} 0 & 1 & 1 \end{bmatrix}\begin{bmatrix}
+      1 & 0 & 0 \\
+      1 & 1 & 0 \\
+      -1 & 0 & 1
+    \end{bmatrix}^{-1} \begin{bmatrix} 0 \\ 0 \\ 3 \end{bmatrix} = -3 \\
+    \textbf{d} = \begin{bmatrix} 0 & 0 & 1 & 0 & 0 & 0 & 0 & -3 \end{bmatrix} \\
+    \theta^* = 1
+  \end{gather*}
+  Our new position is thus (1,3,7) with BFS (2,0,1,0,0,0,0,0). Compute reduced cost,
+  \begin{gather*}
+    \bar{c_5} = 0 - \begin{bmatrix} 0 & 0 & 1 \end{bmatrix}\begin{bmatrix}
+      1 & 0 & 0 \\
+      1 & 0 & 1 \\
+      -1 & 3 & 0
+    \end{bmatrix}^{-1} \begin{bmatrix} -3 \\ 4 \\ 0 \end{bmatrix} = -7 \\
+    \textbf{d} = \begin{bmatrix} 3 & 0 & 1 & 0 & 1 & 0 & -7 & 0 \end{bmatrix} \\
+    \theta^* = 0
+  \end{gather*}
+  Our new position is thus (1,3,5) with BFS (2,0,1,0,0,0,0,0). Compute reduced cost,
+  \begin{gather*}
+    \bar{c_j} = 0 - \begin{bmatrix} 0 & 0 & 0 \end{bmatrix}\begin{bmatrix}
+      1 & 0 & -3 \\
+      1 & 0 & 4 \\
+      -1 & 3 & 0
+    \end{bmatrix}^{-1} A_j = 0 \\
+  \end{gather*}
+  Thus the optimal is achieved for the auxiliary problem. Now we go back to the original problem but start at (1,3,5) with BFS (2,0,1,0,0). Compute reduced cost,
+  \begin{gather*}
+    \bar{c_4} = 1 - \begin{bmatrix} 2 & 3 & -3 \end{bmatrix}\begin{bmatrix}
+      1 & 0 & -3\\
+      1 & 0 & 4 \\
+      -1 & 3 & 0
+    \end{bmatrix}^{-1} \begin{bmatrix} 4 \\ -3 \\ 0 \end{bmatrix} = -5 \\
+    \textbf{d} = \begin{bmatrix} -1 & 0 & -1/3 & 1 & 1 \end{bmatrix} \\
+    \theta^* = 2
+  \end{gather*}
+  Our new position is thus (3,4,5) with BFS (0,0,1/3,2,2). Compute reduced cost,
+  \begin{gather*}
+    \bar{c_1} = 2 - \begin{bmatrix} 3 & 1 & -3 \end{bmatrix}\begin{bmatrix}
+      0 & 4 & -3\\
+      0 & -3 & 4 \\
+      3 & 0 & 0
+    \end{bmatrix}^{-1} \begin{bmatrix} 1 \\ 1 \\ -1 \end{bmatrix} = 2.333 \\
+    \bar{c_2} = 1 - \begin{bmatrix} 3 & 1 & -3 \end{bmatrix}\begin{bmatrix}
+      0 & 4 & -3\\
+      0 & -3 & 4 \\
+      3 & 0 & 0
+    \end{bmatrix}^{-1} \begin{bmatrix} 2 \\ 1 \\ -3 \end{bmatrix} = 1.5714 \\
+  \end{gather*}
+  None of the reduced costs are negative, so we have found an optimal BFS with (0,0,1/3,2,2) with objective value -3.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  A manager of an oil refinery has 8 million barrels of crude oil A and 5 millions barrels of crude oil B allocated for production during the coming month. These resources can be used to make gasoline, which sells for 38 per barrels, and home heating oil, which sells for 33 per barrel. There are three production processes abailable:
+  \begin{center}
+    \begin{tabular}{| c | c c c |}
+      \hline
+      & \text{Process 1} & \text{Process 2} & \text{Process 3} \\
+      \hline
+      \text{Input Crude A} & 2 & 1 & 4 \\
+      \text{Input Crude B} & 4 & 1 & 2 \\
+      \text{Output gasoline} & 4 & 1 & 3 \\
+      \text{Output heating oil} & 3 & 1 & 4 \\
+      \hline
+      \text{Cost} & 111 & 11 & 100 \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{exercise}
+
+\begin{answer}
+  \begin{enumerate}[label=\arabic*)]
+    \item The LP can be formulated as:
+      \begin{align*}
+        &\min &&-140x_1 - 60x_2 - 146x_3 \\
+        &\text{subject to } &&2x_1 + x_2 +4x_3 + s_1 = 8000000 \\
+        & &&4x_1 + x_2 + 2x_3 + s_2 = 5000000 \\
+        & &&x_1, x_2, x_3, s_1, s_2 \geq 0
+      \end{align*}
+      Where the variables $x_i$ can be thought of as the number of times that process $i$ is used. The coefficients in the objective (revenue) was obtained by multiplying output by prices and subtracting the cost.
+      In matrix form,
+      \begin{gather*}
+        A = \begin{bmatrix}
+          2 & 1 & 4 & -1 & 0 \\
+          4 & 1 & 2 & 0 & -1
+        \end{bmatrix}, b = \begin{bmatrix}
+          8000000 \\
+          5000000
+        \end{bmatrix}, c = \begin{bmatrix}
+          140 \\
+          60 \\
+          146 \\
+          0 \\
+          0
+        \end{bmatrix}
+      \end{gather*}
+      To start, we use basis (4,5) with BFS (0,0,0,8000000,5000000)
+      Now iterate through the reduced costs,
+      \begin{gather*}
+        \bar{c_2} = -60 - \begin{bmatrix} 0 & 0 \end{bmatrix}\begin{bmatrix}
+          1 & 0 \\
+          0 & 1
+        \end{bmatrix}^{-1} \begin{bmatrix} 1 \\ 1 \end{bmatrix} = -60 \\
+        \textbf{d} = \begin{bmatrix} 0 & 1 & 0 & -1 & -1 \end{bmatrix} \\
+        \theta^* = 5000000
+      \end{gather*}
+      Our new position is thus (2,4) with BFS (0,5000000,0,3000000,0). Compute reduced cost,
+      \begin{gather*}
+        \bar{c_3} = -146 - \begin{bmatrix} -60 & 0 \end{bmatrix}\begin{bmatrix}
+          1 & 1 \\
+          1 & 0
+        \end{bmatrix}^{-1} \begin{bmatrix} 4 \\ 2 \end{bmatrix} = -26 \\
+        \textbf{d} = \begin{bmatrix} 0 & -2 & 1 & -2 & 0 \end{bmatrix} \\
+        \theta^* = 1500000
+      \end{gather*}
+      Our new position is thus (2,3) with BFS (0,2000000,1500000,0,0). Compute reduced cost,
+      \begin{gather*}
+        \bar{c_1} = -140 - \begin{bmatrix} -60 & -146 \end{bmatrix}\begin{bmatrix}
+          1 & 4 \\
+          1 & 2
+        \end{bmatrix}^{-1} \begin{bmatrix} 2 \\ 4 \end{bmatrix} = 74 \\
+        \bar{c_4} = 0 - \begin{bmatrix} -60 & -146 \end{bmatrix}\begin{bmatrix}
+          1 & 4 \\
+          1 & 2
+        \end{bmatrix}^{-1} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = 13 \\
+        \bar{c_5} = 0 - \begin{bmatrix} -60 & -146 \end{bmatrix}\begin{bmatrix}
+          1 & 4 \\
+          1 & 2
+        \end{bmatrix}^{-1} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = 47 \\
+      \end{gather*}
+      All positive, so the BFS $x_2 = 2000000, x_3 = 1500000, x_1=s_1=s_2=0$ is the optimal solution. The objective value is 339000000.
+    \item Suppose that gasoline price may rise $\Delta$. Then, our system becomes,
+      \begin{gather*}
+        \min -(140+4\Delta)x_1 + -(60+\Delta)x_2 + -(146+3\Delta)x_3 \\
+        \text{subject to the same constraints}
+      \end{gather*}
+      Thus we want all the following reduced costs to remain positive,
+      \begin{gather*}
+        \bar{c_1} = -(140+4\Delta) - \begin{bmatrix} -(60+\Delta) & -(146+3\Delta) \end{bmatrix}\begin{bmatrix}
+          1 & 4 \\
+          1 & 2
+        \end{bmatrix}^{-1} \begin{bmatrix} 2 \\ 4 \end{bmatrix} = 74 - \Delta \\
+        \bar{c_4} = 0 - \begin{bmatrix} -(60+\Delta) & -(146+3\Delta) \end{bmatrix}\begin{bmatrix}
+          1 & 4 \\
+          1 & 2
+        \end{bmatrix}^{-1} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \frac{\Delta}{2} + 13 \\
+        \bar{c_5} = 0 - \begin{bmatrix} -(60+\Delta) & -(146+3\Delta) \end{bmatrix}\begin{bmatrix}
+          1 & 4 \\
+          1 & 2
+        \end{bmatrix}^{-1} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \frac{\Delta}{2} + 47 \\
+      \end{gather*}
+      Thus, the only reduced cost that is at risk of becoming negative is $\bar{c_1}$. So we need $74 - \Delta \geq 0$ which implies $\Delta \leq 74$.
+    \item First, we check to see if the previous optimal solution satisfies this new constraint. $2000000 \cdot \frac{3000}{1000000} + 1500000 \cdot \frac{5000}{1000000} = 13500 < 14000$. Thus, the optimal solution satisfies the new constraint and so the optimal solution does not change.
+    \item Since $\sqrt{r}$ is an increasing function, then $\max \sqrt{r} = \sqrt{\max r}$ which is our original LP and so the maximum utility is thus the square root of our maximum revenue which is: $\sqrt{339000000} \approx 18411.95$
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider an LP problem of standard form
+  \begin{align*}
+    &\min &&\textbf{c}^T \textbf{x} \\
+    &\text{subject to} &&A\textbf{x} = \textbf{b} \\
+    & &&\textbf{x} \geq 0
+  \end{align*}
+  where $\textbf{x} \in \mathbb{R}^n, A$ is $m \times n$. Assume that the feasible set, i.e.,
+  \begin{gather*}
+    P = \{ \textbf{x}: A\textbf{x} = \textbf{b}, \textbf{x} \geq 0 \}
+  \end{gather*}
+  is nonempty and that $A$ has full rank $m$. We denote the nullspace of $A$ by
+  \begin{gather*}
+    \textbf{N}(A) = \{ x: Ax = 0 \}
+  \end{gather*}
+  Show that there exists an optimal solution to the LP if and only if
+  \begin{gather*}
+    D = \{ d: c^T d < 0  \} \cap \textbf{N}(A) \cap \{ x \geq 0 \} = \emptyset
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+  We shall prove both directions simultaneously, first write the dual problem,
+  \begin{align*}
+    &\max &&\textbf{b}^T \textbf{y} \\
+    &\text{subject to} &&A^T\textbf{y} \leq \textbf{b}
+  \end{align*}
+  Now, we have the equivalence:
+  \begin{center}
+    primal has an optimal solution $\Longleftrightarrow$ dual is feasible.
+  \end{center}
+  The first direction is a result of strong duality theorem (if primal is optimal, so is the dual). Now if the dual is feasible, this implies that it is either unbounded or has an optimal solution. Since $P \neq \emptyset$ by assumption, the dual is bounded. Thus, the dual must have an optimal solution and hence so does the primal. Now, using the equivalence proved in question 1,
+  \begin{gather*}
+    A^T\textbf{y} \leq \textbf{b} \text{ feasible } \Longleftrightarrow \{ \textbf{y}^T A = 0, \textbf{b}^T \textbf{y} < 0, \textbf{y} \geq 0 \} = \emptyset \\
+    \Longleftrightarrow \{ d: c^T d < 0  \} \cap \textbf{N}(A) \cap \{ x \geq 0 \} = \emptyset
+  \end{gather*}
+  Thus, by transitivty of equivalences,
+  \begin{gather*}
+    \text{primal has an optimal solution } \Longleftrightarrow \{ d: c^T d < 0  \} \cap \textbf{N}(A) \cap \{ x \geq 0 \} = \emptyset
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the linear programming problem in standard form $\min c^T x$ s.t. $Ax =b, x \geq 0$, where $x, c \in \mathbb{R}^n, b \in \mathbb{R}^m$, and matrix $A \in \mathbb{R}^{m \times n} (m < n)$. Suppose $x^*$ is a degenerate BFS with basis $B$. Now perturb $b$ with a random variable $\epsilon$ uniformly distributed in $[-\sigma, \sigma]$ and obtain new $\tilde{b} = b + \epsilon$. Prove that there exists $\sigma > 0$ such that the BFS with the same basis $B$ is not degenerate with probability 1.
+\end{exercise}
+
+\begin{answer}
+  If $x^*$ is a degenerate BFS with basis $B $then $A^{-1}_B b$ has one of its entries = 0 and the rest $> 0$. Suppose we perturb $b$ according to the scheme described. Then,
+  \begin{gather*}
+    A^{-1}_B (b + \epsilon) = A^{-1}_B b + A^{-1}_B \epsilon
+  \end{gather*}
+  Suppose this is a BFS, that is,
+  \begin{gather*}
+    A^{-1}_B b + A^{-1}_B \epsilon \geq 0
+  \end{gather*}
+  We want to show, $P((A^{-1}_B b)_i + (A^{-1}_B \epsilon)_i > 0) = 1$. That is, we only have to show $P((A^{-1}_B b)_i + (A^{-1}_B \epsilon)_i = 0) = 0$. Let,
+  \begin{gather*}
+    (A^{-1}_B b)_i = \alpha_i \\
+    (A^{-1}_B \epsilon)_i = a_1 \epsilon_1 + a_2 \epsilon_2 + \mathellipsis + a_m \epsilon_m
+  \end{gather*}
+  Notice that $(A^{-1}_B \epsilon)_i$ is a linear combination of continuous random variables, and so, $(A^{-1}_B \epsilon)_i$ is itself a continuous random variable. Thus,
+  \begin{gather*}
+    P((A^{-1}_B b)_i = -\alpha_i) = 0 \quad \forall \ i \in \{ 1, \mathellipsis, m\}
+  \end{gather*}
+  Since sets of measure 0 have probability 0. Therefore, for any $\sigma > 0$ the BFS with the same basis $B$ is not degenerate with probability 1.
+\end{answer}
+
+\end{document}

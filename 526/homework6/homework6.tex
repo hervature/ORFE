@@ -1,0 +1,227 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 6}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{15}{11}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  \leavevmode
+
+  \begin{enumerate}[label=\alph*)]
+    \item Consider the normal random variable $X \sim N(\mu, \sigma^2)$, with $\mu \neq 0$. Prove that there is a unique $\theta \neq 0$ such that $\mathbb{E}[e^{\theta X}] = 1$
+    \item Let $(X_i)_{i \geq 0}$ be a sequence of independent random variables identically distributed as $N(\mu, \sigma^2)$, with $\mu \neq 0$. Consider the sum $S_n = \sum_{j=0}^n X_j$. Show that $Z_n = e^{\theta S_n}$ is a martingale, with $\theta$ defined in part a).
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+
+  \begin{enumerate}[label=\alph*)]
+    \item We write out $\mathbb{E}[e^{\theta X}]$
+      \begin{gather*}
+        \mathbb{E}[e^{\theta X}] = \int_{-\infty}^\infty \frac{1}{\sqrt{2 \sigma^2 \pi}} e^{-\frac{(x-\mu)^2}{2 \sigma^2}} e^{\theta x} dx
+      \end{gather*}
+      Do a change of variable with $z = \frac{x - \mu}{\sigma}$
+      \begin{gather*}
+        = e^{\mu \theta} \int_{-\infty}^\infty \frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2}z^2} e^{z \sigma \theta} dz \\
+        = e^{\mu \theta} e^{\frac{1}{2} \sigma^2 \theta^2 } \int_{-\infty}^\infty \frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2}(z-\theta)^2} e^{z \sigma \theta} dz \\
+        = e^{\mu \theta} e^{\frac{1}{2} \sigma^2 \theta^2 }
+      \end{gather*}
+      Since the inside of the integral is the pdf of a normal distribution $N(\theta, 0)$, it integrates to 1. Setting this result equal to 1 and solving for $\theta$ yields
+      \begin{gather*}
+        \mu \theta + \frac{1}{2} \sigma^2 \theta^2 = 0 \\
+        \theta = -\frac{2 \mu}{\sigma^2} \text{ (or 0)}
+      \end{gather*}
+      We ignore the case $\theta = 0$ by assumption. Thus, $\theta = -\frac{2 \mu}{\sigma^2}$ is a unique solution.
+    \item We must show three things. First, that $Z_t$ is integrable. Since $Z_t \geq 0$ we do not need absolute values.
+      \begin{gather*}
+        \mathbb{E}[Z_t] = \mathbb{E}[e^{\theta S_t}] = \mathbb{E}[e^{\theta (X_1 + \mathellipsis + X_t)}] \\
+        = \mathbb{E}[e^{\theta X_1}] \cdot \mathellipsis \cdot \mathbb{E}[e^{\theta X_t}] = 1 \cdot \mathellipsis \cdot 1 = 1 < \infty
+      \end{gather*}
+      Where we can break up the expectation as they are independent. By choice of $\theta$, all the expectations are 1.
+
+      Clearly, $Z_t$ is $\mathcal{F}_t$ measurable as it is a continuous function of $X_1, \mathellipsis, X_t$.
+
+      Now for the last property.
+
+      \begin{gather*}
+        \mathbb{E}[Z_t | \mathcal{F}_s] = \mathbb{E}[e^{\theta S_t} | \mathcal{F}_s] = \mathbb{E}[e^{\theta (X_1 + \mathellipsis + X_t)} | \mathcal{F}_s] \\
+        = e^{\theta (X_1 + \mathellipsis + X_s)} \mathbb{E}[e^{\theta (X_{s+1} + \mathellipsis + X_t)} | \mathcal{F}_s]
+      \end{gather*}
+      Since we can pull out all the terms that are $\mathcal{F}_s$-measurable.
+      \begin{gather*}
+        = e^{\theta S_s} \mathbb{E}[e^{\theta X_{s+1}}] \cdot \mathellipsis \cdot \mathbb{E}[e^{\theta X_t}] \\
+        = Z_s 1 \cdot \mathellipsis \cdot 1 = Z_s
+      \end{gather*}
+      Where we can break up the conditional expectation because the $X_t$'s are independent and because for $t > s$ are independent of $\mathcal{F}_s$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Two processes $X_t$ and $Y_t$ are called conditionally uncorrelated, given $\mathcal{F}_t$, is
+  \begin{gather*}
+    \mathbb{E}[(X_t - X_s)(Y_t - Y_s) | \mathcal{F}_s] = 0 \text{ a.s.} \quad \forall 0 \leq s < t < \infty
+  \end{gather*}
+  Let $X_t$ and $Y_t$ be martingales with respect to filtration $\mathcal{F}_t$. Show that the process $Z_t = X_t Y_t$ is an $\mathcal{F}_t$-martingale if and only if $X_t$ and $Y_t$ are conditionally uncorrelated. Assume that $X_t$, $Y_t$, and $Z_t$ are integrable.
+\end{exercise}
+
+\begin{answer}
+  By assumption, $Z_t$ is integrable so we have the first property of martingales. Second, $Z_t = X_t Y_t$ so it is clearly $\mathcal{F}_t$-measurable since it is a product of $\mathcal{F}_t$-measurable processes. Thus, we only have to show the last property.
+  \begin{align*}
+    &\mathbb{E}[(X_t - X_s)(Y_t - Y_s) | \mathcal{F}_s] \\
+    &= \mathbb{E}[X_t Y_t - X_t Y_s - X_s Y_t + X_s Y_s | \mathcal{F}_s] \\
+    &= \mathbb{E}[X_t Y_t | \mathcal{F}_s] - \mathbb{E}[X_t Y_s | \mathcal{F}_s] - \mathbb{E}[X_s Y_t | \mathcal{F}_s] + \mathbb{E}[X_s Y_s | \mathcal{F}_s] \\
+    &= \mathbb{E}[X_t Y_t | \mathcal{F}_s] - Y_s \mathbb{E}[X_t | \mathcal{F}_s] - X_s \mathbb{E}[Y_t | \mathcal{F}_s] + X_s Y_s \\
+    &= \mathbb{E}[X_t Y_t | \mathcal{F}_s] - Y_s X_s - X_s Y_s + X_s Y_s \\
+    &= \mathbb{E}[X_t Y_t | \mathcal{F}_s] - X_s Y_s
+  \end{align*}
+  Where the steps taken were expanding the product, then linearity of expectation, then removing $\mathcal{F}_s$-measurable functions from the conditional expectations, then using the fact that $X_t$ and $Y_t$ are martingales. Thus, we have that $X_t$ and $Y_t$ are conditionally uncorrelated iff $\mathbb{E}[X_t Y_t | \mathcal{F}_s] = X_s Y_s$ which is equivalent to $Z_t$ being a martingale. Thus, they are condtionally uncorrelated iff $Z_t$ is an $\mathcal{F}_t$-martingale.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $W_t$ and $\widetilde{W}_t$ be two independent Wiener processes and $\rho$ be a constant with $\lvert \rho \rvert \leq 1$.
+  \begin{enumerate}[label=\alph*)]
+    \item Show that the process $X_t = \rho W_t + \sqrt{1 - \rho^2} \cdot \widetilde{W}_t$ is continuous and has the distribution $N(0,t)$.
+    \item Is $X_t$ a Wiener process?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Notice that we can write $X_t = \rho (W_t-W_0) + \sqrt{1 - \rho^2} \cdot (\widetilde{W}_t - \widetilde{W}_0)$. Since $W_t$ and $\widetilde{W}_t$ are martingales, then
+    \begin{gather*}
+     W_t-W_0 \sim N(0, t) \\
+     \widetilde{W}_t - \widetilde{W}_0 \sim N(0, t)
+    \end{gather*}
+     Thus, $\rho (W_t-W_0) \sim N(0, \rho^2 t)$ and $\sqrt{1 - \rho^2} (\widetilde{W}_t - \widetilde{W}_0) \sim N(0, (1-\rho^2)t)$. Now, adding the two together yields another normal distribution with their means added and their variaces added. So,
+     \begin{gather*}
+      X_t = \rho (W_t-W_0) + \sqrt{1 - \rho^2} \cdot (\widetilde{W}_t - \widetilde{W}_0) \\
+      \sim N(0 + 0, \rho^2 t +(1-\rho^2)t) = N(0, t)
+     \end{gather*}
+     Finally, since $X_t$ is a linear combination of continuous processes, it is itself continuous.
+    \item $X_t$ is indeed a Wiener process. $X_0 = \rho W_0 + \sqrt{1 - \rho^2} \cdot \widetilde{W}_0 = 0$. We showed continuity in the previous part. Also using the previous part, $X_t - X_s \sim N(0, t - s)$. Finally, the increments are independent as $X_t$ is a combination of $W_t$ and $\widetilde{W}_t$ which have independent increments and are independent of each other.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Find $\mathbb{E}[W_t^2 | \mathcal{F}_s]$ for $0 < s < t$.
+    \item Show $\mathbb{E}[W_t^3 | \mathcal{F}_s] = 3(t-s)W_s + W_s^3$, for $0 < s < t$.
+    \item Show that $\mathbb{E}[\int_s^t W_u du | \mathcal{F}_s] = (t-s)W_s$.
+    \item Show that the process
+      \begin{gather*}
+        X_t = W_t^3 - 3 \int_0^t W_s ds
+      \end{gather*}
+      is a martingale with respect to $\mathcal{F}_t = \sigma\{ W_s: s \leq t \}$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item We will find the equivalent $\mathbb{E}[W_{t+s}^2 | \mathcal{F}_t]$
+      \begin{align*}
+        &\mathbb{E}[W_{t+s}^2 | \mathcal{F}_t] \\
+        &= \mathbb{E}[(W_{t+s}-W_t+W_t)^2 | \mathcal{F}_t] \\
+        &= \mathbb{E}[(W_{t+s}-W_t)^2 -2W_t(W_{t+s}-W_t) +W_t^2 | \mathcal{F}_t] \\
+        &= \mathbb{E}[(W_{t+s}-W_t)^2 | \mathcal{F}_t] -2\mathbb{E}[W_t(W_{t+s}-W_t)| \mathcal{F}_t] +\mathbb{E}[W_t^2| \mathcal{F}_t] \\
+        &= s - 2W_t \mathbb{E}[W_{t+s}-W_t| \mathcal{F}_t] + W_t^2 \\
+        &= s - 2 \cdot 0 + W_t^2 = W_t^2 + s
+      \end{align*}
+      Where $\mathbb{E}[(W_{t+s}-W_t)^2 | \mathcal{F}_t] = s$ and $\mathbb{E}[W_{t+s}-W_t| \mathcal{F}_t] = 0$ since $W_{t+s} - W_t \sim N(0,s)$. Thus we conclude that $\mathbb{E}[W_t^2 | \mathcal{F}_s] = W_s^2 + t - s$
+    \item We again work with $\mathbb{E}[W_{t+s}^3 | \mathcal{F}_t]$
+      \begin{align*}
+        &\mathbb{E}[W_{t+s}^3 | \mathcal{F}_t] \\
+        &= \mathbb{E}[(W_{t+s}-W_t+W_t)^3 | \mathcal{F}_t] \\
+        &= \mathbb{E}[(W_{t+s}-W_t)^3 +3W_t(W_{t+s}-W_t)^2 + 3W_t^2(W_{t+s}-W_t) +W_t^3 | \mathcal{F}_t] \\
+        &= \mathbb{E}[(W_{t+s}-W_t)^3 | \mathcal{F}_t] + \mathbb{E}[3W_t(W_{t+s}-W_t)^2 | \mathcal{F}_t] \\
+        & \qquad + \mathbb{E}[3W_t^2(W_{t+s}-W_t) | \mathcal{F}_t] + \mathbb{E}[W_t^3 | \mathcal{F}_t] \\
+        &= 0 + 3 W_t s + 0 + W_t^3 = 3 s W_t + W_t^3
+      \end{align*}
+      Where we again use the facts $\mathbb{E}[(W_{t+s}-W_t)^2 | \mathcal{F}_t] = s$ and $\mathbb{E}[W_{t+s}-W_t| \mathcal{F}_t] = 0$ since $W_{t+s} - W_t \sim N(0,s)$. Also, $\mathbb{E}[(W_{t+s}-W_t)^3| \mathcal{F}_t] = 0$ since the third moment of a normal distribution is $\mu^3 + 3 \mu \sigma^2$ which is 0 since $\mu$ is 0. We conclude with $\mathbb{E}[W_t^3 | \mathcal{F}_s] = W_s^3 + 3(t - s)W_s$
+    \item Since the inside integral is finite, we can swap the integral and expectation due to Fubini's theorem. Thus,
+      \begin{gather*}
+        \mathbb{E} \left[ \int_s^t W_u du | \mathcal{F}_s \right] = \int_s^t \mathbb{E}[W_u | \mathcal{F}_s] du \\
+        = \int_s^t W_s du = W_s \int_s^t du = W_s (t-s)
+      \end{gather*}
+    \item We show integrability,
+      \begin{gather*}
+        \mathbb{E}[\lvert X_t \rvert] \leq \mathbb{E}[\lvert W_t^3 \rvert | ] + 3 \mathbb{E} \left[ \lvert \int_0^t W_s ds \rvert \right] \\
+        \leq \mathbb{E}[\lvert W_t^3 \rvert | ] + 3 \mathbb{E} \left[ \int_0^t \lvert W_s \rvert ds \right] \\
+        = \mathbb{E}[\lvert (W_t - W_0)^3 \rvert ]+ 3 \int_0^t \mathbb{E}[ \lvert W_s - W_0\rvert] ds
+      \end{gather*}
+      Where we use the fact that the integral is finite to swap with expectation due to Fubini's theorem. We then note that $W_t - W_0 \sim N(0,t)$ and thus all these expectations are finite as the normal distribution has finite absolute moments. Thus, $\mathbb{E}[\lvert X_t \rvert] < \infty$.
+
+      Clearly, $X_t$ is a function of $W_s$, where $0 \leq s \leq t$ and those $W_s$ are measurable with respect to $\mathcal{F}_t$. Thus, $X_t$ is measurable with respect to $\mathcal{F}_t$.
+
+      Now for the last property of martingales,
+      \begin{align*}
+        \mathbb{E}[X_t | \mathcal{F}_s] &= \mathbb{E} \left[ W_t^3 - 3 \int_0^t W_s ds | \mathcal{F}_s \right] \\
+        &= \mathbb{E}[W_t^3| \mathcal{F}_s] - 3 \mathbb{E} \left[ \int_0^t W_s ds | \mathcal{F}_s \right] \\
+        &= 3(t-s)W_s + W_s^3 - 3\mathbb{E} \left[ \int_0^s W_{s'} ds' + \int_s^t W_{s'} ds' | \mathcal{F}_s \right] \\
+        &= 3(t-s)W_s + W_s^3 - 3\mathbb{E} \left[ \int_0^s W_{s'} ds'| \mathcal{F}_s \right] -3\mathbb{E} \left[ \int_s^t W_{s'} ds' | \mathcal{F}_s \right] \\
+        &= 3(t-s)W_s + W_s^3 - 3\int_0^s W_{s'} ds' -3(t-s)W_s \\
+        &= W_s^3 - 3\int_0^s W_{s'} ds' = X_s
+      \end{align*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  The process $X_t = W_t -t W_1$ is called the Brownian bridge pinned at both 0 and 1 (because $X_0 = X_1 = 0$).
+  \begin{enumerate}[label=\alph*)]
+    \item Write $X_t$ as a convex combination of $W_t$ and $W_t - W_1$
+    \item Show that $X_t \sim N(0, t(t-1))$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item It is easy to verify that
+      \begin{gather*}
+        X_t = W_t -t W_1 = (1-t)W_t + t(W_t - W_1)
+      \end{gather*}
+    \item Since $W_t = (W_t - W_0) \sim N(0,t)$ and $(W_t - W_1) \sim N(0, 1-t)$, we have that
+      \begin{gather*}
+        (1-t)W_t \sim N(0, (1-t)^2t) \text{ and}\\
+        t(W_t - W_1) \sim N(0, t^2(1-t))
+      \end{gather*}
+      Thus we conclude that
+      \begin{gather*}
+        X_t = (1-t)W_t + t(W_t - W_1) \sim N(0, (1-t)^2t + t^2(1-t)) \\
+        = N(0, (1-t)t(1 - t + t)) = N(0, (1-t)t)
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\end{document}

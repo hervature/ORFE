@@ -1,0 +1,244 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 522: Linear and Nonlinear Optimization \\ Homework 3}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{18}{11}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Consider the problem
+  \begin{gather*}
+    \min_\textbf{x} f(\textbf{x}) \ \text{s.t.} g_j(x) \leq 0, \ j = 1, \mathellipsis, m
+  \end{gather*}
+  where $f,g_j$ are continuously differentiable. Suppose that $x^*$ is a local optimal solution and $\nabla g_1(x^*), \mathellipsis, \nabla g_m(x^*)$ are linearly independent. Prove that $x^*$ is a global optimal solution to the linearized problem:
+  \begin{gather*}
+    \min_\textbf{x} f(\textbf{x}^*) + \nabla f(x^*)^T (x-x^*) \\
+    \text{s.t.} \ g_j(x^*) + \nabla g_J(x^*)^T (x-x^*) \leq 0, \ j = 1, \mathellipsis, m
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+  We will split it into two cases. First, when the optimal solution $x^*$ has no active contraints. Then when $x^*$ has active constraints.
+
+  If there are no active constraints, then $\nabla f(x^*) = 0$ and the linearized problem reduces to
+  \begin{gather*}
+    \min_\textbf{x} f(\textbf{x}^*) \\
+    \text{s.t.} \ g_j(x^*) + \nabla g_j(x^*)^T (x-x^*) \leq 0, \ j = 1, \mathellipsis, m
+  \end{gather*}
+  Picking $x = x^*$ clearly satisfies the constraints since $g_j(x^*) \leq 0$ as $x^*$ is a solution to the first problem. It is also a global optimum since it is constant.
+
+  Now consider the case when there are active constraints. That is, $g_i(x^*) = 0$ for some $i$'s. Since we have linear independence of the $\nabla g_j(x^*)$, we know the KKT conditions are satisfied. Thus,
+  \begin{gather*}
+    -\nabla f(x^*) = \sum_{j=1}^m \mu_j \nabla g_j(x^*)
+  \end{gather*}
+  With $\mu_j \geq 0$. Then the new linearized problem can equivalently be written as
+  \begin{gather*}
+    f(\textbf{x}^*) - \sum_{j=1}^m \mu_j \nabla g_j(x^*)^T(x-x^*)
+  \end{gather*}
+  Since, by complementary slackness, $\mu_j = 0$ for non-active constraints, we can ignore them. For active constraints $\mu_i \geq 0$. Thus, since we are subtracting the sum, we only need to worry about
+  \begin{gather*}
+    \nabla g_j(x^*)^T(x-x^*) > 0
+  \end{gather*}
+  Since this would make the objective smaller.
+
+  Note that if $\nabla g_i(x^*)^T(x-x^*) \leq 0$ then picking $x = x^*$ would minimize this addition (since we are subtracting negative values). Now suppose that $\nabla g_i(x^*)^T(x-x^*) > 0$. Then, since these are active constraints, $g_i(x^*) = 0$ and the inequalities becomes $\nabla g_i(x^*)^T (x-x^*) \leq 0$ which does not meet our assumption. Thus, we cannot have $\nabla g_i(x^*)^T(x-x^*) > 0$ for active constraints and $\mu_j = 0$ for non-active constraints. Thus, $x = x^*$ becomes a global optimal to remove any of the positive terms that result from the sum. Also, when $x^* = x$, the contraints are satisfied due to $x^*$ satisfying the original problem.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the function
+  \begin{gather*}
+    f(x,y,z) = 2x^2 + xy + y^2 + yz + z^2 -6x -7y -8z -9
+  \end{gather*}
+  \begin{enumerate}[label=\arabic*)]
+    \item By using the first-order necessary conditions, find the candidate minimum points of $f(x,y,z)$.
+    \item Verify using the second-order sufficient conditions whether those points are local minimum.
+    \item Find a global minimum point.
+    \item Use CVX (or any other optimization solver) to verify your results (please print your codes on a paper, same for the next question). Here you may use the following form when inputting into CVX
+    \begin{gather*}
+      f(x,y,z) = x^2 + \frac{1}{2}y^2 + \left(x + \frac{1}{2}y \right)^2 + \left( z + \frac{1}{2}y \right)^2 -6x -7y -8z -9
+    \end{gather*}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We calculate the gradient and set it to zero to find the candidate points,
+      \begin{gather*}
+        \nabla f(x,y,z) = \begin{bmatrix}
+          4x + y - 6 \\
+          x + 2y + z - 7 \\
+          y + 2z - 8
+        \end{bmatrix} = \begin{bmatrix}
+          0 \\
+          0 \\
+          0
+        \end{bmatrix}
+      \end{gather*}
+      Or equivalently,
+      \begin{gather*}
+        \begin{bmatrix}
+          4 & 1 & 0 \\
+          1 & 2 & 1 \\
+          0 & 1 & 2
+        \end{bmatrix}\begin{bmatrix}
+          x \\
+          y \\
+          z
+        \end{bmatrix} = \begin{bmatrix}
+          6 \\
+          7 \\
+          8
+        \end{bmatrix}
+      \end{gather*}
+      Solving this linear equation yields the candidate point $(\frac{6}{5}, \frac{6}{5}, \frac{17}{5})$.
+    \item Calculating the Hessian,
+      \begin{gather*}
+        H(f) = \begin{bmatrix}
+          4 & 1 & 0 \\
+          1 & 2 & 1 \\
+          0 & 1 & 2
+        \end{bmatrix}
+      \end{gather*}
+      Applying Sylvester's criterion and calculating the leading principal minors. $M_1 = 4 > 0$, $M_2 = 7 > 0$, and $M_3 = 10 > 0$. Therefore the Hessian is positive definite for all $(x,y,z)$ and hence the candidate point is a local minimum.
+    \item Since there is only one local minimum, it must be a global minimum. Thus the point $(\frac{6}{5}, \frac{6}{5}, \frac{17}{5})$ is a global minimum.
+    \item The MATLAB CVX code below generates a solution of (1.2000, 1.1999, 3.4001) which is quite close to the analytical answer.
+    \begin{lstlisting}[style=Matlab-editor, basicstyle=\scriptsize]
+      clear;
+      clc;
+
+      cvx_begin
+          variable x(3);
+          minimize( x(1)^2 +1/2*x(2)^2 + (x(1)+1/2*x(2))^2 +(x(3)+1/2*x(2))^2 - 6*x(1) - 7*x(2) - 8*x(3) - 9 );
+      cvx_end
+
+      x
+    \end{lstlisting}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  We want to build a cylinder with the maximum volume, with its surface area no larger than $C$. The decision variables are: $r$ (the radius of the base) and $h$ (height). Then the optimization problem is:
+  \begin{gather*}
+    \max_{r,h} \pi r^2 h \\
+    \text{s.t. } 2 \pi r^2 + 2 \pi r h \leq C \\
+    r, h \geq 0
+  \end{gather*}
+  \begin{enumerate}[label=\arabic*)]
+    \item Does there exist an optimal solution? Why?
+    \item Is this a convex problem?
+    \item Find the set of optimal solutions using KKT conditions.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Let $z=rh$. Then the problem becomes
+      \begin{gather*}
+        \max_{r,z} \pi r z \\
+        \text{s.t. } 2 \pi r^2 + 2 \pi z \leq C \\
+        r, h \geq 0
+      \end{gather*}
+      Thus, the feasibility set it $(r,z) \in [0, \sqrt{C/2 \pi}] \times [0, C/2 \pi]$ which is clearly compact. Thus, since $\pi r z$ is continuous, a maximum is achieved on this compact set. Note that $h = r/z$ is well defined because $z \neq 0$. Otherwise, if $z=0$, then the volume is 0 which is clearly not a maximum.
+    \item This is not a convex problem as the Hessian of the objective is not positive semidefinite
+      \begin{gather*}
+        H(f) = \begin{bmatrix}
+          2 \pi h & 2 \pi r \\
+          2 \pi r & 0
+        \end{bmatrix}
+      \end{gather*}
+      Using Sylvester's criterion, the leading principal minors are $M_1 = 2 \pi h \geq 0$ and $M_2 = -4 \pi r^2 \leq 0$. Thus this is not positive semidefinite and so not convex.
+    \item The KKT conditions give
+      \begin{gather*}
+        \nabla f = \begin{bmatrix}
+          2 \pi r h \\
+          \pi r^2
+        \end{bmatrix} = \mu_1 \begin{bmatrix}
+          4 \pi r + 2 \pi h  \\
+          2 \pi r
+        \end{bmatrix} + \mu_2 \begin{bmatrix}
+          -1  \\
+          0
+        \end{bmatrix} + \mu_3 \begin{bmatrix}
+          0  \\
+          -1
+        \end{bmatrix}
+      \end{gather*}
+      We also have the complementary slackness conditions
+      \begin{gather*}
+        \mu_1(2 \pi r^2 + 2 \pi r h - C) = 0 \\
+        - \mu_2 r = 0 \\
+        - \mu_3 h = 0
+      \end{gather*}
+      Thus, noting the fact that if $r$ or $h = 0$, then the volume is 0 (a minimum), we must have that $\mu_2 = \mu_3 = 0$. From stationarity equation, if $\mu_1 = 0$, then this implies that $r = 0$. So we must have $\mu_1 > 0$ and $2 \pi r^2 + 2 \pi r h - C = 0$. Rearranging some equations, we get
+      \begin{gather*}
+        \frac{r}{2} = \mu_1 \\
+        \implies 2 \pi r h = \frac{r}{2} \left( 4 \pi r + 2 \pi h \right) \Longleftrightarrow h = 2r
+      \end{gather*}
+      Putting this into the constraint equation
+      \begin{gather*}
+        6 \pi r^2 = C \Longleftrightarrow r = \sqrt{\frac{C}{6 \pi}}
+      \end{gather*}
+      Thus, the set of optimal solutions is $\mu_1 = \frac{1}{2} \sqrt{\frac{C}{6 \pi}}$, $\mu_2 = \mu_3 = 0$, $r = \sqrt{\frac{C}{6 \pi}}$, and $h = 2\sqrt{\frac{C}{6 \pi}}$
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Either prove or find a counterexample for each of the following statements (you can assume all the functions are second order continuously differentiable):
+  \begin{enumerate}[label=\arabic*)]
+    \item If $f(x)$ is convex, $g(x)$ is convex, then $f(g(x))$ is convex.
+    \item If $f(x)$ is convex and nondecreasing, $g(x)$ is convex, then $f(g(x))$ is convex.
+    \item If $f(x)$ is concave and nonincreasing, $g(x)$ is convex, then $f(g(x))$ is convex.
+    \item If $f(x)$ is increasing and non-negative, then $xf(x)$ is convex on $x \geq 0$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item False. Consider $f(x) = e^{-x}$ and $g(x) = x^2$ which are both convex. Then $f(g(x)) = e^{-x^2}$ and the second derivative is $e^{-x^2}(4x^2-2)$ which is negative at 0 and hence not convex.
+    \item True. Taking the derivatives via chain rule, we get that the second derivative of $f(g(x))$ is
+      \begin{gather*}
+        f''(g(x))g'(x)^2 + f'(g(x))g''(x)
+      \end{gather*}
+      Since $f(x)$ is convex and nondecreasing, then $f''(x) \geq 0$ and $f'(x) \geq 0$. Since $g(x)$ is convex, then $g''(x) \geq 0$ and $g'(x)^2 \geq 0$ since it is squared. Thus, all the terms are nonnegative and so $f''(g(x))g'(x)^2 + f'(g(x))g''(x) \geq 0$ and hence $f(g(x))$ is convex.
+    \item False. Using the same decomposition as last part. We get that
+      \begin{gather*}
+       f''(g(x))g'(x)^2 + f'(g(x))g''(x) \leq 0
+      \end{gather*}
+      Since $f''(x) \leq 0$ as it is concave and $f'(x) \leq 0$ as it is nonincreasing. Also $g(x)$ is convex, so $g''(x) \geq 0$ and $g'(x)^2 \geq 0$ since it is squared. Putting it all together, we get that that $f(g(x))$ is concave. A counterexample is $f(x) = -e^x$ and $g(x) = x^2$. Clearly, $f(x)$ is concave and nonincreasing. Then $f(g(x))'' = -2e^{x^2}(2x^2+1)$ which is negative every where and so concave.
+    \item False. Consider $f(x) = 1 - \frac{1}{(x+1)^2}$ on $\mathbb{R}^+$. Then this is non-negative as it starts at 0 and tends to 1. It is also increasing since the first derivative is $f'(x) = \frac{2}{(x+1)^3}$ which is positive for $x \geq 0$. However, the second derivative of $xf(x)$ is $-\frac{2(x-2)}{(x+1)^4}$ which is negative on $x > 2$ and so not convex. If you wish to consider the entire real line, define $f(x) = 0$ for $x \in R^-$.
+  \end{enumerate}
+\end{answer}
+
+\end{document}

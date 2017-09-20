@@ -1,0 +1,73 @@
+\begin{thebibliography}{10}
+
+\bibitem{openai}
+``Requests for research.''
+  \url{https://openai.com/requests-for-research/#im2latex}.
+\newblock {Accessed: 2017-04-07}.
+
+\bibitem{1609.04938}
+Y.~Deng, A.~Kanervisto, and A.~M. Rush, ``What you get is what you see: A
+  visual markup decompiler,'' 2016.
+
+\bibitem{lecun_bottou_bengio_haffner_1998}
+Y.~Lecun, L.~Bottou, Y.~Bengio, and P.~Haffner, ``Gradient-based learning
+  applied to document recognition,'' {\em Proceedings of the IEEE}, vol.~86,
+  no.~11, p.~2278–2324, 1998.
+
+\bibitem{NIPS2012_4824}
+A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton, ``Imagenet classification with
+  deep convolutional neural networks,'' in {\em Advances in Neural Information
+  Processing Systems 25} (F.~Pereira, C.~J.~C. Burges, L.~Bottou, and K.~Q.
+  Weinberger, eds.), pp.~1097--1105, Curran Associates, Inc., 2012.
+
+\bibitem{szegedy2013deep}
+C.~Szegedy, A.~Toshev, and D.~Erhan, ``Deep neural networks for object
+  detection,'' in {\em Advances in Neural Information Processing Systems},
+  pp.~2553--2561, 2013.
+
+\bibitem{wang2012end}
+T.~Wang, D.~J. Wu, A.~Coates, and A.~Y. Ng, ``End-to-end text recognition with
+  convolutional neural networks,'' in {\em Pattern Recognition (ICPR), 2012
+  21st International Conference on}, pp.~3304--3308, IEEE, 2012.
+
+\bibitem{karpathy2014large}
+A.~Karpathy, G.~Toderici, S.~Shetty, T.~Leung, R.~Sukthankar, and L.~Fei-Fei,
+  ``Large-scale video classification with convolutional neural networks,'' in
+  {\em Proceedings of the IEEE conference on Computer Vision and Pattern
+  Recognition}, pp.~1725--1732, 2014.
+
+\bibitem{1406.1078}
+K.~Cho, B.~van Merrienboer, C.~Gulcehre, D.~Bahdanau, F.~Bougares, H.~Schwenk,
+  and Y.~Bengio, ``Learning phrase representations using rnn encoder-decoder
+  for statistical machine translation,'' 2014.
+
+\bibitem{seq2seq}
+F.~Rahman, ``Seq2seq.'' \url{https://github.com/farizrahman4u/seq2seq}.
+\newblock {Accessed: 2017-04-08}.
+
+\bibitem{1409.3215}
+I.~Sutskever, O.~Vinyals, and Q.~V. Le, ``Sequence to sequence learning with
+  neural networks,'' 2014.
+
+\bibitem{1503.04069}
+K.~Greff, R.~K. Srivastava, J.~Koutník, B.~R. Steunebrink, and J.~Schmidhuber,
+  ``Lstm: A search space odyssey,'' 2015.
+
+\bibitem{1409.0473}
+D.~Bahdanau, K.~Cho, and Y.~Bengio, ``Neural machine translation by jointly
+  learning to align and translate,'' 2014.
+
+\bibitem{1406.2661}
+I.~J. Goodfellow, J.~Pouget-Abadie, M.~Mirza, B.~Xu, D.~Warde-Farley, S.~Ozair,
+  A.~Courville, and Y.~Bengio, ``Generative adversarial networks,'' 2014.
+
+\bibitem{reed2016generative}
+S.~Reed, Z.~Akata, X.~Yan, L.~Logeswaran, B.~Schiele, and H.~Lee, ``Generative
+  adversarial text to image synthesis,'' in {\em Proceedings of The 33rd
+  International Conference on Machine Learning}, vol.~3, 2016.
+
+\bibitem{1511.06434}
+A.~Radford, L.~Metz, and S.~Chintala, ``Unsupervised representation learning
+  with deep convolutional generative adversarial networks,'' 2015.
+
+\end{thebibliography}

@@ -1,0 +1,332 @@
+%
+% This is the LaTeX template file for lecture notes for CS294-8,
+% Computational Biology for Computer Scientists.  When preparing
+% LaTeX notes for this class, please use this template.
+%
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+% This template is based on the template for Prof. Sinclair's CS 270.
+
+\documentclass[twoside]{article}
+
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage{fullpage}
+\usepackage{times}
+\usepackage{scribe_style}
+
+
+\usepackage{graphics}
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+%
+% The following commands set up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+%
+% The following macro is used to generate the header.
+%
+\newcommand{\lecture}[4]{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{lecnum}{#1}
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf  ORF 524: Statistical Theory and Methods
+                        \hfill Fall 2016} }
+       \vspace{4mm}
+       \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
+       \vspace{2mm}
+       \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribe: #4} }
+      \vspace{2mm}}
+   }
+   \end{center}
+   \markboth{Lecture #1: #2}{Lecture #1: #2}
+ {\bf Note}: {\it LaTeX template courtesy of UC Berkeley EECS dept.}
+
+   \vspace*{1mm}
+}
+
+%
+% Convention for citations is authors' initials followed by the year.
+% For example, to cite a paper by Leighton and Maggs you would type
+% \cite{LM89}, and to cite a paper by Strassen you would type \cite{S69}.
+% (To avoid bibliography problems, for now we redefine the \cite command.)
+% Also commands that create a suitable format for the reference list.
+\renewcommand{\cite}[1]{[#1]}
+\def\beginrefs{\begin{list}%
+        {[\arabic{equation}]}{\usecounter{equation}
+         \setlength{\leftmargin}{2.0truecm}\setlength{\labelsep}{0.4truecm}%
+         \setlength{\labelwidth}{1.6truecm}}}
+\def\endrefs{\end{list}}
+\def\bibentry#1{\item[\hbox{[#1]}]}
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: \fig{NUMBER}{SPACE-IN-INCHES}{CAPTION}
+\newcommand{\fig}[3]{
+			\vspace{#2}
+			\begin{center}
+			Figure \thelecnum.#1:~#3
+			\end{center}
+	}
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+\showboxdepth=\maxdimen
+\showboxbreadth=\maxdimen
+
+\begin{document}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+\lecture{1}{09/15/16}{Prof. Samory Kpotufe}{Zachary Hervieux-Moore}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+
+\section{Overview}
+
+\subsection{Satistical Problems:}
+  We observe a random object $X$, $n$ times, as $X=(X_1, X_2,\mathellipsis, X_n)$ from some unknown distribution $P$. What can we infer about $X_{n+1}$, or the rest of the unobserved ``population'' of $X$'s?
+
+\paragraph{Density/Distribution Estimation:}
+  Suppose we know $X \sim P \in \mathcal{P}$ (e.g. all Gaussians) where $\sim$ means ``is distributed according to''. We want to infer the ``right'' $P \in \mathcal{P}$ from the sample $X_1,\mathellipsis,X_n$.
+
+  \begin{example}
+    \leavevmode
+    \begin{itemize}
+      \item Inferring the bias of a coin from multiple throws. From there we know $Pr(X_{n+1} = 1)$.
+      \item Inferring the population of the US voting for Hillary from a survey.
+    \end{itemize}
+  \end{example}
+
+\paragraph{Regression/Classification:}
+  $X = (Z,Y)$ where we want to predict $Y$ from $Z$.
+
+  \begin{example}
+    \leavevmode
+    \begin{itemize}
+      \item $Z \equiv$  Netflix movies, $Y \equiv$ Whether you like $X$
+      \item $Z \equiv$ Image, $Y \equiv$ object in image
+      \item $Z \equiv$ Financial Instrument, $Y \equiv$ pricing
+    \end{itemize}
+  \end{example}
+
+\paragraph{Inference:}
+  More generally, making decisions from observations.
+
+  \begin{example}
+    \leavevmode
+    \begin{itemize}
+      \item Is the new flu vaccine effective?
+      \item Do humans cause global warming?
+    \end{itemize}
+  \end{example}
+
+\subsection{Statistical Approach}
+
+We usually don't use the whole sample $X$. Rather, we computer a ``statistic'' from the sample.
+
+\begin{definition}
+  A statistic $T$ is some quantity we compute from observations, $X_1, \mathellipsis, X_n$. We then use $T$ to infer something about the unknown $P$.
+\end{definition}
+
+\textbf{Note:} All the earlier examples can be viewed as trying to estimate some functional (or characteristic) $\theta$ of $P$, or infer something about $\theta$ (e.g., is $\theta > \theta_0$?)
+
+\begin{example}
+  Bias $\theta$ of a coin: We compute $T \equiv \bar{X} = \frac{1}{n} \sum_i X_i$ and simply infer that $\theta \approx T$.
+\end{example}
+
+\subsection{Our concerns in this course}
+
+\begin{itemize}
+  \item Do we lose information about the unknown $P$ only using $T$? (Is $T$ ``sufficient'')?
+  \item Why $T$ and not $T'$? Is $T$ the ``best'' for our problem? E.g., in computing a mean, why use $T = \overline{X} = \frac{1}{n} \sum X_i$ rather than $T' = \frac{1}{n} \sum log|X_i|$
+  \item How do we define ``good''/``best''?
+  \item Suppose we keep all of $X=(X_1, X_2,\mathellipsis, X_n)$, how much information is there about $P$? How does that depend on $n$? That is, how ``hard'' is the original problem?
+\end{itemize}
+
+We'll develop various mathematical tools towards answering such questions... (called mathematical statistics).
+
+\section{Basic Tools}
+
+\subsection{Probability Measures:}
+3 objects $(\Omega, \Sigma, P)$ defining a ``Measure space''.
+
+\begin{definition}
+  A sample space $\Omega$ is a non-empty set serving as an abstraction of basic events.
+
+  \textbf{Ex: } $\Omega = \{ HH, HT, TH, TT \}$ for 2 coins.
+
+  The measure ``P'' will serve to assign values between $[0,1]$ to subsets of $\Omega$ (so called events when $P$ is a ``probability'')
+\end{definition}
+
+\begin{definition}
+  $\sigma$-Algebra $\Sigma$ (or $\sigma$-field)
+
+  We want the freedom to define $P$ over just a collection $\Sigma$ of subsets of $\Omega$, rather than over all subsets in $2^\Omega$ (Power set of $\Omega$). That is, some intuitive notion of measure such as ``length''/Lebesgue cannot be soundly defined over all subsets of $\mathbb{R}$.
+
+  $\Sigma$ will have to satisfy some basic properties for $P$ to be sound. Namely $\Sigma$ must be a $\sigma$-Algebra, it must satisfy:
+  \begin{itemize}
+    \item $\Sigma \neq \emptyset, \Sigma \subset 2^\Omega$
+    \item If $A \in \Sigma$, then $A^c \in \Sigma$
+    \item If $A_1, A_2,\mathellipsis \in \Sigma$, then $\bigcap A_i \in \Sigma $. Where the intersection can be countably infinite.
+  \end{itemize}
+
+  \textbf{Ex: } Borel Algebra $\mathcal{B}(\mathbb{R}^d)$, is the smallest $\sigma$-algebra containing all open sets of $\mathbb{R}^d$.
+\end{definition}
+
+\textbf{Note:} $(\Omega, \Sigma)$ is a ``measurable space''. $A \in \Sigma$ is a ``measurable set''.
+
+\begin{exercise}
+  \leavevmode
+  \begin{itemize}
+      \item Show that $\Sigma$ is closed under union.
+      \item Show that it must contain $\emptyset$ and $\Omega$.
+      \item Suppose $A \subset \Omega$. What is the smallest $\sigma$-algebra containing $A$?
+  \end{itemize}
+\end{exercise}
+
+\begin{definition}
+  $P: \Sigma \rightarrow \mathbb{R}$ is called a measure on $(\Omega, \Sigma)$ iff:
+
+  \begin{itemize}
+    \item $\forall A \in \Sigma$, $0 \leq P(A) \leq \infty$
+    \item $P(\emptyset)=0$
+    \item $\forall$ disjoint $A_1, A_2,\mathellipsis \in \Sigma$, $P(\bigcup\limits_{i=1}^\infty A_i) = \sum\limits_{i=1}^\infty P(A_i)$
+  \end{itemize}
+
+  \textbf{Ex: } Lebesgue measures (length, volume in $\mathbb{R}^d$), counting measures (which counts the number of elements in $A$).
+\end{definition}
+
+\begin{definition}
+  A ``Probability'' measure is one such that $P(\Omega)=1$.
+\end{definition}
+
+\begin{exercise}
+  \leavevmode
+  \begin{itemize}
+      \item Show that $0 \leq P(A) \leq P(B), \forall \ A \subset B, A,B \in \Sigma$
+      \item Show that $P(\cup_{i=1}^k A_i) \leq \sum_{i=1}^k P(A_i)$. What if $k = \infty$?
+  \end{itemize}
+\end{exercise}
+
+\subsection{Random Element (Variable, Vector, etc.)}
+
+\begin{definition}
+  Consider 2 measurable spaces $(\Omega, \Sigma)$ and $(\Omega', \Sigma')$. A ``measurable'' map $X:\Omega \rightarrow \Omega'$ is a function such that $\forall A \in \Sigma'$, $X^{-1}(A) = \{ \omega \in \Omega: X(\omega) \in A \} \in \Sigma$
+\end{definition}
+
+\textbf{Note:} If $(\Omega', \Sigma')$ is $(\mathbb{R}^d, \mathcal{B}(\mathbb{R}^d))$, we call it a random vector. Generally, $X$ is called a ``random element'' of $\Omega'$. Usually $(\Omega', \Sigma') = (\mathbb{R}, \mathcal{B}(\mathbb{R}))$, then $X$ is a random variable.
+
+\begin{definition}
+  The ``Induced Measure'' $P'$ on $(\Omega', \Sigma')$ id one that assigns $P'(A) = P(X^{-1}(A))$. We write $P'(A) = Pr(X \in A)$ when $P$ is a probability measure.
+\end{definition}
+
+\textbf{Ex:} Gaussians, Binomial, etc, are induced onto $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$.
+\textbf{Note: } The notion of induced measure allows us to often forget about $(\Omega, \Sigma, P)$ and work with $(\Omega', \Sigma\, P')$.
+\textbf{Note: } $Pr(X \in A)$ is only defined for measurable sets $A \in \Sigma$.
+
+\subsection{Integration (Lebesgue):}
+
+Let $(\Omega, \Sigma)$ a measurable space. In all that follows, all measurable maps are assumed to be Borel.
+
+\begin{definition}
+  Functions $\rho: \Omega \rightarrow \mathbb{R}$ of the form $\rho(\omega) = \sum\limits_{i=1}^k a_i1_{\omega \in A_i}$ for $a_i \in \mathbb{R}$, for some $\{A_i\}_1^k \in \Sigma$, are called ``simple functions''.
+\end{definition}
+
+\begin{definition}
+  Integration is defined as follow. Let $P$ be a measure on $(\Omega, \Sigma)$.
+  \begin{itemize}
+    \item Let $\rho$ be simple (over $\{A_i\}_1^k$): $\int_\Omega \rho(\omega) dP(\omega) \equiv \int \rho dP \equiv \int \rho \doteq \sum\limits_{i=1}^k a_i 1_{A_i}$
+    \item Let $f \geq 0$: $\int f dP = \sup\limits_{0 \leq \rho \leq f} \int \rho dP$
+    \item For general $f$, let $f_+ = f \cdot 1_{\{f \geq 0\}}$ and $f_- = f \cdot 1_{\{f \leq 0\}}$. Then, $\int f dP = \int f_+ dP - \int f_- dP$
+    \item $\forall A \in \Sigma$, $\int_A f dP \equiv \int (f \cdot 1_A)dP$
+  \end{itemize}
+\end{definition}
+
+\textbf{Note:} If $P$ is a probability measure, we often write $\int f dP \doteq E[f]$, using ``Expectation'' notation.
+
+\textbf{Note:} Let $(\Omega, \Sigma, P) = (\mathbb{R}, \mathcal{B}(\mathbb{R}), \sigma)$. Where $\sigma$ is the usual Lebesgue measure (length). Then Lebesgue integral ($\int f d\sigma$) coincides with the Riemann integral from calculus whenever the latter is well-defined.
+
+\textbf{Note:} $\int f dP$ exists whenever at least one of $\int f_+ dP$, $\int f_- dP$ is $< \infty$. $f$ is then called ``integrable''. This allows $\int f dP = \pm \infty$
+
+\begin{example}
+  Riemann is ill-defined on $\mathbb{Q}$. However, the Lebesgue integral (w.r.t. Lebesgue Measure) over $\mathbb{Q}$ is well-defined and is 0.
+\end{example}
+
+\begin{proposition}[Change of Measure in Integration]
+  Consider $(\Omega, \Sigma, P)$, and $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$, $f: \Omega \rightarrow \mathbb{R}$ measurable. Let $P' \doteq P(f^{-1})$ be induced by $f$. Then,
+  \begin{center}
+    $\int_\Omega f(\omega)dP(\omega) = \int_{\mathbb{R}} \omega' dP(\omega')$
+  \end{center}
+\end{proposition}
+
+\begin{example}
+  $X$ is Gaussian, $X^2$ is $\chi^2$ (chi-squared), we can integrate both w.r.t. $\mathcal{N}(\mu, \sigma^2)$ and w.r.t. $\chi^2$ measure. (Here $\Omega = \mathbb{R}$).
+\end{example}
+
+\subsection{Radon-Nikodym derivatives: (a.k.a. densities)}
+
+\begin{definition}
+  Let $\mu$, $\nu$ be two measures on $(\Omega, \Sigma)$ s.t. if $\nu(A)=0$, then $\mu(A)=0$ for all $A \in \Sigma$. Then we say $\mu$ is ``dominated'' by $\nu$ ($\mu << \nu$) or $\mu$ is ``absolutely-continuous'' w.r.t. $\nu$.
+\end{definition}
+
+\begin{example}
+  Any continuous/discrete $\mu$ and Lebesgue/Counting.
+\end{example}
+
+\begin{definition}
+  The measure $\nu$ is ``$\sigma$-finite'' iff $\exists \{A_i\} \subset \Sigma$ s.t. $\bigcup A_i = \Omega$, and $\nu(A_i) < \infty \ \forall i$.
+\end{definition}
+
+\begin{exercise}
+  \leavevmode
+  \begin{itemize}
+    \item Show that Lebesgue is $\sigma$-finite (for $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$).
+    \item Show that the counting measure is $\sigma$-finite iff $\Omega$ is countable.
+  \end{itemize}
+\end{exercise}
+
+\begin{theorem}[Radon-Nikodym Theorem]
+  Suppose $\mu << \nu$ (both on some $(\Omega, \Sigma)$), and $\nu$ is $\sigma$-finite. Then $\exists$ a Borel map $f$, $f \geq 0$, s.t. $\forall A \in \Sigma$, $\mu(A) = \int f \cdot 1_A d\nu \doteq \int_A f d\nu$.
+
+  $f$ is often denoted $\frac{d\mu}{d\nu}$ and is called the Radon-Nikodym derivative of $\mu$ w.r.t. $\nu$ (or the ``density'' of $\mu$ w.r.t. $\nu$).
+\end{theorem}
+
+\begin{example} The following are all densities,
+  \begin{itemize}
+    \item The Gaussian density w.r.t. Lebesgue $\sigma$.
+    \item In fact, any continuous $X$ on $\mathbb{R}$, the normal density is w.r.t. Lebesgue.
+    \item For discrete RV's $X$, the pmf $f_X$ is a density w.r.t. to ``a'' counting measure.
+  \end{itemize}
+\end{example}
+
+\begin{exercise}
+  Show that for a discrete random variable $X: \Omega \rightarrow \mathbb{R}$, the pmf $f$ is indeed the density of $P_X$ w.r.t. the counting measure on $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$.
+\end{exercise}
+
+\end{document}
+
+
+
+
+

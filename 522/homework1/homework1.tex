@@ -1,0 +1,331 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 522: Linear and Nonlinear Optimization \\ Homework 1}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{29}{09}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Consider a graph with $n$ nodes. We denote the set of nodes by $V = \{1,\mathellipsis,n\}$. For each pair of nodes $(i,j)$, there is an edge connecting them with a weight $w_{ij} \geq 0$. Now we want to separate the nodes into two disjoint sets $S$ and $T$ such that $S \bigcap T = \emptyset$ and $S \bigcup T = V$. And we want to maximize the weights that are in the cut, i.e.
+  \begin{gather*}
+    \sum\limits_{i \in S}\sum\limits_{j \in T} w_{ij}
+  \end{gather*}
+  This is called the \textit{maximum cut problem} and has wide applications in problems such as circuit design. Now using decision variables
+  \begin{gather*}
+  x_i = \begin{cases}
+      1 & \text{if } x_i \in S \\
+      -1 & \text{if } x_i \in T
+  \end{cases}
+  \end{gather*}
+  write and optimization problem for the max-cut problem.
+\end{exercise}
+
+\begin{answer}
+  Notice that if $x_i x_j = -1$, then one of them is in $S$ and one of them is in $T$. If $x_i x_j = 1$, then they are both in the same set. We can use this to write the maximization as:
+  \begin{gather*}
+    \max \frac{1}{4} \sum\limits_{i = 1}^n \sum\limits_{j = 1}^n w_{ij}(1-x_i x_j)
+  \end{gather*}
+  Subject to the constraint:
+  \begin{gather*}
+    x_i^2 = 1 \quad \forall i \in \{1,\mathellipsis, n\}
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the following linear program:
+  \begin{gather*}
+    \text{maximize} \quad x_1 + 4x_2 + x_3 \\
+    \text{s.t} \quad 2x_1 + 3x_2 + x_3 \leq 4 \\
+    x_1 - 2x_3 \geq 1 \\
+    x_1, x_2, x_3 \geq 0
+  \end{gather*}
+  \begin{itemize}
+      \item Transform it into standard form
+      \item Argue without solving this LP that there must exist an optimal solution with no more than 2 positive values
+      \item List all the basic solutions and basic feasible solutions (of the standard form)
+      \item Find the optimal solution by using the results in step 3
+  \end{itemize}
+\end{exercise}
+
+\begin{answer}
+  We first transform it into standard form. We first change the mazimization to a minimization and create slack variables:
+  \begin{gather*}
+    \text{minimize} \quad -x_1 - 4x_2 - x_3 \\
+    \text{s.t} \quad 2x_1 + 3x_2 + x_3 + s_1 = 4 \\
+    x_1 - 2x_3 - s_2 = 1 \\
+    x_1, x_2, x_3, s_1, s_2 \geq 0
+  \end{gather*}
+  Which we can rewrite in matrix form as:
+  \begin{gather*}
+    \text{minimize} \quad \textbf{c}^T\textbf{x} \\
+    \text{s.t} \quad A\textbf{x} = \textbf{b} \\
+    \textbf{x} \geq 0 \\
+    \text{Where } \textbf{x} = \begin{bmatrix}
+      x_1 \\
+      x_2 \\
+      x_3 \\
+      s_1 \\
+      s_2
+    \end{bmatrix}
+    \text{, } \textbf{c} = \begin{bmatrix}
+      -1 \\
+      -4 \\
+      -1 \\
+      0 \\
+      0
+    \end{bmatrix}
+    \text{, } \textbf{b} = \begin{bmatrix}
+      4 \\
+      1
+    \end{bmatrix}
+    \text{, and } A = \begin{bmatrix}
+      2 & 3 & 1 & 1 & 0 \\
+      1 & 0 & -2 & 0 & -1
+    \end{bmatrix}
+  \end{gather*}
+  One can argue that the optimal solution to this LP does not have more than two positive values as follows. The feasibility is bounded from below (since $x_1, x_2, x_3 \geq 0$) and bounded above (since the first inequality implies $x_1, x_2, x_3 \leq 4$). Furthermore, it is non-empty ($x_1 = 1, x_2=x_3=0$ satisfies the constraints), so we know there will be feasible solutions. Also, the basic feasible solutions will have at most two positive values since $A$ has rank 2 since there are only two constraints. We know from the fundamental theorem that a basic feasible solution is an optimal solution, thus there exists an optimal solution with only two positive variables.
+
+  To solve the list of basic solutions, we follow the procedure from class and note that column 2 and 4 of $A$ are linearly dependent so we can skip that basic solution.
+  \begin{align*}
+    &x_{1,2} = \begin{bmatrix}
+      1 \\
+      \frac{2}{3} \\
+      0 \\
+      0 \\
+      0
+    \end{bmatrix}\text{, } x_{1,3} = \begin{bmatrix}
+      \frac{9}{5} \\
+      0 \\
+      \frac{2}{5} \\
+      0 \\
+      0
+    \end{bmatrix}\text{, } x_{1,4} = \begin{bmatrix}
+      1 \\
+      0 \\
+      0 \\
+      2 \\
+      0
+    \end{bmatrix}\text{, } \\
+    &x_{1,5} = \begin{bmatrix}
+      2 \\
+      0 \\
+      0 \\
+      0 \\
+      1
+    \end{bmatrix}\text{, } x_{2,3} = \begin{bmatrix}
+      0 \\
+      \frac{3}{2} \\
+      -\frac{1}{2} \\
+      0 \\
+      0\\
+    \end{bmatrix}\text{, } x_{2,5} = \begin{bmatrix}
+      0 \\
+      \frac{4}{3} \\
+      0 \\
+      0 \\
+      -1
+    \end{bmatrix}\text{, } \\
+    &x_{3,4} = \begin{bmatrix}
+      0 \\
+      0 \\
+      -\frac{1}{2} \\
+      \frac{9}{2} \\
+      0
+    \end{bmatrix}\text{, } x_{3,5} = \begin{bmatrix}
+      0 \\
+      0 \\
+      4 \\
+      0 \\
+      -9
+    \end{bmatrix}\text{, } x_{4,5} = \begin{bmatrix}
+      0 \\
+      0 \\
+      0 \\
+      4 \\
+      -1
+    \end{bmatrix}
+  \end{align*}
+
+  The basic feasible solutions are the ones with positive entries:
+  \begin{gather*}
+    x_{1,2}, x_{1,3}, x_{1,4} \text{, and } x_{1,5}
+  \end{gather*}
+
+  Plugging in the basic feasible solutions, we find that $x_{1,2} = \begin{bmatrix}
+      1 \\
+      \frac{2}{3} \\
+      0 \\
+      0 \\
+      0
+  \end{bmatrix}$ is an optimal solution. This yields an objective value of $11/3$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the LP problem of standard form
+  \begin{gather*}
+    \text{minimize}_{\textbf{x}} \quad \textbf{c}^T \textbf{x} \\
+    \text{subject to} \quad A \textbf{x} = \textbf{b} \\
+    \textbf{x} \geq 0
+  \end{gather*}
+  where \textbf{x} $\in \mathbb{R}^n$, $A$ is $m \times n$. Assume that the feasible set, i.e.,
+  \begin{gather*}
+    P = \{ \textbf{x} : A \textbf{x} = \textbf{b}, \textbf{x} \geq 0 \},
+  \end{gather*}
+  is nonempty and that $A$ has full rank $m$. We denote the nullspace of $A$ by
+  \begin{gather*}
+    N(A) = \{ x : Ax = 0 \}
+  \end{gather*}
+  \begin{enumerate}
+    \item Show that $P$ is closed
+    \item Show that $P$ is convex
+    \item Show that $P$ is bounded if and only if $N(A) \cap \{ x \geq 0 \} = \{ 0 \}$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}
+    \item Let $\{ \textbf{x}_k \} \subset P$ be a convergent sequence that converges to $\textbf{x}^*$. Note that $\textbf{x}^* \geq 0$ because all $\textbf{x}_k \geq 0$ and it is a limit of this sequence. Then,
+      \begin{gather*}
+        A \textbf{x}_k = \textbf{b} \text{ for all } k
+      \end{gather*}
+      We now take the limit,
+      \begin{gather*}
+        \lim_{k \rightarrow \infty} A \textbf{x}_k = \textbf{b}
+      \end{gather*}
+      Since all linear operators are continuous, we can take the limit inside,
+      \begin{gather*}
+        A \big( \lim_{k \rightarrow \infty} \textbf{x}_k \big) = \textbf{b} \\
+        A \textbf{x}^* = \textbf{b} \\
+        \implies \textbf{x}^* \in P
+      \end{gather*}
+      Thus, P is closed.
+    \item Let $x, y \in P$ and $\lambda \in [0,1]$. Then,
+      \begin{align*}
+        A \big( \lambda x + (1-\lambda) y \big) &= \lambda Ax + (1-\lambda) Ay \text{ by linearity of } A \\
+        &= \lambda b + (1-\lambda)b \text{ since } x, y \in P \\
+        &= b \implies \lambda x + (1-\lambda) y \in P
+      \end{align*}
+      Finally, $\lambda x + (1-\lambda) y \geq 0$ because $x, y \geq 0$ and $\lambda, (1-\lambda) \geq 0$. Thus, P is convex.
+    \item  Suppose $N(A) \cap \{ x \geq 0 \} \neq \{ 0 \}$. That is, there exists $x$ such that $\lVert x \rVert \geq 0$ and belongs to this set. Note that $\lambda x$, $\lambda \in \mathbb{R}^+$, also belongs to this set since $A(\lambda x) = \lambda Ax = \lambda 0 = 0$. Now let $y \in P$,
+    \begin{gather*}
+      A(y + \lambda x) = Ay + \lambda Ax = b + 0 = b
+    \end{gather*}
+    Since $x \geq 0$ by assumption, $y + \lambda x \in P$ for all $\lambda \in \mathbb{R}^+$. Now using the fact that $x \geq 0$ and $y \geq 0$ implies that $x \cdot y > 0$, we have:
+    \begin{gather*}
+      \lVert y + \lambda x \rVert \geq \lvert \lambda \rvert \lVert x \rVert
+    \end{gather*}
+    Letting $\lambda \rightarrow \infty$ then $\lVert y + \lambda x \rVert \rightarrow \infty$. Thus, we have $P$ is not bounded.
+
+    Now suppose that $P$ is not bounded. We can construct a sequence $x_k \subset P$ such that $\lim_{k \rightarrow \infty} \lVert x_k \rVert = \infty$. Now define a new sequence $e_k = \frac{x_k}{\lVert x_k \rVert}$ and note that $\lVert e_k \rVert = 1$, that is, it is bounded. Using Bolzano-Weierstrass, every bounded sequence has a convergent subsequence. So choose $e_{k_i}$ to be this convergent subsequence and let it converge to $e$. Note that $e \geq 0$. Starting with the definition of P,
+    \begin{gather*}
+      A x_k = b
+    \end{gather*}
+    Dividing by the norm,
+    \begin{gather*}
+      A \frac{x_k}{\lVert x_k \rVert} = \frac{b}{\lVert x_k \rVert}
+    \end{gather*}
+    Taking the limit and using continuity of A,
+    \begin{gather*}
+      \lim_{k \rightarrow \infty} A \frac{x_k}{\lVert x_k \rVert} = A \big( \lim_{k \rightarrow \infty} \frac{x_k}{\lVert x_k \rVert} \big) = A \big( \lim_{k \rightarrow \infty} e_{k_i} \big) = A e = \lim_{k \rightarrow \infty} \frac{b}{\lVert x_k \rVert}
+    \end{gather*}
+    Taking the limit on the right hand side,
+    \begin{gather*}
+      \lim_{k \rightarrow \infty} \frac{b}{\lVert x_k \rVert} = 0
+    \end{gather*}
+    Thus we have,
+    \begin{gather*}
+      Ae = 0
+    \end{gather*}
+    But this implies $e \in N(A) \cap \{ x \geq 0 \} \neq \{ 0 \}$.
+
+    This proves both directions, so we have the result.
+  \end{enumerate}
+\end{answer}
+  \clearpage
+
+\begin{exercise}
+  The Kitty Railroad is in the process of planning relocations of freight cars among the 5 regions of the country to get ready for the fall harvest. Table \ref{table:costs} shows the cost of moving a car between each pair of regions. And Table \ref{table:cars} shows the current number of cars in each region and the number needed for harvest shipping.
+  \begin{table}[h]
+    \begin{center}
+      \begin{tabular}{| c | c c c c c |}
+        \hline
+        From/To & 1 & 2 & 3 & 4 & 5 \\
+        \hline
+        1 & - & 10 & 12 & 17 & 35 \\
+        2 & 10 & - & 18 & 8 & 30 \\
+        3 & 12 & 18 & - & 9 & 27 \\
+        4 & 17 & 8 & 9 & - & 20 \\
+        5 & 35 & 30 & 27 & 20 & - \\
+        \hline
+      \end{tabular}
+    \end{center}
+    \caption{Costs of moving a car}
+    \label{table:costs}
+  \end{table}
+
+  \begin{table}[h]
+    \begin{center}
+      \begin{tabular}{| c | c c c c c |}
+        \hline
+         & 1 & 2 & 3 & 4 & 5 \\
+        \hline
+        Present & 115 & 385 & 410 & 480 & 610 \\
+        Need & 200 & 500 & 800 & 200 & 300 \\
+        \hline
+      \end{tabular}
+    \end{center}
+    \caption{Number of current and needed cars}
+    \label{table:cars}
+  \end{table}
+\end{exercise}
+
+\begin{answer}
+  Let $x_{ij}$ be the number of cars moved from region $i$ to region $j$. Let $c_{ij}$ be the cost associated with moving the car. Finally, let $p_i$ represend the cars present and $n_i$ the cars needed. Then we can write this optimization problem as:
+  \begin{gather*}
+    \text{minimize} \quad \sum_{i = 1}^5 \sum_{j = 1}^5 c_{ij} x_{ij} \\
+    \text{subject to} \quad p_i + \sum_{j = 1}^5 x_{ji} - \sum_{j = 1}^5 x_{ij} \geq n_i \\
+    \sum_{j = 1}^5 x_{ij} \leq p_i \\
+    x_{ij} \geq 0
+  \end{gather*}
+  Where the constraints come from the fact that the cars present, plus the cars moved in, minus the cars moved out, must be greater than the need, the cars moved away must be less than the present number of cars plus, and cars can only move from $i$ to $j$ in a positive manner since a negative would imply cars came from $j$ and went to $i$ which is already accounted for.
+
+  Solving with MATLAB (code attached on back) I obtained:
+  \begin{gather*}
+    x_{41} = 33.1294, x_{42} = 115, x_{43} = 131.8706, x_{51} = 51.8706, x_{53} = 258.1294 \\
+    \text{All other } x_{ij} = 0 \\
+    \text{Objective value is } 11455
+  \end{gather*}
+  However, we cannot send fractional cars, so we round to the nearest integer:
+  \begin{gather*}
+    x_{41} = 33, x_{42} = 115, x_{43} = 132, x_{51} = 52, x_{53} = 258 \\
+    \text{All other } x_{ij} = 0 \\
+    \text{Objective value is still } 11455
+  \end{gather*}
+  The objective value does not change since $x_{53}-x_{51} = 8$ and $x_{43}-x_{41} = 8$. So sending cars from 4 to 3 instead of 4 to 1 is offset by the same change from 5 to 1 instead of 5 to 3. Thus, our integer solution is still an optimal solution.
+\end{answer}
+
+\end{document}

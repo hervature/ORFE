@@ -1,0 +1,275 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 522: Linear and Nonlinear Optimization \\ Homework 4}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{07}{12}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Consider the following function:
+  \begin{gather*}
+    f(x_1, x_2) = \log \left( e^{x_1} + e^{x_2} \right)
+  \end{gather*}
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that $f$ is a convex function
+    \item Convert the following optimization problem into a convex program (hint: use result in part (1)):
+      \begin{gather*}
+        \min \quad x/y \\
+        s.t. \ 2 \leq x \leq 3 \\
+        x^2 + y/z \leq \sqrt{y} \\
+        x/y = z^2 \\
+        x, y, z \geq 0
+      \end{gather*}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We first rewrite the function as
+      \begin{gather*}
+        f(x_1, x_2) = \log (1 + e^{x_2 - x_1}) + x_1
+      \end{gather*}
+      Now note that $f(x_1, x_2) = g(x_2 - x_1) + x_1$ where $g(z) = \log(1 + e^z)$. We have that $g(z)$ is convex and non-decreasing since
+      \begin{gather*}
+        g'(z) = \frac{e^z}{1+e^z} > 0 \\
+        g''(z) = \frac{e^z}{(1+e^z)^2} > 0
+      \end{gather*}
+      Now, $g(x_2 - x_1)$ is also convex since $x_2 - x_1$ is linear and so also convex and using the fact that composing a convex non-decreasing function with a convex function is convex. Finally, $x_1$ is linear (and so convex) and adding convex functions is convex. So, $f(x_1, x_2)$ is convex.
+    \item Clearly, the objective, the second constraint, and the third constraint are not convex. We begin with the second contraint since it follows the part 1) for convexity. Notice that we can rewrite it as
+      \begin{gather*}
+        e^{2 \log x} + e^{\log y - \log z} \leq e^{1/2 \log y} \text{ or } \\
+        \log \left( e^{2 \log x} + e^{\log y - \log z} \right) \leq 1/2 \log y
+      \end{gather*}
+      Thus, letting $x' = 2 \log x$, $y' = \log y - \log z$, and $z'  = 1/2 \log y$ we get
+      \begin{gather*}
+        \log \left( e^{x'} + e^{y'} \right) - z' \leq 0
+      \end{gather*}
+      Which is convex since it is a linear combination of convex functions. Using these new variables, the problem becomes,
+      \begin{gather*}
+        \min \quad e^{\frac{1}{2} x' - 2 z'} \\
+        s.t. \ \frac{1}{2} \log 2 \leq x' \leq \frac{1}{2} \log 3 \\
+        \log \left( e^{x'} + e^{y'} \right) - z' \leq 0 \\
+        \frac{1}{2} x' - 2 z' = -2 y' + 4 z' \\
+        x', y', z' \in \mathbb{R}
+      \end{gather*}
+      Notice that the objective is the composition of an increasing convex function with a convex function, thus it is convex. The first constraint is convex since it is linear. The second was shown to be convex (by part 1). The last equality constraint is convex since it is affine. Finally, the variables are are no longer constrained to be positive since the range of log is all real numbers. Thus, the new constraint set is
+      \begin{gather*}
+        (x',y',z') \in [\frac{1}{2}\log 2 , \frac{1}{2} \log 3] \times \mathbb{R} \times \mathbb{R}
+      \end{gather*}
+      which is convex.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $f = \max_{i = 1, \mathellipsis, m} f_i(x)$ where each $f_i$ is convex and everywhere differentiable. Prove that
+  \begin{gather*}
+    f(y) \geq f(x) + \nabla f_j(x)^T (y-x), \quad \forall \ x,y \in \mathbb{R}^n, j \in \{i : f_i(x) = f(x) \}
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+  Since all the $f_i$ are convex, we have the following inequality
+  \begin{gather*}
+    f_i(y) \geq f_i(x) + \nabla f_i(x)^T (y-x), \quad \forall \ x,y \in \mathbb{R}^n, i \in \{ 1, \mathellipsis, m \}
+  \end{gather*}
+  Note that $f(y) \geq f_i(y)$. Now, let $j \in \{i : f_i(x) = f(x) \}$. Thus, we have $f_j(x) = f(x)$ for all $j$. Thus, the above becomes
+  \begin{gather*}
+    f(y) \geq f_j(y) \geq f(x) + \nabla f_j(x)^T (y-x), \quad \forall \ x,y \in \mathbb{R}^n, j \in \{i : f_i(x) = f(x) \}
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $f$ be twice differentiable and convex, with an optimal solution $\textbf{x}^*$ over a convex and closed set $X$. Consider the gradient projection mapping defined by
+  \begin{gather*}
+    T(x) = [x^k - \alpha \nabla f(x^k)]^+
+  \end{gather*}
+  Where $[\cdot]^+$ denotes the Euclidean projection onto $X$, $\alpha > 0$. Prove that $x^*$ is a global optimal solution if and only if $x^*$ is a fixed point of the mapping $T$.
+\end{exercise}
+
+\begin{answer}
+  We first begin with the assumption that $x^*$ is a fixed point of the mapping $T$. That is,
+  \begin{gather*}
+    T(x^*) = x^* = [x^* - \alpha \nabla f(x^*)]^+
+  \end{gather*}
+  Or, equivalently, that $x^*$ is a projection of $x^* - \alpha \nabla f(x^*)$. It is a well known result that a characterization of a projection is
+  \begin{gather*}
+    \langle x^* - (x^* - \alpha \nabla f(x^*)), z - x^* \rangle \geq 0 \quad \forall z \in X
+  \end{gather*}
+  Now using a series of equivalences
+  \begin{align*}
+    & \langle x^* - (x^* - \alpha \nabla f(x^*)), z - x^* \rangle \geq 0 \quad \forall z \in X \\
+    \Longleftrightarrow & \langle \alpha \nabla f(x^*), z - x^* \rangle \geq 0 \quad \forall z \in X \\
+    \Longleftrightarrow & \langle \nabla f(x^*), z - x^* \rangle \geq 0 \quad \forall z \in X \\
+    \Longleftrightarrow & x^* \text{ is optimal}
+  \end{align*}
+  Where the last equivalence follows from the fact that both $f$ and $X$ are convex.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $f$ be twice differentiable and convex, with an optimal solution $x^*$ over a convex and closed set $X$. COnsider the rescaled gradient projection method
+  \begin{gather*}
+    x^{k+1} = [x^k - \alpha D \nabla f(x^k)]^+
+  \end{gather*}
+  where $[\cdot]^+$ denotes the Euclidean projection onto $X$, and $D \succ 0$ is a symmetric matrix. Assume that $\nabla^2 f \preceq H$ for all $x$, where $H$ is a symmetric and positive definite matrix.
+  \begin{enumerate}[label=\arabic*)]
+    \item Analyze the convergence rate of the rescaled gradient method, i.e., give a bound for $f(x^k) - f(x^*)$ using $\alpha$, $D$, and $H$. (Prove rigorously, and try to get the sharpest possible bound).
+    \item What would be the optimal choice of step size $\alpha$? What would be the bound then?
+    \item Assume in addition that $f$ is strongly convex such that $\nabla^2 f(x) \preceq \sigma I$ for some $\sigma > 0$. Show that there exists some $\rho > 0$ such that
+      \begin{gather*}
+        \lVert x^k - x^* \rVert \leq \rho^k \lVert x^0 - x^* \rVert
+      \end{gather*}
+      Find $\rho$ as a function of $H$, $D$, $\sigma$, $\alpha$.
+    \item Under the assumptions of part 3), what would be the optimal choice of step size $\alpha$? What would be the error bound then?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode'
+  \begin{enumerate}[label=\arabic*)]
+    \item The first thing we shall do is to define the projection
+      \begin{gather*}
+        x^{k+1} = [x^k - \alpha D \nabla f(x^k)]_{D^{-1}}^+ \\
+        x^{k+1} = \arg \min_{x \in X} \lVert x^k - \alpha D \nabla f(x^k) - x \rVert_{D^{-1}}^2
+      \end{gather*}
+      Where the norm is defined to be
+      \begin{gather*}
+        \lVert x \rVert_{D^{-1}}^2 = \langle x, x \rangle_{D^{-1}} = x^T D^{-1} x
+      \end{gather*}
+      Using the characterization of projections, this new projection yields
+      \begin{gather*}
+        \langle x - x^{k+1}, x^k - \alpha D \nabla f(x^k) - x^{k+1} \rangle_{D^{-1}} \leq 0 \quad \forall x \in X \\
+        \Longleftrightarrow (x - x^{k+1})^T D^{-1} (x^k - \alpha D \nabla f(x^k) - x^{k+1}) \leq 0 \forall x \in X
+      \end{gather*}
+      Since $D$ is positive definite and symmetric, we can define $D = SS$ and $D^{-1} = S^{-1}S^{-1}$. We now also define the following using this decomposition. $x^k = S y^k$, $x = S y$, $g(y) = f(S y)$, $\nabla g(y) = S f(x)$. Where $g$ is convex and in $C^2$ because $f$ is just composed with a linear function. Thus, the above becomes
+      \begin{align*}
+        &\Longleftrightarrow (S y - S y^{k+1})^T D^{-1} (S y^k - \alpha SS \nabla f(x^k) - S y^{k+1}) \leq 0 \quad \forall y \in S^{-1}(X) \\
+        &\Longleftrightarrow (y - y^{k+1})^T S D^{-1} S (y^k - \alpha \nabla g(y^k) - y^{k+1}) \leq 0 \quad \forall y \in S^{-1}(X) \\
+        &\Longleftrightarrow (y - y^{k+1})^T (y^k - \alpha \nabla g(y^k) - y^{k+1}) \leq 0 \quad \forall y \in S^{-1}(X) \\
+        &\Longleftrightarrow y^{k+1} = [y_k - \alpha \nabla g(y^k)]^+
+      \end{align*}
+      Where $[\cdot]^+$ is the Euclidean projection. Notice that this is the original problem, but now $D = I$. Now, notice that $\nabla^2 g = S \nabla^2 f S \succeq S H S$. So, $\lVert \nabla^2 g \rVert \leq \lVert S \rVert^2 \lVert H \rVert$. Where $\lVert S \rVert^2 = \lambda_{\text{max}}(D)$ and $\lVert H \rVert^2 = \lambda_{\text{max}}(H)$ since both matrices are diagonalizable. We let $L = \lambda_{\text{max}}(D)\lambda_{\text{max}}(H)$ and so $g(x)$ is $L$-Lipschitz. Thus, we use the following inequality
+      \begin{equation}\label{eqn:base}
+        g(y^{k+1}) \leq g(y^k) + \nabla g(y^k)^T (y^{k+1} - y^k) + \frac{L}{2} \lVert y^{k+1} - y^k \rVert^2
+      \end{equation}
+      Again, from the definition of a projection
+      \begin{gather*}
+        (y - y^{k+1})^T (y^k - \alpha \nabla g(y^k) - y^{k+1}) \leq 0 \\
+      \end{gather*}
+      Which gives us the bound
+      \begin{equation}\label{eqn:grad_bound}
+        \nabla g(y^k)(y^{k+1} - y^k) \leq -\frac{1}{\alpha} \lVert y^{k+1} - y^k \rVert^2
+      \end{equation}
+      Bounding \eqref{eqn:base} with \eqref{eqn:grad_bound} yields
+      \begin{gather*}
+        g(y^{k+1}) \leq g(y^k) + (\frac{L}{2} - \frac{1}{\alpha}) \lVert y^{k+1} - y^k \rVert^2
+      \end{gather*}
+      Which is decreasing for $\alpha < \frac{2}{L}$. We pick $\alpha \leq \frac{1}{L}$ for convenience. Hence, we now have a contraction. By convexity of $g$ we have
+      \begin{gather*}
+        g(y^k) \leq g(y^*) + \nabla g(y^k)^T (y^k -y^*)
+      \end{gather*}
+      Which, when applied to the upper bound of \eqref{eqn:base} yields
+      \begin{gather*}
+        g(y^{k+1}) \leq g(y^*) + \nabla g(y^k)^T (y^{k+1} - y^k) + \nabla g(y^k)^T (y^k - y^*) \\
+        + \frac{1}{2 \alpha} \lVert y^{k+1} - y^k \rVert^2
+      \end{gather*}
+      \begin{equation}\label{eqn:new_base}
+        g(y^{k+1}) \leq g(y^*) + \nabla g(y^k)^T (y^{k+1} - y^*)+ \frac{1}{2 \alpha} \lVert y^{k+1} - y^k \rVert^2
+      \end{equation}
+      We now wish to upper bound these terms. Again, applying the characterization of projection of $y^k$ we have
+      \begin{gather*}
+        (y^* - y^{k+1})^T (y^k - \alpha \nabla g(y^k) - y^{k+1}) \leq 0 \\
+        (y^* - y^{k+1})^T (- \alpha \nabla g(y^k)) \leq - (y^* - y^{k+1})^T (y^k - y^{k+1}) \\
+        (y^{k+1} - y^*)^T (\nabla g(y^k)) \leq -\frac{1}{\alpha}(y^* - y^{k+1})^T (y^k - y^{k+1}) \\
+      \end{gather*}
+      Applying this to \eqref{eqn:new_base} yields
+      \begin{gather*}
+        g(y^{k+1}) \leq g(y^*) -\frac{1}{\alpha}(y^* - y^{k+1})^T (y^k - y^{k+1}) + \frac{1}{2 \alpha} \lVert y^{k+1} - y^k \rVert^2 \\
+        g(y^{k+1}) \leq g(y^*) + \frac{1}{2\alpha} \left[ -2(y^* - y^{k+1})^T (y^k - y^{k+1}) + \lVert y^{k+1} - y^k \rVert^2 \right] \\
+        g(y^{k+1}) \leq g(y^*) + \frac{1}{2\alpha} \big[ -2(y^* - y^{k+1})^T (y^k - y^*) \\
+        -2(y^* - y^{k+1})^T (y^* - y^{k+1})  + \lVert y^{k+1} - y^* \rVert^2 \\
+        + \lVert y^k - y^* \rVert^2 +2(y^* - y^{k+1})^T (y^k - y^*) \big] \\
+        g(y^{k+1}) \leq g(y^*) + \frac{1}{2\alpha} \left[\lVert y^k - y^* \rVert^2 - \lVert y^{k+1} - y^* \rVert^2 \right]
+      \end{gather*}
+      Which, is a telescoping sum. Thus
+      \begin{gather*}
+        \frac{1}{K} \sum_{k = 0}^K g(y^k) - g(y^*) \leq \frac{1}{2 \alpha K} \lVert y^0 - y^* \rVert^2
+      \end{gather*}
+      But, since $g(y^k)$ is decreasing, we have $g(y^K) \leq \frac{1}{K} \sum_{k = 0}^K g(y^k)$. This yields
+      \begin{gather*}
+        0 \leq g(y^K) - g(y^*) \leq \frac{1}{2 \alpha K} \lVert y^0 - y^* \rVert^2
+      \end{gather*}
+      Which is equivalent to
+      \begin{gather*}
+        0 \leq f(x^K) - f(x^*) \leq \frac{1}{2 \alpha K} \lVert x^0 - x^* \rVert_{D^{-1}}^2
+      \end{gather*}
+    \item We wish to minimize the upper bound by picking $\alpha$ suitably. We notice that minimizing the bound is equivalent to maximizing $\alpha$. Since we bounded $\alpha$ by $\frac{1}{L}$ to get the answer in part 1), we pick $\alpha = \frac{1}{L}$. The bound then becomes
+      \begin{gather*}
+        0 \leq f(x^K) - f(x^*) \leq \frac{L}{2 K} \lVert x^0 - x^* \rVert_{D^{-1}}^2
+      \end{gather*}
+    \item We have that $y^* = [y^* - \alpha \nabla g(y^*)]^+$ is a stationary point, similar to the proof in question 3). Then we have
+      \begin{gather*}
+        \lVert x^{k+1} - x^* \rVert_{D^{-1}}^2 = \lVert y^{k+1} - y^* \rVert^2 \\
+        \leq \lVert y^k - \alpha \nabla g(y^k) - y^* + \alpha \nabla g(y^*) \rVert^2 \\
+        \leq \lVert y^k - y^* \rVert^2 + 2 \alpha (y^k - y^*)^T (\nabla g(y^*) - \nabla g(y^k)) + \alpha^2 \lVert \nabla g(y^*) - \nabla g(y^k) \rVert^2 \\
+        \leq (1 - 2 \alpha \sigma \lambda_{\text{min}}(D) + L^2 \alpha^2) \lVert y^* - y^k \rVert^2
+      \end{gather*}
+      Where the last line is a result of the following two inequalities. By strong convexity, we have
+      \begin{gather*}
+        \nabla^2 g = S \nabla^2 f S \succeq \sigma D \succeq \sigma \lambda_{\text{min}}(D) I \\
+        \implies (y^k - y^*)^T (\nabla g(y^*) - \nabla g(y^k)) \leq -\sigma \lambda_{\text{min}}(D) \lVert y^k - y^* \rVert^2
+      \end{gather*}
+      By $L$-Lipschitz
+      \begin{gather*}
+        \lVert \nabla g(y^*) - \nabla g(y^k) \rVert^2 \leq L \lVert y^k - y^* \rVert^2
+      \end{gather*}
+      Where $L = \lambda_{\text{max}}(D)\lambda_{\text{max}}(H)$ as before. Applying the bound recursively yields,
+      \begin{gather*}
+        \lVert x^k - x^* \rVert_{D^{-1}}^2 \leq (1 - 2 \alpha \sigma \lambda_{\text{min}}(D) + L^2 \alpha^2)^k \lVert x^0 - x^* \rVert_{D^{-1}}^2
+      \end{gather*}
+      Thus, letting $\rho = (1 - 2 \alpha \sigma \lambda_{\text{min}}(D) + L^2 \alpha^2)^{1/2}$ gives us
+      \begin{gather*}
+        \lVert x^k - x^* \rVert_{D^{-1}} \leq \rho^k \lVert x^0 - x^* \rVert_{D^{-1}}
+      \end{gather*}
+    \item Minimizing $\rho$ by taking the derivative and setting it to 0 gives
+      \begin{gather*}
+        \alpha  = \frac{\sigma \lambda_{\text{min}}(D)}{L^2}
+      \end{gather*}
+      Which means that $\rho$ becomes
+      \begin{gather*}
+        \rho = \left( 1 - \frac{\sigma^2 \lambda_{\text{min}}^2 (D)}{L^2} \right)^{1/2} \\
+        \rho = \left( 1 - \frac{\sigma^2 \lambda_{\text{min}}^2 (D)}{\lambda_{\text{max}}^2(D)\lambda_{\text{max}}^2(H)} \right)^{1/2} \geq 0
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\end{document}

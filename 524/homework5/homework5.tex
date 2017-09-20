@@ -1,0 +1,405 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 524: Statistical Theory and Methods \\ Homework 5}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{02}{12}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $X_n \in L^p$ and $X \in L^p$. Show that $X_n \xrightarrow{L_p} X$ implies $\lVert X_n \rVert_p \rightarrow \lVert X \rVert_p$. Conversely, does $\lVert X_n \rVert_p \rightarrow \lVert X \rVert_p$ imply $X_n \xrightarrow{L_p} X$? Why?
+
+  Note: Here $L^p$ is defined as the set of all random variables on probability space $(\Omega, \Sigma, P)$ such that $E[ \lvert X_n \rvert^p ] < \infty$.
+\end{exercise}
+
+\begin{answer}
+  Since $X_n \xrightarrow{L_p} X$, then
+  \begin{gather*}
+    E[ \lvert X_n - X \rvert^p ] \rightarrow 0
+  \end{gather*}
+  By the the reverse triangle inequality,
+  \begin{gather*}
+    \Big\lvert \lVert X_n \rVert_p - \lVert X \rVert_p \Big\rvert \leq \lVert X_n - X \rVert_p =  E[ \lvert X_n - X \rvert^p ]^{1/p}
+  \end{gather*}
+  However, since we have $E[ \lvert X_n - X \rvert^p ] \rightarrow 0$, then the right hand side goes to 0. Thus the left side also goes to 0 by the squeeze theorem. Therefore
+  \begin{gather*}
+    \lVert X_n \rVert_p \rightarrow \lVert X \rVert_p
+  \end{gather*}
+
+  The converse does not hold true. Consider the constant random variable of $X_n = 1$ and $X \sim 2^{1/p} \cdot Bernoulli(1/2)$. Then clearly
+  \begin{gather*}
+    \lVert X_n \rVert_p = 1 \\
+    \lVert X \rVert_p = (0^p \cdot 1/2 + (2^{1/p})^p \cdot 1/2))^{1/p} = 1
+  \end{gather*}
+  and so $\lVert X_n \rVert_p \rightarrow \lVert X \rVert_p$. However,
+  \begin{gather*}
+    E[ \lvert X_n - X \rvert^p ] = E[ \lvert X_n - X \rvert^p ] = \lvert -1 \rvert^p \cdot 1/2 + \lvert 2^{1/p} - 1 \rvert^p \cdot 1/2
+  \end{gather*}
+  Which holds for all $n$ and so does not converge to 0. Thus, we do not have convergence in $L^p$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X_n, Y_n \in \mathbb{R}^d$ with $X_n \xrightarrow{\bullet} X$ and $Y_n \xrightarrow{\bullet} Y$, where $\bullet$ is either ``a.s.'', ``in probability'', or ``in $L^p$'' (for $L^p$, assuming $d = 1$).
+  \begin{enumerate}[label=\alph*)]
+    \item Show that $X_n + Y_n \xrightarrow{\bullet} X + Y$ (in the cases of ``a.s.'', ``in probability'', and ``in $L^p$'').
+    \item Show that $X_n^T Y_n \xrightarrow{\bullet} X^T Y$ (in the cases of ``a.s.'' and ``in probability'').
+    \item Let $d = 1$, and $P(Y = 0) = 0$, show that
+      \begin{gather*}
+        \frac{X_n}{Y_n} \xrightarrow{\bullet} \frac{X}{Y}
+      \end{gather*}
+      in the cases of ``a.s.'' and ``in probability''.
+    \item Explain why convergence in distribution fails for a), b), and c).
+
+    Note: You are expected to answer these questions without using continuity theorems.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item For ``a.s.'' convergence, we have
+      \begin{gather*}
+        P(X_n + Y_n \rightarrow X + Y) \geq P(X_n \rightarrow X \text{ and } Y_n \rightarrow Y)
+      \end{gather*}
+      Since the intersection of two sets of probability 1 (by a.s.) occurs with probability 1, then
+      \begin{gather*}
+        P(X_n + Y_n \rightarrow X + Y) = 1
+      \end{gather*}
+      Thus, $X_n + Y_n \rightarrow X + Y$ ``a.s.''
+
+      Now for ``in probability'', we first note the following inequality for random variables $U$ and $V$
+      \begin{gather*}
+        1_{ \{ U + V < \epsilon \} } \geq 1_{ \{ U < \epsilon/2 \} } \cdot 1_{ \{ V < \epsilon/2 \} }
+      \end{gather*}
+      Taking expectations
+      \begin{gather*}
+        P( U + V < \epsilon ) \geq P( U < \epsilon/2, V < \epsilon/2 )
+      \end{gather*}
+      Now using a bound on intersection of events,
+      \begin{gather*}
+        P( U < \epsilon/2, V < \epsilon/2 ) \geq \max(0, P(U < \epsilon/2) + P(V < \epsilon/2) - 1)
+      \end{gather*}
+      Picking $U = \lvert X_n - X \rvert$ and $V = \lvert Y_n - Y \rvert$
+      \begin{gather*}
+        P( \lvert X_n - X \rvert + \lvert Y_n - Y \rvert < \epsilon ) \\
+        \geq \max(0, P(\lvert X_n - X \rvert < \epsilon/2) + P(\lvert Y_n - Y \rvert < \epsilon/2) - 1)
+      \end{gather*}
+      We now upper bound using the triangle inequality,
+      \begin{gather*}
+        P( \lvert X_n - X + Y_n - Y \rvert < \epsilon ) \geq P( \lvert X_n - X \rvert + \lvert Y_n - Y \rvert < \epsilon )
+      \end{gather*}
+      Thus,
+      \begin{gather*}
+        P( \lvert X_n + Y_n - (X + Y) \rvert < \epsilon ) \\
+        \geq \max(0, P(\lvert X_n - X \rvert < \epsilon/2) + P(\lvert Y_n - Y \rvert < \epsilon/2) - 1)
+      \end{gather*}
+
+      For ``in probability'', both of the lower bound terms converge to 1 due to convergence ``in probability''. Thus,
+      \begin{gather*}
+        P( \lvert X_n + Y_n - (X + Y) \rvert < \epsilon) \rightarrow 1
+      \end{gather*}
+      which gives convergence ``in probability''
+
+      For $L^p$ we have that,
+      \begin{gather*}
+        \lVert X_n - X \rVert_p \rightarrow 0 \text{ and } \lVert Y_n - Y \rVert_p \rightarrow 0
+      \end{gather*}
+      Minkowski inequality gives
+      \begin{gather*}
+        \lVert X_n + Y_n - (X + Y) \rVert_p \leq \lVert X_n - X \rVert_p + \lVert Y_n - Y \rVert_p
+      \end{gather*}
+      Thus, the right hand side converges to zero and so does the left hand side. This gives us convergence in $L^p$. Note that all the $p$-norms are well defined since $L^p$ is closed under addition and we know all the individual terms are in $L^p$ by assumption.
+
+    \item For ``a.s.'', we note
+      \begin{gather*}
+        P(X_n^T Y_n \rightarrow X^T Y ) \geq P(X_n \rightarrow X \text{ and } Y_n \rightarrow Y)
+      \end{gather*}
+      Since the intersection of two sets of probability 1 (by a.s.) occurs with probability 1, then
+      \begin{gather*}
+        P(X_n^T Y_n \rightarrow X^T Y ) = 1
+      \end{gather*}
+      Thus, $X_n^T Y_n \rightarrow X^T Y$ ``a.s.''
+
+      Now for ``in probability''. Since $X_n \rightarrow X$ and $Y_n \rightarrow Y$ in probability. For a given subsequence $X_n'^T Y_n'$, we can find a suitable subsubsequence such that $X_n''$ and $Y_n''$ converge a.s. By the previous part, since they converge a.s. then $X_n''^T Y_n'' \rightarrow X^T Y$ a.s. Thus, for every subsequence, there is a subsubsequence that converges a.s. and so $X_n^T Y_n \rightarrow X^T Y$ ``in probability''.
+
+    \item Since all the random variables are well defined ($P(Y = 0) = P(Y_n = 0) = 0$) then we can simply define $Y_n' = \frac{1}{Y_n}$ and $Y' = \frac{1}{Y}$.
+      \begin{gather*}
+        \frac{X_n}{Y_n} = X_n Y_n' \text{ and } \frac{X}{Y} = X Y'
+      \end{gather*}
+      This changes the problem to $X_n Y_n' \xrightarrow{\bullet} X Y'$. Using the previous part b) with $d = 1$ completes the proof.
+
+    \item Consider symmetric variables. That is, $X \sim N(0,1)$. Then $X \rightarrow -X$ in distribution. However, $X + (-X) = 0$ while $N(0,1) + N(0,1) \neq 0$ necessarily. Thus we have that a) fails. The issue is that there is no information on the joint distributions for convergence in distributions. Thus, $N(0,1) + N(0,1)$ can equal many things depending on how the distributions are dependent. Independent means $N(0,1) + N(0,1) = N(0,2)$. In my case, $N(0,1) + N(0,1) = 0$. Thus adding distributions is only meaningful when the joint distribution is known.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Suppose that $X_n$ and $X$ are random variables.
+  \begin{enumerate}[label=\arabic*)]
+    \item Prove that $X_n \xrightarrow{L^p} X$ implies $X_n \xrightarrow{p} X$.
+    \item Let $\bullet$ represent convergence a.s., in probability, in distribution, or $L^p$. Show that $X_n \xrightarrow{\bullet} X$ if and only if every subsequence $X_{n_k} \xrightarrow{\bullet} X$.
+    \item If $X_n \xrightarrow{d} c$ where $c \in \mathbb{R}$, then $X_n \xrightarrow{p} c$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Since we have convergence in $L^p$ we have
+      \begin{gather*}
+        E[ \lvert X_n - X \rvert^p ] \rightarrow 0
+      \end{gather*}
+      By Markov's inequality
+      \begin{gather*}
+        P( \lvert X_n - X \rvert > \epsilon^{1/p} ) \leq \frac{E[ \lvert X_n - X \rvert^p ]}{\epsilon} \rightarrow 0
+      \end{gather*}
+      Thus convergence in $L^p$ implies convergence in probability. Since the left hand side is 0, then $P(\lvert X_n - X \rvert < \epsilon^{1/p}) \rightarrow 1$
+
+    \item If every subsequence converges $X_{n_k} \xrightarrow{\bullet} X$, then it is immediate that $X_n \xrightarrow{\bullet} X$ since we just pick $n_k$ to be $n$. Now, suppose that $X_n \xrightarrow{\bullet} X$. By contradiction, suppose such a subsequence $X_{n_k}$ existed that did not converge. Then, for every $\epsilon$ in the definitions of the $\bullet$ convergence, we could not find a $N_\epsilon$ sufficiently large to satisfy the conditions. Because if you pick $N_\epsilon$, I simply have to choose $n_k > N_\epsilon$ which is always possible because the subsequence is infinite. Then we cannot say statements of the sort ``$\forall n \geq N_\epsilon$'' and hence no convergence is possible. Thus, no such $X_{n_k}$ can exist if we have $\bullet$ convergence.
+
+    \item If $X_n \xrightarrow{d} X = c$ then the pdf becomes $P(X = c) = 1$. Thus, we have
+      \begin{gather*}
+        P( \lvert X_n - X \rvert < \epsilon) = P( \lvert X_n - c \rvert < \epsilon)
+      \end{gather*}
+      Picking $N_\epsilon$ sufficiently large
+      \begin{gather*}
+        P( \lvert X_{N_\epsilon} - c \rvert < \epsilon) = 1
+      \end{gather*}
+      Which achieves convergence in probability.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Suppose $X$ is a random variable and $F(x)$ is its distribution function.
+  \begin{enumerate}[label=\arabic*)]
+    \item Assume for simplicity that $F$ is invertible, and let $X^* = F^{-1}(U)$, where $U \sim U[0,1]$. Prove that $X \stackrel{\text{d}}{=} X^*$.
+    \item In general case where $F$ is not necessarily invertible, let
+      \begin{gather*}
+        X^* = F^{-1}(U) := \inf \{ x : F(x) \geq U \}, \text{ where } U \sim U[0,1]
+      \end{gather*}
+      Prove that the claim in part 1) is still true.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We begin with $X^* = F^{-1}(U)$ exists and well defined. This implies $F^{-1}(\cdot)$ is strictly increasing and thus strictly monotone.
+      \begin{gather*}
+        P(X^* \leq x^*) \\
+        = P(F^{-1}(U) \leq x^*) \\
+        = P(U \leq F(x^*))
+      \end{gather*}
+      Where $P(U \leq F(x^*)) = F(x^*) = P(X \leq x^*)$. Thus, $P(X^* \leq x^*) = P(X \leq x^*)$ and we conclude $X \stackrel{\text{d}}{=} X^*$.
+    \item In this case, we have the following
+      \begin{gather*}
+        F(F^{-1}(u)) \geq u
+      \end{gather*}
+      By right-continuity. We wish to show $u \leq F(x^*)$ is equivalent to $F^{-1}(u) \leq x^*$. If $u \leq F(x^*)$, then by definition of $F^{-1}(U)$, $F^{-1}(u) \leq x^*$. If $F^{-1}(u) \leq x^*$ then we use the fact $F(F^{-1}(u)) \geq u$ to get $u \leq F(x^*)$. Thus we showed
+      \begin{gather*}
+        u \leq F(x^*) \Longleftrightarrow F^{-1}(u) \leq x^*
+      \end{gather*}
+      Thus we can use the previous reasoning now
+      \begin{gather*}
+        P(X^* \leq x^*) \\
+        = P(F^{-1}(U) \leq x^*) \\
+        \Longleftrightarrow P(U \leq F(x^*))
+      \end{gather*}
+      Thus, $P(X^* \leq x^*) = P(X \leq x^*)$ and we conclude $X \stackrel{\text{d}}{=} X^*$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Suppose that $\{ X_n \}_{n \geq 1}$ and $X$ are $d$-dimensional random vectors. Prove the following claims by reducing them to the scalar case.
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that $X_n \xrightarrow{a.s.} X \implies X_n \xrightarrow{p} X \implies X_n \xrightarrow{d} X$
+    \item Show that $X_n \xrightarrow{p} X$ if and only if for every subsequence $\{ X_{n_k} \}_{k \geq 1}$, there is a further subsequence $\{ X_{n_{k_j}} \}_{j \geq 1}$ such that $X_{n_{k_j}} \xrightarrow{a.s.} X$.
+  \end{enumerate}
+  Note: You may use (without proof) the fact that these two arguments hold in the scalar case.
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item First let's show $X_n \xrightarrow{a.s.} X \implies X_n \xrightarrow{p} X$. If $X_n \xrightarrow{a.s.} X$ then
+      \begin{gather*}
+        P(\forall \epsilon, \exists N_\epsilon, \forall n \geq N_\epsilon, \lVert X_n - X \rVert_d < \epsilon) = 1
+      \end{gather*}
+      Expanding the norm,
+      \begin{gather*}
+        P(\forall \epsilon, \exists N_\epsilon, \forall n \geq N_\epsilon, \sum_{i = 1}^d \lvert X_n^i - X^i \rvert^d < \epsilon^d) = 1
+      \end{gather*}
+      Now define new scalar random variables $Y_n = \sum_{i = 1}^d \lvert X_n^i - X^i \rvert^d$ and $Y = 0$.  Since $Y_n \xrightarrow{a.s.} Y$ then we have $Y_n \xrightarrow{p} Y$. That is,
+      \begin{gather*}
+        P(\lvert Y_n - Y \rvert < \epsilon^d) \rightarrow 1 \\
+        = P( \lvert \sum_{i = 1}^d \lvert X_n^i - X^i \rvert^d - 0 \rvert < \epsilon^d ) \rightarrow 1 \\
+        = P( \sum_{i = 1}^d \lvert X_n^i - X^i \rvert^d < \epsilon^d ) \rightarrow 1 \\
+        = P( \lVert X_n - X \rVert_d < \epsilon ) \rightarrow 1
+      \end{gather*}
+
+      Now to show $X_n \xrightarrow{p} X \implies X_n \xrightarrow{d} X$. If $X_n \xrightarrow{p} X$ then
+      \begin{gather*}
+        P(\lVert X_n - X \rVert_d < \epsilon) \rightarrow 1
+      \end{gather*}
+      In particular, for $\lVert v \rVert_d = 1$,
+      \begin{gather*}
+        P(\lvert v^T X_n - v^T X \rvert < \epsilon) \rightarrow 1 \\
+        = P(\lvert \sum_{i = 1}^d v^i (X_n^i - X^i) \rvert_d < \epsilon) \rightarrow 1
+      \end{gather*}
+      Thus, picking $Y_n = \sum_{i = 1}^d v^i X_n^i$ and $Y = \sum_{i = 1}^d v^i X^i$. Then $Y_n \xrightarrow{p} Y$ in the scalar case and so applying the scalar fact, $Y_n \xrightarrow{d} Y$. But this implies, $\sum_{i = 1}^d v^i X_n^i \xrightarrow{d} \sum_{i = 1}^d v^i X^i$ which is exactly $v^T X_n \xrightarrow{d} v^T X$. Since $v$ was arbitrary, by the Cramer-Wold device, this is an equivalent definition of convergence in distribution in higher dimensions.
+
+    \item We are in the random vector case. Thus $X_n \xrightarrow{p} X$ mean that
+      \begin{gather*}
+        P(\lVert X_n - X \rVert_d < \epsilon) \rightarrow 1
+      \end{gather*}
+      Expanding the norm,
+      \begin{gather*}
+        P(\sum_{i = 1}^d \lvert X_n^i - X^i \rvert^d < \epsilon^d) \rightarrow 1
+      \end{gather*}
+      Again, define $Y_n = \sum_{i = 1}^d \lvert X_n^i - X^i \rvert^d$ and $Y = 0$. Then $Y_n \xrightarrow{p} Y$. Then applying the scalar case yields the result. That is, there exists $Y_{n_{k_j}} \xrightarrow{a.s.} Y$ for every $Y_{n_k}$. Thus, there exists $\sum_{i = 1}^d \lvert X_{n_{k_j}}^i - X_{n_{k_j}}^i \rvert^d$ which converges to 0 a.s. which implies that there exists $X_{n_{k_j}} \xrightarrow{a.s.} X$ for any $X_{n_k}$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Prove the following statements. Suppose that $X_n$ and $Y_n$ are random vectors.
+  \begin{enumerate}[label=\arabic*)]
+    \item Suppose $X_n \xrightarrow{d} X$, then $\lVert X_n \rVert = O_P(1)$
+    \item Suppose that $\lVert X_n \rVert = O_P(1)$ and $\lVert Y_n \rVert = o_P(1)$. Then, $Y_n^T X_n = o_P(1)$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Since $X_n \xrightarrow{d} X$ we also have $\lVert X_n \rVert \xrightarrow{d} \lVert X \rVert$ by continuity mapping results.
+      Now, pick $c_\epsilon$ from the continuity set of $F_{\lVert X \rVert}$ such that
+      \begin{gather*}
+        P(\lVert X \rVert \leq c_\epsilon) \geq 1 - \epsilon/2
+      \end{gather*}
+      By convergence in distributions
+      \begin{gather*}
+        P(\lVert X_n \rVert \leq c_\epsilon) \rightarrow P(\lVert X \rVert \leq c_\epsilon)
+      \end{gather*}
+      So for large enough $n$, we have
+      \begin{gather*}
+        P(\lVert X_n \rVert \leq c_\epsilon) \geq 1 - \epsilon
+      \end{gather*}
+      Thus, $\lVert X_n \rVert$ is $O_P(1)$.
+    \item Let $\epsilon, \delta > 0$, and $\lVert X_n \rVert \leq C_\delta$ with
+      \begin{gather*}
+        P(\lVert X_n \rVert \leq C_\delta) \geq 1 - \delta/2 \ \forall n
+      \end{gather*}
+      Now, for $n \geq N_{\epsilon, \delta}$ let $\lVert Y_n \rVert \leq \epsilon/C_\delta$ with
+      \begin{gather*}
+        P(\lVert Y_n \rVert \leq \epsilon/C_\delta) \geq 1 - \delta/2
+      \end{gather*}
+      Thus,
+      \begin{gather*}
+        \lVert Y_n^T X_n \rVert \leq \frac{\epsilon}{C_\delta} \cdot C_\delta = \epsilon
+      \end{gather*}
+      With probability greater than $1 - \delta$. Thus, $Y_n^T X_n$ is $o_P(1)$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $g$ be a bounded function on $\mathbb{R}$, and suppose that it is continuous a.e. $\mathbb{P}_X$. In other words, $\mathbb{P}(\omega : g \text{ continuous at } X(\omega)) = 1$. Show that $X_n \xrightarrow{\bullet} X \implies \mathbb{E}[g(X_n)] \rightarrow \mathbb{E}[g(X)]$, where $\bullet$ means convergence ``a.s.'', ``in probability'', or ``in distribution''.
+\end{exercise}
+
+\begin{answer}
+  We showed in class that $X_n \xrightarrow{\bullet} X \implies g(X_n) \xrightarrow{\bullet} g(X)$. Now taking expectation,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} \mathbb{E}[g(X_n)] = \lim_{n \rightarrow \infty} \int_\mathbb{R} g(X_n) dP \\
+  \end{gather*}
+  By the Dominated Convergence Theorem, $g(X_n)$ is dominated (since it is bounded) and it is integrable since
+  \begin{gather*}
+    \int_\mathbb{R} \lvert g(X_n) \rvert dP \leq \int_\mathbb{R} M dP = M
+  \end{gather*}
+  So we can switch the limit and the integral
+  \begin{gather*}
+    = \int_\mathbb{R} \lim_{n \rightarrow \infty} g(X_n) dP
+  \end{gather*}
+  Since we have $g(X_n) \xrightarrow{\bullet} g(X)$
+  \begin{gather*}
+    = \int_\mathbb{R} g(X) dP = \mathbb{E}[g(X)]
+  \end{gather*}
+  Therefore, as $n \rightarrow \infty$ then $\mathbb{E}[g(X_n)] \rightarrow \mathbb{E}[g(X)]$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\{ X_i \} \sim P^n$, with $\mathbb{E}[X_1^4] < \infty$. Let $var(X_1) = \sigma^2$. Recall that $S_n^2 = \frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2$ and $S_{n-1}^2 = \frac{n}{n-1} S_n^2$.
+  \begin{enumerate}[label=\arabic*)]
+    \item Derive the asymptotic distribution of $\sqrt{n}(S_{n-1}^2 - \sigma^2)$.
+    \item Consider $\{ (x_i, y_i) \}_1^n$ i.i.d. and $\widehat{C}_n = \frac{1}{n} \sum_{i=1}^n x_i y_i - \bar{x} \bar{y}$. Suppose that $\mathbb{E}[x_1^{l_1} y_1^{l_2}] < \infty$ for any integers $0 \leq l_1 \leq 2$ and $0 \leq l_2 \leq 2$. Use Delta method to derive the asymptotic distribution of $\sqrt{n}(\widehat{C}_n - Cov(x_1,y_1))$. (You may give an expression without simplificaiton).
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We notice that
+      \begin{gather*}
+        \sqrt{n}(\frac{n}{n-1} S_{n-1}^2 - \sigma^2) = \sqrt{n}(S_n^2 - \sigma^2) + \frac{\sqrt{n}}{n-1} S_n^2
+      \end{gather*}
+      Asymptotically, the second term vanishes and we are left with the same part we did in class which is distributed $N(0, \mathbb{E}[(X_1 - \mathbb{E}[X_1])^4] - \sigma^4)$
+    \item Let $Z_i = \begin{bmatrix} X_i Y_i \\ X_i \\ Y_i \end{bmatrix}$. Then, $\bar{Z} = \begin{bmatrix} \frac{1}{n} \sum_{i=1}^n X_i Y_i \\ \bar{X} \\ \bar{Y} \end{bmatrix}$ and $\mathbb{E}[Z] = \begin{bmatrix} \mathbb{E}[X Y] \\ \mathbb{E}[X] \\ \mathbb{E}[Y] \end{bmatrix}$. Invoking CLT,
+      \begin{gather*}
+        \sqrt{n}(\bar{Z} - \mathbb{E}[Z]) \xrightarrow{d} N(0, \Sigma)
+      \end{gather*}
+      Where $\Sigma = \begin{bmatrix} Var(XY) & Cov(XY, X) & Cov(XY, Y) \\ Cov(XY, X) & Var(X) & Cov(X,Y) \\ Cov(XY, Y) & Cov(X,Y) & Var(Y) \end{bmatrix}$.
+
+      Now pick $h(x,y,z) = x - yz$. Then
+      \begin{gather*}
+        \nabla h = \begin{bmatrix}
+          1 \\
+          -z \\
+          -y
+        \end{bmatrix} \implies \nabla h(\mathbb{E}[Z]) = \begin{bmatrix}
+          1 \\
+          -\mathbb{E}[Y] \\
+          -\mathbb{E}[X]
+        \end{bmatrix}
+      \end{gather*}
+
+      Then using Delta Method
+      \begin{gather*}
+        \sqrt{n}(h(Z) - h(\mathbb{\mathbb{E}[Z]})) \\
+        = \sqrt{n}(\widehat{C}_n - Cov(X,Y)) \xrightarrow{d} N(0, \nabla h^T(\mathbb{E}[Z]) \Sigma \nabla h(\mathbb{E}[Z]))
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\end{document}

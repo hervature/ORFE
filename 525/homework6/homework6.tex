@@ -1,0 +1,350 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 525: Statistical Learning and \\ Nonparametric Estimation \\ Homework 6}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{12}{05}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Determine the VC dimension of the class of all polygons with $k$ vertices in the two-dimensional plane.
+    \item Consider the function class
+      \begin{gather*}
+        \mathcal{F} := \{ \{x : \sin(\theta x) \geq 0 \} : \theta \in \mathbb{R} \}
+      \end{gather*}
+      Show that the VC-dimension of $\mathcal{F}$, denoted as $d_{VC}(\mathcal{F})$, is infinite.
+    \item Let $\mathcal{C}$ be a class of convex subsets of $\mathbb{R}^d$. Show that if $I \subset \mathbb{R}^d$ is shattered by $\mathbb{R}^d$, then every $x \in I$ must be an extreme point of the convex hull of $I$ (denoted as conv $I$).
+    \item Let $\mathcal{C}$ be of finite VC dimension $d \geq 1$. Consider the class $\mathcal{C}_k = \{\cup_{i=1}^k c_i : c_i \in \mathcal{C}\}$ for some $k \geq 1$.
+      \begin{enumerate}[label=\alph*)]
+        \item Let $\mathbb{X}_{1:n}$ be a sample of size $n$ and let $\Pi_K (n)$ denote the set of all labelings of $\mathbb{X}_{1:n}$ using class $K$. Show that $\lvert \Pi_{\mathcal{C}_k} (n) \rvert \leq \lvert \Pi_{\mathcal{C}} (n) \rvert^k$.
+        \item Prove that $d_{VC}(\mathcal{C}_k) = O(dk \log k)$. (Hint: you can use the fact that $\log_2 (3k) < 9k/(2e)$ for $k \geq 2$).
+      \end{enumerate}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We first show that it is possible to shatter $2k+1$ points. Suppose the points are equally spaced around the unit sphere. If the number of positive points (the ones labeled +1) is less than or equal to $k$, then simply draw a $k$-polygon that connects the $k$ points inside the circle. This clearly does not contain the $-1$ labeled points as the vertices of the polygon lie on the other points and the edges are contained in the circle. Now suppose the number of +1 labeled points is strictly larger than $k$. That means the number of $-1$ labeled points is less than or equal to $k$. Then, we draw a $k$-polygon such that the circle is inscribed and the sides are tangent to the circle at the negative points. Thus, all +1 labeled points are inside the polygon and the negative points are on the edge. We can then just shrink the polygon by a little such that the negative points are just outside but the positive points stay inside the polygon. This shows that we can shatter at least $2k+1$ points.
+
+    Now, suppose there are $2k+2$ points. First, consider them scattered in the plane. In this orientation, consider the polar representation, by labeling the points with alternating +1 and -1 by according to their angle, one sees that the problem is the most difficult when the points are all radially the same distance away from the origin (or if a shattering exists in the scattered version, a shattering exists in the circular version). Thus, we can only consider the case when the points are on a circle. We can normalize the circle and so we only have to prove this for the case of $2k+2$ points on the unit circle. Now, label the points alternating from +1 and -1 again. In this configuration, any solution that shatters the points will admit a convex solution. This is because the points lie on a circle and so non-convexity does not help with ``getting around'' the negative points. Now that we are can only consider the convex $k$-polygons, it is easy to see that it is impossible to shatter the $k+1$ points in the alternating labeling because the negative points between every positive point forces you to to draw a line that connects the adjacent positive points while being below the negative point. Thus, one needs a $k+1$-polygon. Which proves the result.
+
+    \item Suppose the points $\{x_i\}_{i=1}^n$ are located at $x_i = 2^{-i}$ and have labels $\{y_i\}_{i=1}^n$. Then we will show that picking
+      \begin{gather*}
+        \theta = \pi ( 1+ \sum_{i=1}^n (1-y_i) 2^{i-1})
+      \end{gather*}
+      Classifies these points correctly. We have
+      \begin{align*}
+        &\sin (x_j \pi ( 1+ \sum_{i=1}^n (1-y_i) 2^{i-1})) \\
+        &= \sin ( 2^{-j} \pi ( 1+ \sum_{i=1}^n (1-y_i) 2^{i-1})) \\
+        &= \sin(2^{-j} \pi + \pi \sum_{i=1}^n (1-y_i) 2^{i-j-1}))
+      \end{align*}
+      Now, if $y_i = 1$, then the term in the sum is 0 so we drop those. Also, if $i > j$, this will result in integral multiples of $2 \pi$ which does nothing to sine ($\sin(x) = \sin(x + 2 \pi)$). Thus, we get
+      \begin{align*}
+        &= \sin(2^{-j} \pi + \pi \sum_{i: i \geq j, y_i=-1}^n (1-y_i) 2^{i-j-1})) \\
+        &= \sin((1-y_j)\frac{\pi}{2} + 2^{-j} \pi + \pi \sum_{i: i < j, y_i=-1}^n 2^{i-j}))
+      \end{align*}
+      Now, it is an elementary real analysis fact that $\sum_{i=1}^\infty 2^{-i} = 1$ and so a subset is strictly less than one. Thus, we have
+      \begin{gather*}
+        = \begin{cases}
+          \sin(\pi c) &\text{ if } y_i = 1 \\
+          \sin(\pi + \pi c) &\text{ if } y_i = -1
+        \end{cases}
+      \end{gather*}
+      where $c \in [0,1]$. Thus, if $y_i = 1$ then $\sin(\theta x_i) = 1$ and if $y_i = -1$ then $\sin(\theta x_i) = -1$.
+
+    \item By contradiction, suppose that there exists $x \in I$ that is not an extreme point. Then, it is a convex combination of two other points in $I$, say $y$ and $z$. That is, $x = \lambda y + (1-\lambda)z$. Thus, picking the labels
+      \begin{gather*}
+        x = -1, y = 1, z = 1
+      \end{gather*}
+      then it is impossible to shatter this with a convex set because if $y$ and $z$ are in this set, then convexity enforces that $x$ is also in this set. However, $x = -1$ and so this set doesn't classify these points. Thus, we must have $x$ be an extreme point
+
+    \item
+      \leavevmode
+      \begin{enumerate}[label=\alph*)]
+        \item We have that every set of labeling $Y \in \Pi_{\mathcal{C}_k} (n)$ is of the form $Y = \cup_{i=1}^k Y_i$ with $Y_i \in \Pi_{\mathcal{C}}(n)$. Thus, every $Y_i$ has $\lvert \Pi_{\mathcal{C}}(n) \rvert$ different labelings. We conclude that
+          \begin{gather*}
+            \lvert \Pi_{\mathcal{C}_k} (n) \rvert \leq \lvert \Pi_{\mathcal{C}} (n) \rvert^k
+          \end{gather*}
+
+        \item By Sauer's lemma and the previous part
+          \begin{gather*}
+            \lvert \Pi_{\mathcal{C}_k} (n) \rvert \leq \left( \frac{en}{d} \right)^{dk}
+          \end{gather*}
+          Now, by definition of VC, we need
+          \begin{gather*}
+            \left( \frac{en}{d} \right)^{dk} \geq 2^n
+          \end{gather*}
+          Otherwise, $\mathbb{X}_{1:n}$ cannot be shattered by $\mathcal{C}_k$. Equivalently, if we find $n$ such that,
+          \begin{gather*}
+            \left( \frac{en}{d} \right)^{dk} < 2^n
+          \end{gather*}
+          Then $d_{VC}(\mathcal{C}_k) = O(n)$. Now, if $n = 2dk \log(3k)$, we have that
+          \begin{align*}
+            \left( \frac{e 2 d k \log(3k)}{d} \right)^{dk} &< (3k)^{2dk} \\
+            \log(3k) < \frac{9k}{2e}
+          \end{align*}
+          Which is true for $k \geq 2$ as per the hint. Thus, we conclude that $d_{VC}(\mathcal{C}_k) = O(2dk \log(3k)) = O(dk \log(k))$.
+      \end{enumerate}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  We use the same notations in the lecture note. Let $\epsilon_i$ be a Rademacher sequence, $\mathcal{F} = \{f : \mathcal{X} \rightarrow [0,1\}$, $X_1, \mathellipsis, X_n$ be i.i.d. variables. Please modify the proofs in the lecture notes to prove the following problems.
+  \begin{enumerate}[label=\arabic*)]
+    \item Prove that there exists a universal constant $C$ such that
+      \begin{gather*}
+        \mathbb{E} \left[ \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \right\rvert \right] \leq \inf_{a > 0} \left\{ C \alpha + C \int_\alpha^\infty \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon \right\}
+      \end{gather*}
+      Is this inequality better than the Dudley's inequality proved in this class? Why?
+    \item Let $\phi(\cdot)$ be a convex function. Prove that
+      \begin{gather*}
+        \mathbb{E} \left[ \phi \left( \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n f(X_i) - \mathbb{E}[f(X_i)] \right\rvert \right) \right] \leq \mathbb{E} \left[ \phi \left( 2 \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \right\rvert  \right) \right]
+      \end{gather*}
+    \item Use the chaining proof of the Dudley's inequality to prove that there exists a universal constant $C$ such that
+      \begin{gather*}
+        \mathbb{P} \left[ \sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \geq C \int_0^\infty \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + x \right] \leq C e^{-x^2/C}
+      \end{gather*}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Let
+      \begin{gather*}
+        \alpha_j = 2^{-j} \sup_{f \in \mathcal{F}} \sqrt{\mathbb{E}[f(X_i)^2]}
+      \end{gather*}
+      Now, for every $j$, create a $\alpha_j$-net of $\mathcal{F}$ and denote it by $T_j$. Then create the chaining
+      \begin{gather*}
+        f = f - \hat{f}_N + \sum_{i=1}^N (\hat{f}_i - \hat{f}_{i-1})
+      \end{gather*}
+      where $\hat{f}_0 = 0$ and $\hat{f}_i$ is in the $\alpha_j$-net. Now we get for any $N$,
+      \begin{align*}
+        &\mathbb{E} \left[ \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \right\rvert \right] \\&= \frac{1}{n} \mathbb{E} \left[ \sup_{f \in \mathcal{F}} \left\lvert \sum_{i=1}^n \epsilon_i \left( f(X_i) - \hat{f}_N(X_i) + \sum_{j=1}^N (\hat{f}_j(X_i) - \hat{f}_{j-1}(X_i)) \right) \right\rvert \right] \\
+        &\leq \frac{1}{n} \mathbb{E} \left[ \sup_{f \in \mathcal{F}} \left\lvert \sum_{i=1}^n \epsilon_i \left( f(X_i) - \hat{f}_N(X_i) \right) \right\rvert \right] \\
+        &\quad + \sum_{j=1}^N \frac{1}{n} \mathbb{E} \left[ \sup_{f \in \mathcal{F}} \left\lvert \sum_{i=1}^n \epsilon_i (\hat{f}_j(X_i) - \hat{f}_{j-1}(X_i)) \right\rvert \right] \\
+        &\leq \sup_{f \in \mathcal{F}} \lvert f - \hat{f}_N \rvert + \sum_{j=1}^N \frac{1}{n} \mathbb{E} \left[ \sup_{f \in \mathcal{F}} \left\lvert \sum_{i=1}^n \epsilon_i (\hat{f}_j(X_i) - \hat{f}_{j-1}(X_i)) \right\rvert \right]
+      \end{align*}
+      Where the last line is due to repeatedly applying triangle inequality and the fact that $X_i$'s are i.i.d. Note that $\sup_{f \in \mathcal{F}} \lvert f - \hat{f}_N \rvert \leq \alpha_N$ so we have
+      \begin{gather*}
+        \leq \alpha_N + \sum_{j=1}^N \frac{1}{n} \mathbb{E} \left[ \sup_{\hat{f}_j \in T_j, \hat{f}_{j-1} \in T_{j-1}} \left\lvert \sum_{i=1}^n \epsilon_i (\hat{f}_j(X_i) - \hat{f}_{j-1}(X_i)) \right\rvert \right]
+      \end{gather*}
+      Now, we use finite class lemma to get
+      \begin{gather*}
+        \leq \alpha_N + \sum_{j=1}^N \sqrt{\frac{2 R^2 \log(\lvert T_j \rvert \lvert T_{j-1} \rvert)}{n}}
+      \end{gather*}
+      We have that $\lvert T_j \rvert \geq \lvert T_{j-1} \rvert$. For this class, we have that $\lVert \hat{f}_j - \hat{f}_{j-1} \rVert^2 \leq 3 \alpha_j^2$ by triangle inequality and because $\alpha_{j-1} = 2 \alpha_j$. Putting this together we get
+      \begin{align*}
+        &\leq \alpha_N + 6 \sum_{j=1}^N \alpha_j \sqrt{\frac{ \log(\lvert T_j \rvert)}{n}} \\
+        &\leq \alpha_N + 12 \sum_{j=1}^N (\alpha_j - \alpha_{j+1}) \sqrt{\frac{\log N(\alpha_j, \mathcal{F}, d_n))}{n}} \\
+        &\leq \alpha_N + 12 \int_{\alpha_{N+1}}^{\alpha_0} \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n))}{n}} d \epsilon \\
+        &\leq \alpha_N + 12 \int_{\alpha_{N+1}}^{\infty} \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n))}{n}} d \epsilon
+      \end{align*}
+      Now we pick $\alpha$ such that $\alpha_{N+1} < 2 \alpha$ and this means that $\alpha_{N+1} > \alpha$. Then we get
+      \begin{gather*}
+        \leq 4 \epsilon + 12 \int_{\epsilon}^{\infty} \sqrt{\frac{\log N(\alpha_j, \mathcal{F}, d_n))}{n}} d \epsilon
+      \end{gather*}
+      Now, we pick the smallest such $\epsilon$ as it was arbitrary
+      \begin{gather*}
+        \leq \inf_{\alpha > 0} \left\{ 4 \alpha + 12 \int_{\alpha}^{\infty} \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n))}{n}} d \epsilon \right\}
+      \end{gather*}
+      Thus, the universal constant here is $C = 12$.
+
+    \item We duplicate the steps done in class. We also make the additional assumption that $\phi(\cdot)$ is increasing. Applying the Tower property and Jensen's, we get
+      \begin{align*}
+        &\mathbb{E} \left[ \phi \left( \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n f(X_i) - \mathbb{E}[f(X_i)] \right\rvert \right) \right] \\
+        &= \mathbb{E} \left[ \phi \left( \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n f(X_i) - \mathbb{E}[ \sum_{i=1}^n f(X_i')] \right\rvert \right) \right] \\
+        &\leq \mathbb{E} \left[ \phi \left( \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n f(X_i) - f(X_i') \right\rvert \right) \right]
+      \end{align*}
+      Where the $\epsilon_i$ are symmetric Bernoulli's. Now, we know that $\epsilon_i (f(X_i) - f(X_i')) \stackrel{d}{=} f(X_i) - f(X_i')$ as $\epsilon_i$ is symmetric. So
+      \begin{align*}
+        &\leq \mathbb{E} \left[ \phi \left( \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) - \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i') \right\rvert \right) \right] \\
+        &\leq \mathbb{E} \left[ \phi \left( \frac{2}{2} \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \right\rvert + \frac{2}{2} \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i') \right\rvert \right) \right]
+      \end{align*}
+      Where we used the triangle inequality. Now we apply convexity to this convex combintation and use the fact that $X \stackrel{d}{=} X$ to conclude.
+      \begin{align*}
+        &\leq \mathbb{E} \left[ \frac{1}{2} \phi \left( 2 \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \right\rvert \right) + \frac{1}{2} \phi\left( 2 \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i') \right\rvert \right) \right] \\
+        &\leq \mathbb{E} \left[ \phi \left( 2 \sup_{f \in \mathcal{F}} \left\lvert \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \right\rvert \right) \right]
+      \end{align*}
+
+    \item Consider the decomposition
+      \begin{gather*}
+        f = \sum_{j=1}^\infty (\hat{f}_j - \hat{f}_{j-1})
+      \end{gather*}
+      Now, we bound
+      \begin{gather*}
+        P = \mathbb{P} \left[ \sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i (\hat{f}_j - \hat{f}_{j-1})(X_i) \geq C \int_{\alpha_{j+1}}^{\alpha_j} \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + \frac{x}{2} \frac{2}{3}^j \right]
+      \end{gather*}
+      To achieve this bound, we compute
+      \begin{gather*}
+        \star = \frac{\mathbb{E}[e^{\lambda \sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i (\hat{f}_j - \hat{f}_{j-1})(X_i)}]}{e^{\lambda(C \int_{\alpha_{j+1}}^{\alpha_j} \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + \frac{x}{2} \frac{2}{3}^j)}}
+      \end{gather*}
+      Bounding the numerator, we get
+      \begin{align*}
+        &\mathbb{E}[e^{\lambda \sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i (\hat{f}_j - \hat{f}_{j-1})(X_i)}] \\
+        &= \mathbb{E}[\sup_{f \in \mathcal{F}} e^{\lambda \frac{1}{n} \sum_{i=1}^n \epsilon_i (\hat{f}_j - \hat{f}_{j-1})(X_i)}] \\
+        &\leq \sum_{\hat{f_j} \in T_j, \hat{f_{j-1}} \in T_{j-1}} \mathbb{E}[ e^{\lambda \frac{1}{n} \sum_{i=1}^n \epsilon_i (\hat{f}_j - \hat{f}_{j-1})(X_i)}] \\
+        &\leq \sum_{\hat{f_j} \in T_j, \hat{f_{j-1}} \in T_{j-1}} e^{\lambda^2 \frac{3}{2} \frac{\alpha_j^2}{n}}
+      \end{align*}
+      Where we used the fact that these are sub-Gaussian variables and we showed that $\lVert \hat{f}_j - \hat{f}_{j-1} \rVert_2^2 \leq 3 \alpha_j^2$. Now, let $N(\alpha_j, \mathcal{F}, d_n)$ be the number of $\hat{f}_j$. We get that
+      \begin{gather*}
+        \star \leq e^{2 \log(N(\alpha_j, \mathcal{F}, d_n)) - \lambda \frac{1}{2} C \alpha_j \sqrt{\frac{\log N(\alpha_j, \mathcal{F}, d_n)}{n}} d\epsilon + \lambda^2 \frac{3}{2} \frac{\alpha_j^2}{n} - \lambda \frac{x}{2} \frac{2}{3}^j) }
+      \end{gather*}
+      As this is true for all $\lambda > 0$, we take the minimum
+      \begin{gather*}
+        \lambda = \frac{\frac{1}{2} C \alpha_j \sqrt{\frac{\log N(\alpha_j, \mathcal{F}, d_n) }{n}} + \frac{x}{2} \frac{2}{3}^j)}{\frac{3}{2} \frac{\alpha_j^2}{n}}
+      \end{gather*}
+      Which means that
+      \begin{gather*}
+        \star \leq e^{-\frac{1}{24}(\frac{4}{3})^j x^2 n}
+      \end{gather*}
+      Now, as in part 1, take $C \geq 12$ and we get
+      \begin{gather*}
+        P \leq \star \leq e^{-\frac{1}{24}(\frac{4}{3})^j x^2 n}
+      \end{gather*}
+      We wish to apply the union bound on our chaining. We note that
+      \begin{gather*}
+        C \int_0^\infty \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + x \geq \sum_{j=1}^\infty C \int_{\alpha_{j+1}}^{\alpha_j} \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + (2/3)^j \frac{x}{2}
+      \end{gather*}
+      Now, we can apply the union bound
+      \begin{gather*}
+        \star \star = \mathbb{P}( \sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \geq C \int_0^\infty \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + x) \\
+        \leq \sum_{j=1}^n \mathbb{P}(\sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \geq C \int_{\alpha_{j+1}}^{\alpha_j} \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + (2/3)^j \frac{x}{2}) \\
+        \leq \sum_{j=1}^n e^{-\frac{1}{24} (4/3)^j x^2 n}
+      \end{gather*}
+      Taking $C_n$ big enough, we have
+      \begin{gather*}
+        -\frac{1}{24} (4/3)^j x^2 n \leq - \frac{x^2}{C_n} j
+      \end{gather*}
+      Thus, we have
+      \begin{gather*}
+        \star \star \leq e^{-\frac{x^2}{C_n}} \frac{1}{1 - e^{-\frac{x^2}{C_n}}}
+      \end{gather*}
+      Now, taking $C_n$ to be sufficiently large, we get that
+      \begin{gather*}
+        \mathbb{P} \left[ \sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \geq C_n \int_0^\infty \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + x \right] \leq C_n e^{-x^2/C_n}
+      \end{gather*}
+      To remove the dependence on $n$, we note that if $x' = \frac{x}{\sqrt{n}}$, then we have
+      \begin{gather*}
+        -\frac{1}{24} (4/3)^j x'^2 \leq - \frac{x'^2}{C} j
+      \end{gather*}
+      Thus, we conclude that there exists a universal $C$
+      \begin{gather*}
+        \mathbb{P} \left[ \sup_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n \epsilon_i f(X_i) \geq C \int_0^\infty \sqrt{\frac{\log N(\epsilon, \mathcal{F}, d_n)}{n}} d\epsilon + x' \right] \leq C e^{-x^2/C}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \begin{enumerate}[label=\arabic*)]
+    \item In the class, we know that if $X_1, \mathellipsis, X_n$ are independent subgaussian variables with $X_i$ satisfying $\mathbb{E}[X_i] = 0$ and variance-proxy $\sigma_i^2$ for any $1 \leq i \leq n$, then we have
+      \begin{gather*}
+        \mathbb{P} \left[ \sum_{i=1}^n X_i \geq t \left\{ \sum_{i=1}^n \sigma_i^2 \right\}^{1/2} \right] \leq e^{-t^2/2} \text{ for all } t \geq 0
+      \end{gather*}
+      However, for general random variables, there is no hope to obtain such an inequality. Indeed, if the variables $X_i$ have heavy tails, for example, then clearly the sum cannot have a Gaussian tail for large $t$.
+
+      Remarkably, there is a method to obtain Gaussian inequalities of this type that works without any tail assumption on the random variables! The key idea is to choose a random normalization that plays the role of the sum of the variaces in the Gaussian case. We then say the sum is self-normalized.
+
+      Consider independent random variables $X_1, \mathellipsis, X_n$ satisfying $\mathbb{E}[X_i] = 0$ and have symmetric distributions, i.e., $X_i$ has the same distribution as $-X_i$ for any $1 \leq i \leq n$. Show that
+      \begin{gather*}
+        \mathbb{P} \left[ \sum_{i=1}^n X_i \geq t \left\{ \sum_{i=1}^n X_i^2 \right\}^{1/2} \right] \leq e^{-t^2/2} \text{ for all } t \geq 0
+      \end{gather*}
+      Hint: Apply symmetrization and Hoeffding inequality conditionally.
+    \item Let $X_1, \mathellipsis, X_n$ be i.i.d. random variables with values in $[0,1]$. Each $X_i$ represents the size of a package to be shipped. The shipping containers are bins of size 1 (so each bin can hold a set of packages whose sizes sum to at most 1). Let $B_n = f(X_1, \mathellipsis, X_n)$ be the minimal number of bins needed to store the packages. Note that computing $B_n$ os a hard combinatorial optimzation problem, but we can bound its probabilistic fluctuations by easy arguments.
+      \begin{enumerate}[label=\alph*)]
+        \item Show that $\mathbb{E}[B_n] \geq n \mathbb{E}[X_1]$
+        \item Prove that $\mathbb{P}[\lvert B_n - \mathbb{E}[B_n] \rvert \geq t] \leq 2 e^{-2t^2/n}$
+      \end{enumerate}
+    \item Let $X_1, X_2, \mathellipsis, X_n$ be $n$ points picked independently and uniformly at random from the unit square $[0,1]^2$. Let $\tau : ([0,1]^2)^n \rightarrow \mathbb{R}$ be the length of the shortest traveling salesman tour on $n$ points. Prove that
+      \begin{gather*}
+        \mathbb{P}[\lvert \tau - \mathbb{E}[\tau] \rvert \geq t] \leq 2 \exp(-t^2/16n)
+      \end{gather*}
+      Note: a traveling salesman tour is to find a shortest tour which visits each point exactly once. (Hint: use McDiarmaid's inequality).
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We condition $X_i$ on $X_i^2$. That is, since they are symmetric,
+      \begin{gather*}
+        \mathbb{P}(X_i | X_i^2) = \begin{cases}
+          \sqrt{X_i^2} & \text{ w.p. } 1/2 \\
+          -\sqrt{X_i^2} & \text{ w.p. } 1/2
+        \end{cases}
+      \end{gather*}
+      Now, we apply Hoeffding to the conditional distribution
+      \begin{gather*}
+        \mathbb{P}\left(\sum_{i=1}^n X_i \geq t \left( \sum_{i=1}^n X_i^2 \right)^{1/2} | X_1^2, \mathellipsis, X_n^2 \right) = \leq e^{-t^2/2}
+      \end{gather*}
+      Now, take the expectation of the above and apply the tower property to conclude that
+      \begin{gather*}
+        \mathbb{P}\left(\sum_{i=1}^n X_i \geq t \left( \sum_{i=1}^n X_i^2 \right)^{1/2} \right) = \leq e^{-t^2/2}
+      \end{gather*}
+
+    \item
+      \begin{enumerate}[label=\alph*)]
+        \item We have that the numbers of bins required is at the least the size of all the packages combined. Thus, as the sizes are i.i.d.,
+          \begin{gather*}
+            \mathbb{E}[B_n] \geq \mathbb{E}[\sum_{i=1}^n X_i] = \sum_{i=1}^n \mathbb{E}[X_i] = n \mathbb{E}[X_1]
+          \end{gather*}
+
+        \item We first note that we have
+          \begin{gather*}
+            \sup_{x_i'} \lvert B_n(x) - B_n(x') \rvert \leq 1 \forall i
+          \end{gather*}
+          That is, the greatest difference in the number of bins by changing a single $X_i$ is 1 as we might need to add one or remove one. Then, McDiarmaid's inequality applies and we get
+          \begin{gather*}
+            \mathbb{P}( \lvert B_n - \mathbb{E}[B_n] \rvert \geq t) \leq 2 e^{- 2t^2 / \sum_{i=1}^n c_i^2} = 2 e^{- 2t^2 / n}
+          \end{gather*}
+      \end{enumerate}
+
+    \item Again, consider the case when all the points are in one corner. Then, we move one of the points to the opposite corner. This is the largest change in the tour we can create by moving a single point. That is
+      \begin{gather*}
+        \sup_{x_i'} \lvert \tau(x) - \tau(x') \rvert \leq 2 \sqrt{2} \ \forall i
+      \end{gather*}
+      Where we must multiply by 2 since it is a tour (must return back to the original point). Then, by McDiarmaid's inequality,
+      \begin{gather*}
+        \mathbb{P}( \lvert \tau - \mathbb{E}[\tau] \rvert \geq t) \leq 2 e^{-t^2 / 2 \sum_{i=1}^n c_i^2} = 2 e^{-t^2 / 16n}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\end{document}

@@ -1,0 +1,378 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 523: Convex and Conic Optimization \\ Homework 5}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{23}{04}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  The Lov{\'a}sz sandwich theorem states that for any graph $G(V,E)$, with $\lvert V \rvert = n$, we have
+  \begin{gather*}
+    \alpha(G) \underset{(1)}{\leq} \vartheta(G) \underset{(2)}{\leq} \chi (\bar{G})
+  \end{gather*}
+  where
+  \begin{itemize}
+      \item $\alpha(G)$ is the stability number of $G$ (i.e., the size of its largest independent set(s))
+      \item $\vartheta$ is the Lov{\'a}sz theta number, i.e., the optimal value of the SDP
+        \begin{align*}
+          \vartheta(G) := &\max_{X \in \mathbb{S}^{n \times n}} \text{Tr}(JX) \\
+          \text{s.t. } &\text{Tr}(X) = 1 \\
+          &X_{i,j} = 0 \text{ if } \{i,j\} \in E \\
+          &X \succeq 0
+        \end{align*}
+      \item $\chi(H)$ is the coloring number of $H$, that is the minimum number of colors needed to color the nodes of a graph $H$ such that no two adjacent nodes get the same color
+      \item $\bar{G}$ is the complement graph of $G$, i.e., a graph on the same node set which has an edge between two nodes if and only if $G$ doesn't
+  \end{itemize}
+  \begin{enumerate}[label=\arabic*)]
+    \item We proved inequality (1) in clas. Prove inequality (2). \textit{Hint:} You may want to first show that the optimal value of the following SDP also gives $\vartheta(G)$:
+      \begin{align*}
+        &\min_{Z \in \mathbb{S}^{(n+1) \times (n+1)}} Z_{n+1, n+1} \\
+        &\text{s.t. } Z_{n+1,i} = Z_{ii} = 1, i = 1, \mathellipsis, n \\
+        &Z_{i,j} = 0 \text{ if } \{i,j\} \in \bar{E} \\
+        &Z \succeq 0
+      \end{align*}
+    \item Give an example of a graph $G$ where neither inequality (1) nor inequality (2) is tight.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We start by putting Lov{\'a}sz's SDP into standard form.
+      \begin{align*}
+        -\vartheta(G) := &\min_{X \in \mathbb{S}^{n \times n}} \text{Tr}((-J)X) \\
+        \text{s.t. } &\text{Tr}(I_n X) = 1 \\
+        &\text{Tr}(E_{ij} X) = 0 \text{ if } \{i,j\} \in E \\
+        &X \succeq 0
+      \end{align*}
+      Where $E_{ij}$ is defined as 0's everywhere except 1 at entry $(i,j)$ and $(j,i)$. Now, from here, the dual is
+      \begin{align*}
+        \max_{y} \quad &y_1 \\
+        \text{s.t. } &y_1 I_n + \sum_{\{i,j\} \in E} y_{ij} E_{ij} \preceq -J
+      \end{align*}
+      Where the primal is feasible with $X = \frac{1}{n} I_n$ and the dual with $y_1 = -1.5$ and $y_{ij} = 0$. Now, we substitute $z = -y_1$ so that the dual is indeed solving $\vartheta(G)$ and not $-\vartheta(G)$. So,
+      \begin{align*}
+        \min_{z, y} \quad &z \\
+        \text{s.t. } &-z I_n + \sum_{\{i,j\} \in E} y_{ij} E_{ij} \preceq -J
+      \end{align*}
+      Where the constraint can be rewritten as
+      \begin{gather*}
+        I_n - \sum_{\{i,j\} \in E} \frac{y_i}{z} E_{ij} \succeq \frac{1}{z}  J
+      \end{gather*}
+      Where we can divide by $z$ since $z \neq 0$, as the first leading minor of the psd constraint is $z \geq 1$. Now we can use Schur's lemma to turn this constraint into another constraint as $z > 0$. Note that $J = 1 1^T$. Thus, let $A = z$, $B = 1^T$, and $C = I_n - \sum_{\{i,j\} \in E} y_i E_{ij}$, and we get that the above constraint is the same as
+      \begin{gather*}
+        \begin{bmatrix}
+          z & 1^T \\
+          1 & I_n - \sum_{\{i,j\} \in E} \frac{y_i}{z} E_{ij}
+        \end{bmatrix} \succeq 0
+      \end{gather*}
+      Now, define this matrix as $Z$. Then $Z \in \mathbb{S}^{(n+1) \times (n+1)}$. Note that the diagonal and the edge are all $1$'s so we can add those constraints. Finally, we have 0's in all the rest of the entries if $\{i,j\} \notin E$. Thus, we have the SDP turns into the following
+      \begin{align*}
+        \min_{Z \in \mathbb{S}^{(n+1) \times (n+1)}} \quad Z_{11} \\
+        \text{s.t. } &Z_{n+1,i} = Z_{ii} = 1, i = 1, \mathellipsis, n \\
+        &Z_{ij} = 0 \text{ if } \{i,j\} \in \bar{E} \\
+        &Z \succeq 0
+      \end{align*}
+      Where we now just rotate this symmetric matrix by 180 degrees so that $Z_{11}$ becomes $Z_{n+1, n+1}$ so that the objective is of the form desired. Note that rotating doesn't do anything as it is symmetric (it only changes the variable indices). Now, we show the inequality by showing that the coloring number is feasible to this SDP. Let $k = \chi(\bar{G})$, then, by definition of coloring number, there is a partition $\{V_1, \mathellipsis, V_k\}$ such that $V_i$ is a clique. Now, we construct the $Z$ as follows. Let $e_i$ be the indicator for the set $V_i$. Then let $z_i = \begin{bmatrix} e_i \\ 1 \end{bmatrix}$. Now we define our $Z$ as
+      \begin{gather*}
+        Z = \sum_{\ell=1}^k z_\ell z_\ell^T = \begin{bmatrix}
+          \sum_{\ell=1}^k e_\ell e_\ell^T & 1 \\
+          1^T & k
+        \end{bmatrix}
+      \end{gather*}
+      Now we check the constraints. $Z \succeq 0$ as it is the sum of square terms. If $(i,j) \in \bar{E}$, then they are in different $V_\ell$. Thus, $Z_{ij} = 0$ as $(\sum_{\ell=1}^k e_\ell e_\ell^T)_{ij} = 0$. Finally, the edge is all 1's and the diagonal is 1 as well since if $Z_ii = (\sum_{\ell=1}^k e_\ell e_\ell^T)_{ii}$, by construction, $(e_\ell e_\ell^T)_{ii} = 1$ for the partition that contains node $i$. Thus, this $Z$ is feasible and $Z_{n+1, n+1} = k$ and we conclude that $\vartheta(G) \leq k = \chi(\bar{G})$.
+
+    \item One good guess for a graph $G$ is one where the Shannon capcity is an open question. Thus, $G = C_7$, the 7-cycle. We have that the coloring number is 4. This can be seen by the fact that, in the complement graph, every node is connected to a two cliques of size 3. Thus, 3 colors are needed here. Once these 5 nodes are labelled (2 cliques with 1 node in common), the other two nodes have forced colorings. Thus, $\chi(\bar{C}_7) = 4$. Also, the largest stable set is 3, this is obvious as it is a cycle. So, $\alpha(C_7) = 3$. Finally, one can compute teh Lov{\'a}sz number (or look up this famous result) and we get $\vartheta(C_7) \approx 3.3177$. Thus
+    \begin{gather*}
+      \alpha(C_7) < \vartheta(C_7) < \chi(\bar{C}_7)
+    \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  For a graph $G(V,E)$, with $\lvert V \rvert = n$, we saw in class that an SDP-based upperbound for the stability number $\alpha(G)$ of the graph is given by $\vartheta(G)$ (as defined in Problem 1). We also saw that alternative upperbounds on the stability number can be obtained through the following family of LP relaxations:
+  \begin{align*}
+    \eta_{LP}^k := &\max \sum_{i=1}^n x_i \\
+    \text{s.t. } &0 \leq x_i \leq 1, i = 1, \mathellipsis, n \\
+    &C_2, \mathellipsis, C_k
+  \end{align*}
+  where $C_k$ contains all clique inequalities of order $k$, i.e. the constraints
+  \begin{gather*}
+    x_{i_1} = \mathellipsis x_{i_k} \leq 1
+  \end{gather*}
+  for all $\{ i_1, \mathellipsis, i_k \} \in V$ defining a clique of size $k$.
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that for any graph $G$, we have $\vartheta(G) \leq \eta_{LP}^k$ for all $k \geq 2$. \textit{Hint:} You may want to show that $\vartheta(G)$ can also be obtained as the optimal value of the following optimization problem:
+      \begin{align*}
+        &\max_{Y \in \mathbb{S}^{(n+1) \times (n+1)}} \sum_{i=1}^n Y_{ii} \\
+        &\text{s.t. } Y \succeq 0 \\
+        &Y_{n+1, n+1} = 1 \\
+        &Y_{n+1, i} = Y_{ii}, i \in V \\
+        &Y_{ij} = 0 \text{ if } (i,j) \in E
+      \end{align*}
+
+    \item The file \texttt{Graph.mat} contains the adjacency matrix of a graph $G$ with 50 nodes (depicted above). Compute $\vartheta(G)$, $\eta_{LP}^2$, $\eta_{LP}^3$, $\eta_{LP}^4$, and $\alpha(G)$ for this graph.
+
+    \item Present a stable set of maximum size. Prove or disprove the claim that this graph has a unique maximum stable set.
+  \end{enumerate}
+\end{exercise}
+
+\clearpage
+
+\begin{answer}
+  \begin{enumerate}[label=\arabic*)]
+    \item We use the SDP from the hint of the first question and find its dual
+      \begin{align*}
+        &\min_{Z \in \mathbb{S}^{(n+1) \times (n+1)}} Z_{n+1, n+1} \\
+        &\text{s.t. } \text{Tr}(E_{n+1,i} Z) = \text{Tr}(E_{i,i} Z) = 1, i = 1, \mathellipsis, n \\
+        &\text{Tr}(E_{i,j} Z) = 0 \text{ if } \{i,j\} \in \bar{E} \\
+        &Z \succeq 0
+      \end{align*}
+      The dual is then (keeping the indices as above)
+      \begin{align*}
+        &\max \sum_{i=1}^n y_{ii} + 2y_{n+1,i} \\
+        &0 \preceq E_{n+1, n+1} -\sum_i y_{n+1, i} E_{n+1, i} + \sum_i y_{ii} E_{i, i} \sum_{\{i,j\} \in \bar{E}} y_{ij} E_{ij} + y_{ij} E_{ij}
+      \end{align*}
+      Note these are strictly feasible by consider $I_{n+1}$ and $E_{n+1, n+1}$. Defining the right handside to be our matrix $Y$, we get the following which we call $D$
+      \begin{align*}
+        &\max_{Y \in \mathbb{S}^{(n+1) \times (n+1)}} \sum_{i=1}^n Y_{ii} + 2Y_{n+1,i} \\
+        &Y_{ij} = 0, \text{ if } (i,j) \in E \\
+        &Y_{n+1, n+1} = 1 \\
+        &0 \preceq Y
+      \end{align*}
+      Notice that if $Y_{ii} = Y_{n+1,i}$ for $i \in \{1, \mathellipsis, n\}$ then the object is $3 \sum_{i=1}^n Y_{ii}$ and the problem would be equivalent to
+      \begin{align*}
+        &\max_{Y \in \mathbb{S}^{(n+1) \times (n+1)}} \sum_{i=1}^n Y_{ii} \\
+        &Y_{ij} = 0, \text{ if } (i,j) \in E \\
+        &Y_{ii} = Y_{n+1,i}, \text{ for } i \in \{1, \mathellipsis, n\} \\
+        &Y_{n+1, n+1} = 1 \\
+        &0 \preceq Y
+      \end{align*}
+      So, we only have to show that adding this constraint doesn't lower the optimal value of $D$. Suppose otherwise, that $Y_{jj} \neq Y_{n+1,j}$ and that the optimal value of $D$ to be $\gamma^*$ with solution $Y^*$. Then define a new solution to be $Y_\alpha^*$ which is the same as $Y^*$ except by multiplying both the $i^{th}$ row and column by $\alpha$. Then, $Y_\alpha^*$ is still feasible in $D$ but the objective becomes
+      \begin{gather*}
+        \sum_{i=1}^n Y_{\alpha_{ii}}^* + 2 Y_{\alpha_{n+1, i}}^* = (\alpha^2 - 1) Y_{jj}^* - 2(s-1) Y_{j, n+1}^* + \gamma^* \\
+        = \alpha^2 Y_{jj}^* - 2\alpha Y_{j, n+1}^* - Y_{jj}^* + 2 Y_{j, n+1}^* + \gamma^*
+      \end{gather*}
+      So if $Y_{jj}^* > 0$, we are done as this would increase the optimal value (for some $\alpha$). Sure enough, by looking at the $2 \times 2$ minor of $Y$ with the bottom right corner, we must have $ Y_{jj} \geq Y_{j, n+1}^2$. By assumption, $Y_{jj} \neq Y_{n+1,j}$ so $Y_{jj} = 0$ and so we have $Y_{jj}^* > 0$. Thus, we have shown the hint.
+
+      Now that we have the hint, we show the result that $\vartheta(G) \leq \eta_{LP}^k$. Let $x_i = Y_{ii}$. Then the objectives are the same between the two optimization problems. We have that, looking at the $1 \times 1$ minor and the $2 \times 2$ minor with the lower right corner that
+      \begin{gather*}
+        0 \leq Y_{ii} \text{ and } Y_{ii}^2 \leq Y_{ii} \implies 0 \leq Y_{ii} \leq 1 \implies 0 \leq x_i \leq 1
+      \end{gather*}
+      Now to show the clique constraint, let $x_{i_1}, \mathellipsis, x_{i_k}$ be the $k$-clique. Then consider the $k+1 \times k+1$ minor
+      \begin{gather*}
+        \left\lvert \begin{matrix}
+          Y_{i_1, i_1} & 0 & \dots & 0 & Y_{i_1, i_1} \\
+          0 & \ddots & 0 & \dots & \vdots \\
+          \vdots & 0 & \dots & Y_{i_k, i_k} & Y_{i_k, i_k} \\
+          Y_{i_1, i_1} & Y_{i_2, i_2} & \dots & Y_{i_k, i_k} & 1
+        \end{matrix} \right\rvert = \left\lvert \begin{matrix}
+          x_{i_1} & 0 & \dots & 0 & x_{i_1} \\
+          0 & \ddots & 0 & \dots & \vdots \\
+          \vdots & 0 & \dots & x_{i_k} & x_{i_k} \\
+          x_{i_1} & x_{i_2} & \dots & x_{i_k} & 1
+        \end{matrix} \right\rvert
+      \end{gather*}
+      Which when computed, is precisely
+      \begin{gather*}
+        x_{i_1} \cdot \mathellipsis \cdot x_{i_k} \cdot (1 - x_{i_1} - \mathellipsis - x_{i_k})
+      \end{gather*}
+      Which means that $1 - x_{i_1} - \mathellipsis - x_{i_k} \geq 0$ or equivalently
+      \begin{gather*}
+        x_{i_1} + \mathellipsis + x_{i_k} \leq 1
+      \end{gather*}
+      Which is precisely the clique constraints. Thus, since this is only one feasible $Y$, we must have $\vartheta(G) \leq \eta_{LP}^k$
+
+    \item The Matlab code is appended below. We get the following solutions
+      \begin{gather*}
+        \vartheta(G) = 5 \\
+        \eta_{LP}^2 = 25 \\
+        \eta_{LP}^3 = 16.67 \\
+        \eta_{LP}^4 = 12.5
+      \end{gather*}
+      We show the largest stable set in the next problem. But for completeness it is indeed $\alpha(G) = 5$.
+
+    \item By looking at the solution of Lovasz's SDP, we get that a stable set are nodes $3, 8, 10, 12, 47$. This is maximal because $\alpha(G) \leq \vartheta(G)$. Let us show that this is and unique. We will calculate the corresponding value of Lovasz's SDP on the graph but remove one of the nodes in this stable set. Code for this is omitted due to time constraints but the code is similar to the above, just have to remove the corresponding row and column from the adjacency matrix. We get that
+      \begin{center}
+        \begin{tabular}{c | c}
+          Node removed & $\vartheta(G')$ \\
+          \hline
+          3 & 4.45 \\
+          8 & 4.52 \\
+          10 & 4.51 \\
+          12 & 4.56 \\
+          47 & 4.48
+        \end{tabular}
+      \end{center}
+      Thus, since $\alpha(G') \leq \vartheta(G')$ this means that $\alpha(G') \leq 4$ and so each of the nodes are needed to achieve a stable set of 5. Thus showing uniqueness.
+
+      \textbf{Code Appendix:}
+
+      \begin{lstlisting}[style=Matlab-editor, basicstyle=\scriptsize]
+        clear;
+        clc;
+        G = importdata('Graph.mat');
+
+        n = 50;
+        J = ones(n, n);
+
+        % Lovasz SDP
+        cvx_begin quiet sdp
+            variable X(n,n) symmetric
+
+            maximize trace(J*X)
+
+            X >= 0
+            trace(X) == 1
+
+            % make the edgeset = 0
+            for i=1:n
+                for j=1:n
+                    if G(i,j) == 1
+                        X(i, j) == 0
+                    end
+                end
+            end
+        cvx_end
+        sprintf('Optimal value for theta function: %0.2f', cvx_optval)
+
+        % Clique 2
+        cvx_begin quiet
+            variable X(n)
+
+            maximize sum(X)
+
+            X >= 0
+            X <= 1
+
+            % clique constraint
+            for i=1:n
+                for j=1:n
+                    if G(i,j) == 1
+                        X(i) + X(j) <= 1
+                    end
+                end
+            end
+        cvx_end
+        sprintf('Optimal value for clique 2: %0.2f', cvx_optval)
+
+        % Clique 3
+        cvx_begin quiet
+            variable X(n)
+
+            maximize sum(X)
+
+            X >= 0
+            X <= 1
+
+            % clique constraints
+            for i=1:n
+                for j=1:n
+                    if G(i,j) == 1
+                        X(i) + X(j) <= 1
+                    end
+                    for k=1:n
+                        if G(i,j) == 1 && G(i,k) == 1 && G(j,k) == 1
+                            X(i) + X(j) + X(k) <= 1
+                        end
+                    end
+                end
+            end
+        cvx_end
+        sprintf('Optimal value for clique 3: %0.2f', cvx_optval)
+
+        % Clique 4
+        cvx_begin quiet
+            variable X(n)
+
+            maximize sum(X)
+
+            X >= 0
+            X <= 1
+
+            % clique constraints
+            for i=1:n
+                for j=1:n
+                    if G(i,j) == 1
+                        X(i) + X(j) <= 1
+                    end
+                    for k=1:n
+                        if G(i,j) == 1 && G(i,k) == 1 && G(j,k) == 1
+                            X(i) + X(j) + X(k) <= 1
+                        end
+                        for l=1:n
+                            if G(i,j) == 1 && G(i,k) == 1 && G(i,l) == 1 && G(j,k) == 1 && G(j,l) == 1 && G(k,l) == 1
+                                X(i) + X(j) + X(k) + X(l) <= 1
+                            end
+                        end
+                    end
+                end
+            end
+        cvx_end
+        sprintf('Optimal value for clique 4: %0.2f', cvx_optval)
+      \end{lstlisting}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Consider two graphs $G_A$ and $G_B$ (withpossibly a different number of nodes) and denote their adjacency matrices by $A$ and $B$ respectively. Express the adjancency matrix of their strong graph product $G_A \otimes G_B$ in terms of $A$ and $B$.
+    \item Compute the Shannan capacity of the graph given in Problem 2.2.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Consider the nodes $(a_1, b_1), (a_2, b_2) \in G_A \otimes G_B$. Then, by definition, $(a_1, b_1)$ and $(a_2, b_2)$ are connected iff the following is true
+      \begin{gather*}
+        A_{a_1, a_2} = 1 \text{ and } B_{b_1, b_2} = 1 \\
+        \text{or } a_1 = a_2 \text{ and } B_{b_1, b_2} = 1 \\
+        \text{or } A_{a_1, a_2} \text{ and } b_1 = b_2 \\
+      \end{gather*}
+      But this directly encoded by the following Kronecker product
+      \begin{gather*}
+        A \otimes B + A \otimes I_m + I_n \otimes B
+      \end{gather*}
+      Where $n$ is the number of nodes in $A$ and $m$ is the number of nodes in $B$. This is similar to the matrix used in class to show $\vartheta(G_A \otimes G_B) \leq \vartheta(G_A) \vartheta(G_B)$
+
+    \item We have that $\alpha(G) \leq \Theta(G) \leq \vartheta(G)$ and so we have that $\Theta(G) = 5$ as $\alpha(G) = \vartheta(G) = 5$.
+  \end{enumerate}
+\end{answer}
+
+\end{document}

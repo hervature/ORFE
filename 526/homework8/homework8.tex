@@ -1,0 +1,279 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 8}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{29}{11}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $(M_n)_n$ be an $\mathcal{F}_n$-adapted process such that $\mathbb{E}[M_{n+1} - M_n | \mathcal{F}_n]$ $= 0$, $\forall n \geq 0$. Prove that for any $p \geq 1$ we have
+  \begin{gather*}
+    \mathbb{E}[M_{n+p} - M_n | \mathcal{F}_n] = 0, \quad \forall n \geq 0
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+  We rewrite the expression as
+  \begin{gather*}
+    \mathbb{E}[M_{n+p} - M_n | \mathcal{F}_n] \\
+    = \mathbb{E}[M_{n+p} - M_{n+p-1} + M_{n+p-1} - \mathellipsis - M_{n+1} + M_{n+1} - M_n | \mathcal{F}_n]
+  \end{gather*}
+  Then using linearity of conditional expectation
+  \begin{gather*}
+    = \mathbb{E}[M_{n+p} - M_{n+p-1} | \mathcal{F}_n] + \mathbb{E}[M_{n+p-1} - M_{n+p-2} | \mathcal{F}_n] +  \mathellipsis \\
+    + \mathbb{E}[M_{n+2}- M_{n+1} | \mathcal{F}_n] + \mathbb{E}[M_{n+1} - M_n | \mathcal{F}_n] \\
+    = 0 + 0 + \mathellipsis + 0 = 0
+  \end{gather*}
+  By assumption, all of these terms are 0. Thus, $\mathbb{E}[M_{n+p} - M_n | \mathcal{F}_n] = 0$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $T$ be a stopping time and define the process
+  \begin{gather*} F_n =
+    \begin{cases}
+      1, & \text{if } n \leq T(\omega) \\
+      0, & \text{if } n > T(\omega)
+    \end{cases}
+  \end{gather*}
+  Show that $F_n$ is a predictable process.
+\end{exercise}
+
+\begin{answer}
+  Since $T$ is a stopping time, we know that $\{ T \leq t \} \in \mathcal{F}_t$. Also, since it is discrete time, we have that
+  \begin{gather*}
+    \{ T \leq t \}^c = \{ T > t \} = \{ T \geq t + 1 \} \in \mathcal{F}_t
+  \end{gather*}
+  Since $\{ F_{n+1} = 1 \} = \{ T \geq t + 1 \}$ then $F_{n+1}$ is adapted to $\mathcal{F}_n$ and so predictable.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $S$ and $T$ be stopping times with respect to filtration $\mathcal{F}_n$, with $S \leq T$. Define the process
+  \begin{gather*}
+    X_n(\omega) = 1_{(S,T]}(n, \omega) = \begin{cases}
+      1, & \text{if } S(\omega) < n \leq T(\omega) \\
+      0, & \text{otherwise}
+    \end{cases}
+  \end{gather*}
+  \begin{enumerate}[label=\alph*)]
+    \item Show that $X_n$ is an $\mathcal{F}_n$-predictable process
+    \item If $M_n$ is a martingale, show that $\mathbb{E}[M_{T \land n}] = \mathbb{E}[M_{S \land n}]$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Similar to the previous question, due to discrete case
+      \begin{gather*}
+        \{ X_n = 1 \} = \{ n < S_n \} \bigcap \{ n \leq T_n \} \\
+        = \{ n-1 \leq S_n \} \bigcap \{ n > T_n \}^c \\
+        = \{ n-1 \leq S_n \} \bigcap \{ n-1 \geq T_n \}^c \\
+      \end{gather*}
+      And so $X_n$ is adapted to $\mathcal{F}_{n-1}$ and so predictable.
+    \item Since $M_n$ is a martingale, then $M_{T \land n}$ and $M_{S \land n}$ are stopped processes and we have shown that for stopped processes
+      \begin{gather*}
+        \mathbb{E}[M_{T \land n}] = \mathbb{E}[M_0] \\
+        \mathbb{E}[M_{S \land n}] = \mathbb{E}[M_0]
+      \end{gather*}
+      And so we have $\mathbb{E}[M_{T \land n}] = \mathbb{E}[M_{S \land n}]$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Assume that $X_1, X_2, X_3, \mathellipsis$ are i.i.d. random variables with the same distribution as $X$
+  \begin{gather*}
+    P(X = 1) = p, \quad P(X = -1) = q
+  \end{gather*}
+  where $0 < p = 1 - q < p$, and $p \neq q$. Suppose that $a$ and $b$ are integers with $0 < a < b$. Define
+  \begin{gather*}
+    S_n = a + X_1 + \mathellipsis + X_n, \quad T = \inf \{n : S_n = 0 \text{ or } S_n = b\}
+  \end{gather*}
+  Consider $\mathcal{F}_0 = \{ \emptyset, \Omega \}$ and $\mathcal{F}_n = \sigma(X_1, \mathellipsis, X_n)$, $n \geq 1$.
+  \begin{enumerate}[label=\alph*)]
+    \item Prove that $M_n = \left( \frac{q}{p} \right)^{S_n}$ and $N_n = S_n - n(p - q)$ are $\mathcal{F}$-martingales.
+    \item Assuming $\mathbb{E}[T] < \infty$, find the values of $P(S_T = 0)$ and $\mathbb{E}[T]$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item First we show that $M_n$ is a martingale. We show integrability,
+      \begin{gather*}
+        \mathbb{E}[ \lvert M_n \rvert ] = \mathbb{E}[ \lvert (q/p)^{S_n} \rvert ] \\
+        = \mathbb{E}[ \lvert (q/p)^{a + X_1 + \mathellipsis + X_n} \rvert ]
+      \end{gather*}
+      Since the $X_i$'s are independent,
+      \begin{gather*}
+        = \mathbb{E}[ \lvert (q/p)^a \rvert ] \cdot \mathbb{E}[ \lvert (q/p)^{X_1} \rvert ] \cdot \mathellipsis \cdot \mathbb{E}[ \lvert (q/p)^{X_n} \rvert ]
+      \end{gather*}
+      Noting that
+      \begin{gather*}
+        = \mathbb{E}[ \lvert (q/p)^X \rvert ] = p (q/p)^1 + q (q/p)^{-1} \\
+        = q + p = 1
+      \end{gather*}
+      We have
+      \begin{gather*}
+        \mathbb{E}[ \lvert M_n \rvert ] = (q/p)^a \cdot 1 \cdot \mathellipsis \cdot 1 = (q/p)^a < \infty
+      \end{gather*}
+      Thus, $M_n$ is integrable.
+
+      $M_n$ is also $\mathcal{F}_n$ measurable since it is a function of $X_, \mathellipsis, X_n$ which are $\mathcal{F}_n$ measurable since $\mathcal{F}_n = \sigma(X_1, \mathellipsis, X_n)$.
+
+      Finally, by independence
+      \begin{gather*}
+        \mathbb{E}[ M_t | \mathcal{F}_s ] = \mathbb{E}[(q/p)^a | \mathcal{F}_s] \cdot \mathbb{E}[(q/p)^{X_1} | \mathcal{F}_s] \cdot \mathellipsis \cdot \mathbb{E}[(q/p)^{X_t} | \mathcal{F}_s] \\
+        = (q/p)^a \cdot (q/p)^{X_1} \cdot \mathellipsis \cdot (q/p)^{X_s} \cdot \mathbb{E}[(q/p)^{X_s+1} | \mathcal{F}_s] \cdot \mathellipsis \cdot \mathbb{E}[(q/p)^{X_t} | \mathcal{F}_s] \\
+        = (q/p)^{a + X_1 + \mathellipsis + X_s} \cdot \mathbb{E}[(q/p)^{X_s+1}] \cdot \mathellipsis \cdot \mathbb{E}[(q/p)^{X_t}] \\
+        = M_s \cdot 1 \cdot \mathellipsis \cdot 1 = M_s
+      \end{gather*}
+      Where the conditioning dropped since they are independent and s ince $\mathbb{E}[(q/p)^{X_s+1}] = 1$ as before. So $\mathbb{E}[ M_t | \mathcal{F}_s ] = M_s$. And we conclude that $M_n$ is a martingale.
+
+      Now for $N_n$.
+      \begin{gather*}
+        \mathbb{E}[ \lvert N_n \rvert ] = \mathbb{E}[ \lvert S_n - n(p-q) \rvert ] \\
+        = \mathbb{E}[ \lvert a + X_1 + \mathellipsis + X_n - n(p-q) \rvert ] \\
+        \leq \mathbb{E}[ \lvert a - n(p-q) \rvert ] + \mathbb{E}[ \lvert X_1 \rvert ] + \mathellipsis + \mathbb{E}[ \lvert X_n \rvert ]
+      \end{gather*}
+      Note that
+      \begin{gather*}
+        \mathbb{E}[ \lvert X_n \rvert ] = p + q = 1
+      \end{gather*}
+      So
+      \begin{gather*}
+        = \lvert a - n(p-q) \rvert + 1 + \mathellipsis + 1 \\
+        = \lvert a - n(p-q) \rvert + n < \infty
+      \end{gather*}
+      So $N_n$ is integrable.
+
+      $N_n$ is obviously $\mathcal{F}_n$ measurable since it is a function of $X_1, \mathellipsis, X_n$ which are $\mathcal{F}_n$ measurable by construction.
+
+      Finally, by linearity
+      \begin{gather*}
+        \mathbb{E}[ N_t | \mathcal{F}_s ] = \mathbb{E}[a + X_1 + \mathellipsis + X_t - t(p-q) | \mathcal{F}_s] \\
+        = \mathbb{E}[a + X_1 + \mathellipsis + X_s - s(p-q) | \mathcal{F}_s] \\
+        + \mathbb{E}[X_{s+1} + \mathellipsis + X_t - (t-s)(p-q) | \mathcal{F}_s] \\
+        = a + X_1 + \mathellipsis + X_s - s(p-q) + \mathbb{E}[X_{s+1} + \mathellipsis + X_t - (t-s)(p-q)] \\
+        = N_s + \mathbb{E}[X_{s+1}] + \mathellipsis + \mathbb{E}[X_t] - (t-s)(p-q) \\
+        = N_s + (p-q) + \mathellipsis + (p-q) - (t-s)(p-q) = N_s
+      \end{gather*}
+      Since $\mathbb{E}[X_t] = p - q$. Thus, $\mathbb{E}[ N_t | \mathcal{F}_s ] = N_s$ and so $N_n$ is a martingale.
+    \item We satisfy the conditions for the Optional Stopping Theorem variant II in question 7. Using $P(S_T = 0) = P(M_T = 1)$,
+      \begin{gather*}
+        (q/p)^a = \mathbb{E}[M_0] = \mathbb{E}[M_T] = 1 \cdot P(M_T = 1) + (q/p)^b \cdot P(M_T = (q/p)^b) \\
+        (q/p)^a = P(S_T = 0) + (q/p)^b (1-P(S_T = 0)) \\
+        P(S_T = 0) = \frac{(q/p)^a - (q/p)^b}{1 - (q/p)^b}
+      \end{gather*}
+      Thus, $P(S_T = 0) = \frac{(q/p)^a - (q/p)^b}{1 - (q/p)^b}$.
+
+      Now,
+      \begin{gather*}
+        \mathbb{E}[N_n] = \mathbb{E}[S_n] - \mathbb{E}[n(p-q)] \\
+        \mathbb{E}[N_n] = \mathbb{E}[S_n] - \mathbb{E}[n](p-q)
+      \end{gather*}
+      Thus using Optional Sampling Theorem,
+      \begin{gather*}
+        \mathbb{E}[T] = \frac{\mathbb{E}[S_T] - \mathbb{E}[N_T]}{p-q} \\
+        \mathbb{E}[T] = \frac{0 \cdot P(S_T = 0) + b \cdot P(S_T = b) - \mathbb{E}[N_0]}{p-q} \\
+        \mathbb{E}[T] = \frac{b \cdot (1 - \frac{(q/p)^a - (q/p)^b}{1 - (q/p)^b}) - a}{p-q}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $M_n$ be an $\mathcal{F}_n$-martingale and $T$ a bounded stopping time. Show that $M_T$ is integrable.
+\end{exercise}
+
+\begin{answer}
+  We have that $M_n$ is an $\mathcal{F}_n$-martingale. Thus,
+  \begin{gather*}
+    \mathbb{E}[ \lvert M_n \rvert ] < \infty, \quad \forall t \in \mathbb{T}
+  \end{gather*}
+  Note that for $k > T$ we have
+  \begin{gather*}
+    \mathbb{E}[ \lvert M_T \rvert ] < \mathbb{E}[ \sum_{n = 1}^k \lvert M_n \rvert ] \\
+    = \sum_{n = 1}^k \mathbb{E}[ \lvert M_n \rvert ] < \infty
+  \end{gather*}
+  Since each $M_n$ is integrable since it is a martingale.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Optional Stopping Theorem, variant I) Let $M_n$ be a martingale and $T$ be a stopping time. Assume that $M_n$ is bounded and $T < \infty$ a.s. Show that $M_T$ is integrable and $\mathbb{E}[M_T] = \mathbb{E}[M_0]$.
+\end{exercise}
+
+\begin{answer}
+  Using the same decomposition as in class
+  \begin{gather*}
+    M_T = M_{T \land n} + (M_T - M_n) \cdot 1_{ \{ T > n \} } \quad \forall n \geq 0
+  \end{gather*}
+  Taking expectations, since $M_{T \land n}$ is a stopped process, then $\mathbb{E}[ M_{T \land n} ] = \mathbb{E}[M_0]$. Since $T < \infty$ a.s. then there exists $N$ such that $T(\omega) < N$ a.s. Hence, taking $n > N$, then $1_{ \{ T > n \} } = 0$ a.s. which yields the result
+  \begin{gather*}
+    \mathbb{E}[M_T] = \mathbb{E}[M_{T \land n}] = \mathbb{E}[M_0]
+  \end{gather*}
+  Integrability follows from the fact that picking $n$ sufficiently large again then $M_T = M_{T \land n}$ a.s. where we note that $M_{T \land n}$ is also a martingale. Hence,
+  \begin{gather*}
+    \mathbb{E}[ \lvert M_T \rvert ] = \mathbb{E}[ \lvert M_{T \land n} \rvert ] < \infty
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Optional Stopping Theorem, variant II) Let $M_n$ be a martingale and $T$ be a stopping time. Assume that $\mathbb{E}[T] < \infty$ and
+  \begin{gather*}
+    \lvert M_n(\omega) - M_{n-1}(\omega) \rvert \leq K, \quad \forall (n ,\omega)
+  \end{gather*}
+  with $K > 0$ constant. Show that $M_T$ is integrable and $\mathbb{E}[M_T] = \mathbb{E}[M_0]$.
+\end{exercise}
+
+\begin{answer}
+  To show integrability, we note the following
+  \begin{gather*}
+    \mathbb{E}[ \lvert M_T \rvert ] = \mathbb{E}[ \lvert M_T - M_{T-1} + M_{T-1} \rvert ] \\
+    \leq \mathbb{E}[ \lvert M_T - M_{T-1} \vert ] + \mathbb{E}[ \lvert M_{T-1} \rvert ]
+  \end{gather*}
+  Where the inequality is due to the triangle inequality. Applying the same procedure recursively, this yields
+  \begin{gather*}
+    \leq \mathbb{E}[ \lvert M_T - M_{T-1} \vert ] + \mathbb{E}[ \lvert M_{T-1} - M_{T-2} \rvert ] + \mathellipsis + \mathbb{E}[ \lvert M_1 - M_0 \rvert ] + \mathbb{E}[ \lvert M_0 \rvert ]
+  \end{gather*}
+  Now we use the assumption that $\lvert M_n(\omega) - M_{n-1}(\omega) \rvert \leq K$.
+  \begin{gather*}
+    \leq T \cdot K + \mathbb{E}[ \lvert M_0 \rvert ]
+  \end{gather*}
+  Since $M_n$ is a martingale, then $\mathbb{E}[ \lvert M_0 \rvert ] < \infty$ and so $M_T$ is integrable. Also, since $\mathbb{E}[T] < \infty$ this implies that $P(T > n) \rightarrow 0$ as $n \rightarrow \infty$. Equivalently, $1_{ \{ T > n \} } \rightarrow 0$ as $n \rightarrow \infty$. Thus, picking $n$ sufficiently large and using the decomposition used in the previous question
+  \begin{gather*}
+    M_T = M_{T \land n} + (M_T - M_n) \cdot 1_{ \{ T > n \} } \quad \forall n \geq 0
+  \end{gather*}
+  We get that $M_T = M_{T \land n}$ and so $\mathbb{E}[M_T] = \mathbb{E}[M_{T \land n}] = \mathbb{E}[M_0]$.
+\end{answer}
+
+\end{document}

@@ -1,0 +1,446 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Chapter 1}
+\author{Zachary Hervieux-Moore}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Show that an intersection of an arbitrary (countable or uncountable) family of $\sigma$-algebras on $E$ is again a $\sigma$-algebra on $E$. What about unions of $\sigma$-algebras?
+\end{exercise}
+
+\begin{answer}
+  To be a $\sigma$-algebra, it must be closed under complements and under countable union. Indeed let $\mathcal{E}_n$ be a sequence of $\sigma$-algebras,
+  \begin{gather*}
+    A \in \bigcap_n \mathcal{E}_n \implies A \in \mathcal{E}_n \ \forall n\\
+    \implies A^c \in \mathcal{E}_n \ \forall n \implies A^c \in \bigcap_n \mathcal{E}_n
+  \end{gather*}
+  Likewise, let $A_m$ be a collection of sets in $\bigcap_n \mathcal{E}_n$,
+  \begin{gather*}
+    A_m \in \bigcap_n \mathcal{E}_n \ \forall m \implies A_m \in \mathcal{E}_n \ \forall m,n\\
+    \implies \bigcup_m A_m \in \mathcal{E}_n \ \forall n \implies \bigcup_m A_m \in \bigcap_n \mathcal{E}_n
+  \end{gather*}
+  Thus $\sigma$-algebras are closed under intersection. However, they are not closed under union. Consider $\{\emptyset, A, A^c, E\}$ and $\{\emptyset, B, B^c, E\}$ which are both $\sigma$-algebras, but their union $\{\emptyset, A, A^c, B, B^c, E\}$ is not a $\sigma$-algebra since it is missing $A \cup B$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Show that if $\mathcal{E}$ is a $\sigma$-algebra, then
+  \begin{enumerate}[label=\roman*)]
+    \item $\mathcal{E}$ is a p-system
+    \item $\mathcal{E}$ is a d-system if
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\roman*)]
+    \item $\mathcal{E}$ is a p-system if it is non-empty and it is closed under intersection. Obviously, a $\sigma$-algebra is non-empty. It is also closed under intersection due to De Morgan's law that $\bigcap\limits_{n \geq 1} A_i = \Big( \bigcup\limits_{n \geq 1} A_i^c \Big)^c$. As well, $\sigma$-algebras are closed under complementation and union:
+      \begin{align*}
+          (A_n)_n \subset \mathcal{E} &\implies (A_n^c)_n \subset \mathcal{E} && \text{Since closed under complementation}\\
+          &\implies \bigcup\limits_{n \geq 1} A_i^c \in \mathcal{E} && \text{Since closed under union} \\
+          &\implies \Big( \bigcup\limits_{n \geq 1} A_i^c \Big)^c \in \mathcal{E} && \text{Since closed under complementation} \\
+          &\implies \bigcap\limits_{n \geq 1} A_i \in \mathcal{E}  && \text{By De Morgan's}
+      \end{align*}
+    \item $\mathcal{E}$ is a d-system if
+      \begin{enumerate}[label=\roman*)]
+        \item $E \in \mathcal{D}$
+        \item if $A, B \in \mathcal{D}$ and $A \subseteq B$, then $B \backslash A \in \mathcal{D}$
+        \item if $A_1, A_2, A_3, \mathellipsis \in \mathcal{D}$ and $A_n \subseteq A_{n+1}$, $n \geq 1$, then $A_n \nearrow A \in \mathcal{D}$
+      \end{enumerate}
+
+      $E$ is in $\mathcal{E}$ since $A \cup A^c \in \mathcal{E}$ and $A \cup A^c = E$. Now, $B \backslash A = B \cap A^c$ which is in $\mathcal{E}$ since $\sigma$-algebras are closed under complementation and intersection (since they are d-systems by the first part). We also have $A_n \nearrow A \in \mathcal{E}$ since $A_n \nearrow A = \bigcup_n A_n$ and $\sigma$-algebras are closed under union.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{D}$ be a a d-system on $E$. Fix $D$ in $\mathcal{D}$ and define
+  \begin{center}
+    $\widehat{\mathcal{D}} = \{A \in \mathcal{D}: A \cap D \in \mathcal{D}\}$
+  \end{center}
+  Prove that $\widehat{\mathcal{D}}$ is a d-system.
+\end{exercise}
+
+\begin{answer}
+  To show that something is a d-system, we must show the following 3 properties:
+
+  \begin{enumerate}[label=\roman*)]
+    \item $E \in \mathcal{D}$
+    \item if $A, B \in \mathcal{D}$ and $A \subseteq B$, then $ B \backslash A \in \mathcal{D}$
+    \item if $A_1, A_2, A_3, \mathellipsis \in \mathcal{D}$ and $A_n \subseteq A_{n+1}$, $n \geq 1$, then $A_n \nearrow A \in \mathcal{D}$
+  \end{enumerate}
+
+  Proof of these properties for $\widehat{\mathcal{D}} = \{A \in \mathcal{D}: A \cap D \in \mathcal{D}\}$:
+
+  \begin{enumerate}[label=\roman*)]
+    \item Let $A = E \in \mathcal{D}$, then $A \cap D = E \cap D = D$ since the intersection of a set and the universe is just the set. Note that $D \in \mathcal{D}$ by definition. So, $E \cap D \in \mathcal{D}$ which implies $E \in \widehat{\mathcal{D}}$
+    \item Let $A, B \in \widehat{\mathcal{D}}$ and $A \subseteq B$, then
+      \begin{align*}
+        & \text{Since $A, B \in \widehat{\mathcal{D}}$, then } (B \cap D) \in \mathcal{D} \text{ and } (A \cap D) \in \mathcal{D} \\
+        & \text{Since  $\mathcal{D}$ is a d-system, then } (B \cap D) \backslash (A \cap D) \in \mathcal{D} \\
+        & \text{Note that } (B \cap D) \backslash (A \cap D) =(B \backslash A) \cap D \\
+        & \text{So, } (B \backslash A) \cap D \in \mathcal{D} \\
+        & \text{Thus, } B \backslash A \in \widehat{\mathcal{D}}
+      \end{align*}
+    \item Let $A_1, A_2, A_3, \mathellipsis \in \widehat{\mathcal{D}}$ and $A_n \subseteq A_{n+1}$, $n \geq 1$, then
+      \begin{align*}
+        & \text{Since $A_1, A_2, A_3, \mathellipsis \in \widehat{\mathcal{D}}$, then } A_n \cap D \in \mathcal{D}, n \geq 1 \\
+        & \text{Since  $\mathcal{D}$ is a d-system, then } \bigcup\limits_{n \geq 1}(A_n \cap D) \in \mathcal{D} \\
+        & \text{Distributing the union we have, } (\cup_{n \geq 1}A_n) \bigcap (\cup_{n \geq 1}D) = A \cap D \\
+        & \text{Where } \cup_{n \geq 1}A_n = A \text{ since $\mathcal{D}$ is a d-system} \\
+        & \text{So, } A \cap D \in \mathcal{D} \\
+        & \text{Thus, } A \in \widehat{\mathcal{D}}
+      \end{align*}
+  \end{enumerate}
+
+  All 3 properties hold, thus $\widehat{\mathcal{D}}$ is a d-system.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Show than an intersection of arbitrary (countable or uncountable) family of d-systems on $E$ is again a d-system on $E$. What about p-systems?
+\end{exercise}
+
+\begin{answer}
+  To show that something is a d-system, we must show the following 3 properties:
+
+  \begin{enumerate}[label=\roman*)]
+    \item $E \in \mathcal{D}$
+    \item if $A, B \in \mathcal{D}$ and $A \subseteq B$, then $ B \backslash A \in \mathcal{D}$
+    \item if $A_1, A_2, A_3, \mathellipsis \in \mathcal{D}$ and $A_n \subseteq A_{n+1}$, $n \geq 1$, then $A_n \nearrow A \in \mathcal{D}$
+  \end{enumerate}
+
+  Let $\mathcal{D}_n$ be a collection of d-systems. Then,
+  \begin{enumerate}[label=\roman*)]
+    \item Since $\mathcal{D}_n$ are all d-systems, we have
+      \begin{gather*}
+        E \in \mathcal{D}_n \ \forall n \implies E \in \bigcap_n \mathcal{D}_n
+      \end{gather*}
+    \item if $A, B \in \mathcal{D}_n$ and $A \subseteq B$, then $B \backslash A \in \mathcal{D}_n \ \forall n$ which implies $B \backslash A \in \bigcap_n \mathcal{D}_n$
+    \item if $A_1, A_2, A_3, \mathellipsis \in \mathcal{D}_n$ and $A_m \subseteq A_{m+1}$, $m \geq 1$, then $A_m \nearrow A \in \mathcal{D}_n \ \forall n$ which implies $A_m \nearrow A \in \bigcap_n \mathcal{D}_n$
+  \end{enumerate}
+
+  Thus d-systems are closed under intersection. However, p-system need not be closed under intersection. Consider $\{ A, B, A \cap B\}$ and $\{ C, D, C \cap D\}$ which are both p-systems. However, their intersection is $\emptyset$ which is not a p-system.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{C}$ be a countable partition of $E$. Show that every element of $\sigma \mathcal{C}$ is a countable union of elements taken from $\mathcal{C}$.
+\end{exercise}
+
+\begin{answer}
+  Since $\mathcal{C}$ is a partition of $E$. Then, for any $A \subset \mathcal{C}$, $A^c$ is the union of every other element of the partition not in $A$. That is, all complements are countable unions of the elements of the partition. Also, there are no intersections since this is a partition. By definition, if $A,B \in \mathcal{C}$ then $A \cap B = \emptyset$. Thus, $\sigma \mathcal{C}$ is simply all the countable unions of the partition $\mathcal{C}$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{C}, \mathcal{D} \subset 2^E$. Show the following:
+  \begin{enumerate}[label=\roman*)]
+    \item $\mathcal{C} \subset \mathcal{D} \implies \sigma\mathcal{C} \subset \sigma\mathcal{D}$
+    \item $\mathcal{C} \subset \sigma\mathcal{D} \implies \sigma\mathcal{C} \subset \sigma\mathcal{D}$
+    \item If $\mathcal{C} \subset \sigma\mathcal{D}$ and $\mathcal{D} \subset \sigma\mathcal{C} \implies \sigma\mathcal{C} = \sigma\mathcal{D}$
+    \item $\mathcal{C} \subset \mathcal{D} \sigma\mathcal{C} \implies \sigma\mathcal{C} = \sigma\mathcal{D}$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\roman*)]
+    \item By assumption and definition,
+      \begin{align*}
+        &\mathcal{C} \subset \mathcal{D} \subset \sigma \mathcal{D} \\
+        &\text{The definition of $\sigma \mathcal{C}$ is: } \bigcap \mathcal{E} = \sigma \mathcal{C} \text{ where $\mathcal{E}$ is any $\sigma$-algebra containing $\mathcal{C}$} \\
+        &\sigma \mathcal{D} \text{ is one such $\mathcal{E}$. Thus, } \sigma \mathcal{C} \subset \sigma \mathcal{D}
+      \end{align*}
+    \item This follows from the first part. No assumption was made if $\mathcal{D}$ was a $\sigma$-algebra or not.
+    \item By the previous part, $\mathcal{C} \subset \sigma\mathcal{D} \implies \sigma\mathcal{C} \subset \sigma\mathcal{D}$ and $\mathcal{D} \subset \sigma\mathcal{C} \implies \sigma\mathcal{D} \subset \sigma\mathcal{C}$. So, $\sigma\mathcal{C} = \sigma\mathcal{D}$.
+    \item By the first part, $\mathcal{C} \subset \mathcal{D} \implies \sigma \mathcal{C} \subset \sigma \mathcal{D}$. The second part shows that $\mathcal{D} \subset \sigma\mathcal{C} \implies \sigma \mathcal{D} \subset \sigma \mathcal{C}$. So, $\sigma\mathcal{C} = \sigma\mathcal{D}$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Show that $\mathcal{B}(\mathbb{R})$ can be generated as
+  \begin{enumerate}[label=\roman*)]
+    \item $\mathcal{B}(\mathbb{R}) = \sigma\{ (-\infty,x]; x \in \mathbb{R} \}$
+    \item $\mathcal{B}(\mathbb{R}) = \sigma\{ (-\infty,x); x \in \mathbb{R} \}$
+    \item $\mathcal{B}(\mathbb{R}) = \sigma\{ (x,y]; x,y \in \mathbb{R} \}$
+    \item $\mathcal{B}(\mathbb{R}) = \sigma\{ (x,\infty); x \in \mathbb{R} \}$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\roman*)]
+    \item All open sets are a countable union of open intervals (due to the fact the the rationals are dense but countable in $\mathbb{R}$). Thus, we just have to show that any open interval $(a,b)$ is the countable union (and complement) of intervals of the form $(-\infty, x]$. Consider $a_n = a + \frac{1}{n}$ and $b_n = b - \frac{1}{n}$. Then,
+    \begin{gather*}
+      (a,b) = \bigcup_{n=1}^\infty (a_n, b_n] = \bigcup_{n=1}^\infty (-\infty, a_n]^c \cap (-\infty, b_n]
+    \end{gather*}
+    \item We follow the same technique as the first part.
+    \begin{gather*}
+      (a,b) = \bigcup_{n=1}^\infty [a_n, b_n) = \bigcup_{n=1}^\infty (-\infty, a_n)^c \cap (-\infty, b_n)
+    \end{gather*}
+    \item We follow the same technique as the first part.
+    \begin{gather*}
+      (a,b) = \bigcup_{n=1}^\infty (a_n, b_n]
+    \end{gather*}
+    \item Notice that $(x,\infty)^c = (-\infty,x]$ thus the proof is the complement of the first part.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $(E, \mathcal{E})$ be a measurable space. Fix $D$ in $E$ and let
+  \begin{gather*}
+    D = \mathcal{E} \cap D = \{ A \cap D: A \in \mathcal{E} \}
+  \end{gather*}
+  Show that $\mathcal{D}$ is a $\sigma$-algebra on $D$.
+\end{exercise}
+
+\begin{answer}
+  Obviously, $\mathcal{D}$ is non-empty since $D \in \mathcal{D}$. We show closed under complement first. Suppose $A \cap D \in \mathcal{D}$. Then
+  \begin{gather*}
+    (A \cap D)^c = A^c \cup D^c \\
+    \implies (A^c \cup D^c) \cap D = A^c \cap D \bigcup D^c \cap D = A^c \cap D \in \mathcal{D}
+  \end{gather*}
+  Where the last equality is true because $A^c \in \mathcal{E}$.
+  Thus, $(A \cap D)^c \in \mathcal{D}$. Now for countable union. Suppose $A_n \cap D \in \mathcal{D}$. Then,
+  \begin{gather*}
+    \bigcup_n (A_n \cap D) = \cup_n A_n \bigcap D \in \mathcal{D}
+  \end{gather*}
+  Since $\cup_n A_n \in \mathcal{E}$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider a function $f: E \rightarrow F$. Show the following:
+  \begin{enumerate}[label=\roman*)]
+    \item $f^{-1}(\emptyset) = \emptyset$ and $f^{-1}(F) = E$
+    \item $f^{-1}(B \backslash C) = f^{-1}(B) \backslash f^{-1}(C)$
+    \item $f^{-1}(\cup_i B_i) = \cup_i f^{-1}(B_i)$
+    \item $f^{-1}(\cap_i B_i) = \cap_i f^{-1}(B_i)$
+  \end{enumerate}
+  for any $B_i \in 2^E$
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\roman*)]
+    \item By definition of a function, it must map an element in $E$ to an element in $F$. Thus, we cannot have $A \neq \emptyset$ and $f(A) = \emptyset$. Thus, $f^{-1}(\emptyset) = \emptyset$. Now, we have by sequence of logic,
+      \begin{align*}
+        f^{-1}(F) &= \{ A \in E: f(A) \in F \} \\
+        &= \{ A \in E: f(A) \notin \emptyset \} \\
+        &= \{ A \in E: f(A) \in \emptyset \}^c \\
+        &= \{ A \in E: f(A) \in \emptyset \}^c = \emptyset^c = E
+      \end{align*}
+    \item Using the same technique as the first part,
+      \begin{align*}
+        f^{-1}(B \backslash C) &= \{ A \in E: f(A) \in B \backslash C \} \\
+        &= \{ A \in E: f(A) \in B \cap C^c \} \\
+        &= \{ A \in E: f(A) \in B \} \cap \{ A \in E: f(A) \in C^c \} \\
+        &= f^{-1}(B) \cap f^{-1}(C^c) = f^{-1}(B) \backslash f^{-1}(C)
+      \end{align*}
+    \item Using the same technique as the first part,
+      \begin{align*}
+        f^{-1}(\cup_i B_i) &= \{ A \in E: f(A) \in \cup_i B_i \} \\
+        &= \cup_i \{ A \in E: f(A) \in B_i \} \\
+        &= \cup_i f^{-1}(B_i)
+      \end{align*}
+    \item Using the same technique as the first part,
+      \begin{align*}
+        f^{-1}(\cap_i B_i) &= \{ A \in E: f(A) \in \cap_i B_i \} \\
+        &= \cap_i \{ A \in E: f(A) \in B_i \} \\
+        &= \cap_i f^{-1}(B_i)
+      \end{align*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $(E, \mathcal{E})$ and $(F, \mathcal{F})$ be measurable spaces and consider a function $f: E \rightarrow F$. Define $\mathcal{F}_1 = \{ B \in \mathcal{F}: f^{-1}(B) \in \mathcal{E} \}$. Show that $\mathcal{F}_1$ is a $\sigma$-algebra on $\mathcal{F}$.
+\end{exercise}
+
+\begin{answer}
+  We prove closed under complements first. Let $A \in \mathcal{F}_1$. Then
+  \begin{gather*}
+    A \in \mathcal{F}_1 = \{ A \in \mathcal{F}: f^{-1}(A) \in \mathcal{E} \} \\
+  \end{gather*}
+  But $\mathcal{E}$ is a $\sigma$-algebra, so $f^{-1}(A)^c \in \mathcal{E}$. From the previous exercise
+  \begin{gather*}
+    f^{-1}(A^c) = f^{-1}(E \backslash A) = f^{-1}(E) \backslash f^{-1}(A) = f^{-1}(A)^c
+  \end{gather*}
+  So, $f^{-1}(A^c) \in \mathcal{E}$. We also have $A^c \in \mathcal{F}$ since it is also a $\sigma$-algebra. Thus, $A^c \in \mathcal{F}_1$.
+
+  Now to show that it is closed under countable union. Let $A_n \in \mathcal{F}_1$. Then by the previous exercise,
+  \begin{gather*}
+    f^{-1}(\cup_n A_n) = \cup_n f^{-1}(A_n)
+  \end{gather*}
+  Since $\mathcal{E}$ is a $\sigma$-algebra, then $\cup_n f^{-1}(A_n) \in \mathcal{E}$. We also have $\cup_n A_n \in \mathcal{F}$ since it is also a $\sigma$-algebra. Thus, $\cup_n A_n \in \mathcal{F}_1$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $E$ be a set and $(F, \mathcal{F})$ a measurable space. Consider a function $f: E \rightarrow F$. Define $f^{-1}(\mathcal{F}) = \{ f^{-1}(B) : B \in \mathcal{F} \}$. Prove that:
+  \begin{enumerate}[label=(\roman*)]
+    \item $f^{-1}(\mathcal{F})$ is a $\sigma$-algebra.
+    \item $f^{-1}(\mathcal{F})$ is the smallest $\sigma$-algebra on $E$ such that $f$ is measurable relative to it and $\mathcal{F}$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=(\roman*)]
+    \item First, note that the inverse image preserves complements and union:
+      \par
+      Complementation:
+      \begin{align*}
+        a \in f^{-1}(A^c) &\Longleftrightarrow f(a) \in A^c \\
+        &\Longleftrightarrow f(a) \notin A \\
+        &\Longleftrightarrow a \notin f^{-1}(A) \\
+        &\Longleftrightarrow a \in f^{-1}(A)^c
+      \end{align*}
+      Union:
+      \begin{align*}
+        a \in f^{-1}(A \cup B) &\Longleftrightarrow f(a) \in A \cup B \\
+        &\Longleftrightarrow f(a) \in A \text{ or } f(a) \in B \\
+        &\Longleftrightarrow a \in f^{-1}(A) \text{ or } a \in f^{-1}(B) \\
+        &\Longleftrightarrow a \in f^{-1}(A) \cup f^{-1}(B)
+      \end{align*}
+      We now use these to show $f^{-1}(\mathcal{F})$ is closed under complementation and countable union:
+      \par
+      Complementation:
+      \begin{align*}
+        A \in f^{-1}(\mathcal{F}) &\Longleftrightarrow A = f^{-1}(B) \text{ for some } B \\
+        &\Longleftrightarrow A^c = f^{-1}(B)^c \\
+        &\Longleftrightarrow A^c = f^{-1}(B^c) \text{ , note that } B^c \in \mathcal{F} \text{ since it is $\sigma$-algebra} \\
+        &\Longleftrightarrow A^c \in f^{-1}(\mathcal{F})
+      \end{align*}
+      Union:
+      \begin{align*}
+        A_n \in f^{-1}(\mathcal{F}) &\Longleftrightarrow A_n = f^{-1}(B_n) \text{ for some } B_n \\
+        &\Longleftrightarrow \bigcup_{n \geq 1} A_n = \bigcup_{n \geq 1} f^{-1}(B_n) \\
+        &\Longleftrightarrow \bigcup_{n \geq 1} A_n = f^{-1}\big(\bigcup_{n \geq 1} B_n \big) \\
+      \end{align*}
+      Note that $\bigcup_{n \geq 1} B_n \in \mathcal{F}$ since it is $\sigma$-algebra
+      \begin{align*}
+        &\Longleftrightarrow \bigcup_{n \geq 1} A_n  \in f^{-1}(\mathcal{F})
+      \end{align*}
+      Also, $E \in f^{-1}(\mathcal{F})$ since $f^{-1}(F) = E$. Thus, $f^{-1}(\mathcal{F})$ is a $\sigma$-algebra.
+
+      \item Assume there is a smaller $\sigma$-algebra such that $\mathcal{E} \subset f^{-1}(\mathcal{F})$. But we know that $f$ is measurable so, $f^{-1}(\mathcal{F}) \subset \mathcal{E}$. But this contradicts our assumption, therefore there does not exist a smaller $\sigma$-algebra and $f^{-1}(\mathcal{F}) = \mathcal{E}$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{E}$ be a $\sigma$-algebra and consider a sequence $(A_n)_n \subset \mathcal{E}$. Prove that $\bigcap\limits_{n \geq 1} A_n \in \mathcal{E}$.
+\end{exercise}
+
+\begin{answer}
+  We know by De Morgan's law that $\bigcap\limits_{n \geq 1} A_i = \Big( \bigcup\limits_{n \geq 1} A_i^c \Big)^c$. As well, $\sigma$-algebras are closed under complementation and union:
+  \begin{align*}
+      (A_n)_n \subset \mathcal{E} &\implies (A_n^c)_n \subset \mathcal{E} && \text{Since closed under complementation}\\
+      &\implies \bigcup\limits_{n \geq 1} A_i^c \in \mathcal{E} && \text{Since closed under union} \\
+      &\implies \Big( \bigcup\limits_{n \geq 1} A_i^c \Big)^c \in \mathcal{E} && \text{Since closed under complementation} \\
+      &\implies \bigcap\limits_{n \geq 1} A_i \in \mathcal{E}  && \text{By De Morgan's}
+  \end{align*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $f: \mathbb{R} \rightarrow \overline{\mathbb{R}}$ be an increasing function. Show that $f$ is Borel measurable.
+\end{exercise}
+
+\begin{answer}
+  A function is Borel measurable if for every $r \in \mathbb{R}$, then $E = \{ x: f(x) \leq r\}$ is measurable.
+  \begin{align*}
+    &\text{Define } b = \sup f^{-1}\big((-\infty, r]\big) \\
+    &\text{If } b = \infty \text{, then } E = \mathbb{R} \\
+    &\text{If } b = -\infty \text{, then } E = \emptyset \\
+    &\text{If } b \in \mathbb{R} \text{, then } E = (-\infty, b] \text{ or } E = (-\infty, b) \\
+    &\text{ because } f(x) \leq r \text{ for all } x \in E \text{ since f is increasing.}
+  \end{align*}
+  All of these $E$'s are elements of the Borel set and hence Borel measurable.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $(E, \mathcal{E})$ be a measurable space and $f: E \rightarrow \mathbb{R}$ a Borel measurable function.
+  \begin{enumerate}[label=(\roman*)]
+    \item Show that $|f|$ is measurable
+    \item Let $f^+ = \max \{f, 0\}$ and $f^- = -\min \{f, 0\}$. Show that $|f| = f^+ + f^-$
+    \item Use (i) and (ii) to show that $f^+$ and $f^-$ are measurable
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=(\roman*)]
+    \item We will show that the absolute value does not change measurability
+      \begin{align*}
+        &\text{For $r < 0$, } \{ x: |f(x)| \leq r\} = \emptyset \\
+        &\text{For $r = \infty$, }\{ x: |f(x)| \leq \infty\} = E \\
+        &\text{For $r \geq 0$, } \{ x: |f(x)| \leq r\} = \{ x: -r \leq f(x) \leq r\} \\
+        &= \{ x: f(x) \leq r\} \bigcap \{ x: f(x) \leq -r\}^c \\
+        &\text{Note that the final line is the intersection of two measurable sets} \\
+        &\text{ since $f$ itself is measurable. Note that an intersection of two } \\
+        &\text{ measurable set is measurable since $\sigma$-algebras are closed under } \\
+        &\text{ countable intersection.}
+      \end{align*}
+      Thus, since for every $r \in \mathbb{R}$, $\{ x: |f(x)| \leq r\}$ is measurable, then $|f|$ is measurable.
+    \item Break $f$ into two cases, $f \geq 0$ and $f < 0$:
+      \begin{align*}
+        &f \geq 0: \text{ Then } \max\{f, 0\} = f \text{ and } -\min\{f,0\} = 0 \\
+        &f^+ + f^- = f + 0 = f \\
+        &f < 0: \text{ Then } \max\{f, 0\} = 0 \text{ and } -\min\{f,0\} = -f \\
+        &f^+ + f^- = 0 - f = -f
+      \end{align*}
+      Thus, we have $f^+ + f^-$ defined piecewise as:
+      $
+      f = \begin{cases}
+          f & f \geq 0 \\
+          -f & f < 0
+      \end{cases}
+      $
+      \par
+      Which is the exact definition of $|f|$. Hence, $|f| = f^+ + f^-$
+    \item One cleverly notes that we can rewrite $f^+$ and $f^-$ as follows:
+      \begin{align*}
+        &f^+ = \frac{|f| + f}{2} \\
+        &f^- = \frac{|f| - f}{2}
+      \end{align*}
+      And note from lecture that the sum of two measurable functions is measurable.
+  \end{enumerate}
+\end{answer}
+
+\end{document}

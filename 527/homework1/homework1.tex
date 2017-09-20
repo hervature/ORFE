@@ -1,0 +1,330 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 527: Stochastic Calculus \\ Homework 1}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{24}{02}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  (Quadratic variations)
+  \begin{enumerate}[label=\alph*)]
+    \item Let $M$ be a continuous martingale and $X \in \mathcal{L}$ with respect to $M$. Show
+      \begin{gather*}
+        \left \langle \int_0^t X_s d M_s \right \rangle = \int_0^t X_s^2 d \langle M \rangle_s, \ t \geq 0
+      \end{gather*}
+
+    \item Let $M^{(1)}$, $M^{(2)}$ be continuous martingales with respect to the same filtration, $X^{(1)} \in \mathcal{L}$ with respect to $M^{(1)}$, and $X^{(2)} \in \mathcal{L}$ with respect to $M^{(2)}$. Show that, if $\langle M^{(1)}, M^{(2)} \rangle_t = 0$, $t \geq 0$, then
+      \begin{gather*}
+        \left \langle \int_0^t X_s^{(1)} d M_s^{(1)}, \int_0^t X_s^{(2)} d M_s^{(2)} \right \rangle = 0, \ t \geq 0
+      \end{gather*}
+
+    \item For an $m$-dimensional standard Brownian motion ($B^{(1)}, B^{(2)}, \mathellipsis, B^{(m)}$) and $R = \sum_{i=1}^m (B^{(i)})^2$ check that
+      \begin{gather*}
+        \left \langle \sum_{i=1}^m \int_0^t \frac{B_s^{(i)}}{\sqrt{R_s}} d B_s^{(i)} \right \rangle_t = t, \ t \geq 0
+      \end{gather*}
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item We will first prove Ito's isometry for general $X \in \mathcal{L}$ by extending the result for simple process done in class. That is, we wish to show
+      \begin{gather*}
+        \mathbb{E}[(I(X)_t - I(X)_s)^2 | \mathcal{F}_s] = \mathbb{E}[\int_s^t X_u^2 d \langle M \rangle_u | \mathcal{F}_s]
+      \end{gather*}
+      Recall that $I(X)_t = \int_0^t X_u d M_u$. By definition of conditional expectation, proving the above is the same as proving
+      \begin{gather*}
+        \mathbb{E}[1_{A}(I(X)_t - I(X)_s)^2] - \mathbb{E}[1_{A} \int_s^t X_u^2 d \langle M \rangle_u] = 0
+      \end{gather*}
+      For all $A \in \mathcal{F}_s$. Now, using the fact that $\mathcal{L}_0$ is dense in $\mathcal{L}$, pick a sequence of $X^{(n)}$ that converges to $X$. Then we add and subtract $(I(X^{(n)})_t - I(X)_s^{(n)})^2$ and $\int_s^t X_u^{(n)} d \langle M \rangle_u$ to the expression above. This yields
+      \begin{gather*}
+        (1) \mathbb{E}[1_{A}(I(X)_t - I(X)_s)^2] - \mathbb{E}[1_{A}(I(X^{(n)})_t - I(X)_s^{(n)})^2] \\
+        (2) + \mathbb{E}[1_{A} \left( (I(X^{(n)})_t - I(X)_s^{(n)})^2 - \int_s^t X_u^{(n)^2} d \langle M \rangle_u \right)] \\
+        (3) + \mathbb{E}[1_{A} \left( \int_s^t X_u^{(n)^2} d \langle M \rangle_u - \int_s^t X_u^2 d \langle M \rangle_u \right)]
+      \end{gather*}
+      Now, we will show that $(1) = (2) = (3) = 0$ to prove our claim. We have, by the definition of $I(X)_t$ that
+      \begin{gather*}
+        \lVert I(X)_t - I(X^{(n)})_t \rVert_2^2 \rightarrow 0 \text{ as } n \rightarrow \infty
+      \end{gather*}
+      By triangle inequality, this also implies that
+      \begin{gather*}
+        \lVert (I(X)_t - I(X)_s) - (I(X^{(n)})_t - I(X^{(n)})_s) \rVert_2^2 \rightarrow 0 \text{ as } n \rightarrow \infty
+      \end{gather*}
+      Since we have $\lVert \cdot \rVert_2^2 \geq \lVert 1_A \cdot \rVert_2^2$, then this also implies
+      \begin{gather*}
+        \lVert 1_A (I(X)_t - I(X)_s) - 1_A(I(X^{(n)})_t - I(X^{(n)})_s) \rVert_2^2 \rightarrow 0 \text{ as } n \rightarrow \infty
+      \end{gather*}
+      Which is implies that
+      \begin{gather*}
+        \lVert 1_A (I(X)_t - I(X)_s) \rVert_2^2 \rightarrow \lVert 1_A(I(X^{(n)})_t - I(X^{(n)})_s) \rVert_2^2 \text{ as } n \rightarrow \infty
+      \end{gather*}
+      Which implies that $(1) \rightarrow 0$ as $n \rightarrow \infty$.
+
+      Since $X^{(n)}$ is in $\mathcal{L}_0$. By applying Ito's isometry for simple processes, $(2) = 0$.
+
+      $(3) \rightarrow 0$ as $n \rightarrow \infty$ also results from the fact that $\lVert I(X)_t - I(X^{(n)})_t \rVert_2^2 \rightarrow 0 \text{ as } n \rightarrow \infty$. $(3)$ is simply this norm defined on a different measure space. Thus, the same argument for $(1)$ holds for $(3)$.
+
+      Hence, since we have shown all the summands to be 0, then we have proven Ito's isometry for general $X \in \mathcal{L}$.
+
+      We now show that $I(X)_t$ is a martingale. $I(X)_t$ is obviously $\mathcal{F}_t$ adapted since it is a limit of $\mathcal{F}_t$ adapted processes. Integrability follows from Ito's isometry. Since $X \in \mathcal{L}$, we have
+      \begin{gather*}
+        \mathbb{E} [ \int_0^t X_s^2 d \langle M \rangle_s] < \infty \\
+        \implies \mathbb{E} [I(X)_t^2] < \infty \\
+        \implies \mathbb{E} [ \lvert I(X)_t \rvert] < \infty
+      \end{gather*}
+      To show the martingale property, we wish to show
+      \begin{gather*}
+        \mathbb{E}[1_A I(X)_t ] = \mathbb{E}[1_A I(X)_s ] \ \forall A \in \mathcal{F}_s
+      \end{gather*}
+      Again, we approximate using a sequence of simple processes $X^{(n)}$
+      \begin{gather*}
+        \mathbb{E}[1_A I(X^{(n)})_t ] = \mathbb{E}[1_A I(X^{(n)})_s ] \ \forall A \in \mathcal{F}_s
+      \end{gather*}
+      We proved the above in class when we showed $I(X)_t$ was a martingale for simple processes. Since we have convergence of $X^{(n)}$ in $L^2$, we also have it in $L^1$. Thus, we conclude that as $n \rightarrow \infty$ that
+      \begin{gather*}
+        \lim_{n \rightarrow \infty} \mathbb{E}[1_A I(X^{(n)})_t ] = \lim_{n \rightarrow \infty} \mathbb{E}[1_A I(X^{(n)})_s ] \ \forall A \in \mathcal{F}_s \\
+        \implies \mathbb{E}[1_A I(X)_t ] = \mathbb{E}[1_A I(X)_s ] \ \forall A \in \mathcal{F}_s
+      \end{gather*}
+      Thus, $I(X)_t$ has the martingale property. And so we have proven that $I(X)_t$ is a martingale.
+
+      We now use that fact that $I(X)_t$ is a martingale to show that if $I(X)_t^2 - \int_0^t X_u^2 d \langle M \rangle_u$ is a martingale, then $\int_0^t X_u^2 d \langle M \rangle_u$ is precisely the quadratic variation of $I(X)_t$. Integrability results from the argument from before and $\mathcal{F}_t$ adapted results from the definitions of the two terms. Hence, we will just show the martingale property.
+
+      \begin{gather*}
+        \mathbb{E}[ I(X)_t^2 - \int_0^t X_u^2 d \langle M \rangle_u | \mathcal{F}_s ] \\
+        = \mathbb{E}[ (I(X)_t - I(X)_s)^2 + 2(I(X)_t - I(X)_s)I(X)_s \\
+        + I(X)_s^2 - \int_s^t X_u^2 d \langle M \rangle_u - \int_0^s X_u^2 d \langle M \rangle_u| \mathcal{F}_s ] \\
+        = \mathbb{E}[ (I(X)_t - I(X)_s)^2 - \int_s^t X_u^2 d \langle M \rangle_u | \mathcal{F}_s ] \\
+        + 2I(X)_s \mathbb{E}[I(X)_t - I(X)_s | \mathcal{F}_s] \\
+        + I(X)_s^2 - \int_0^s X_u^2 d \langle M \rangle_u
+      \end{gather*}
+      We have that $\mathbb{E}[ (I(X)_t - I(X)_s)^2 - \int_s^t X_u^2 d \langle M \rangle_u | \mathcal{F}_s ] = 0$ by Ito's isometry. Also, $\mathbb{E}[I(X)_t - I(X)_s | \mathcal{F}_s] = 0$ since $I(X)_t$ is a martingale. Thus we have
+      \begin{gather*}
+        \mathbb{E}[ I(X)_t^2 - \int_0^t X_u^2 d \langle M \rangle_u | \mathcal{F}_s ] = I(X)_s^2 - \int_0^s X_u^2 d \langle M \rangle_u
+      \end{gather*}
+      This proves that $I(X)_t^2 - \int_0^t X_u^2 d \langle M \rangle_u$ is a martingale and we conclude that
+      \begin{gather*}
+        \left \langle \int_0^t X_s d M_s \right \rangle = \int_0^t X_s^2 d \langle M \rangle_s
+      \end{gather*}
+
+    \item We first show the result for $X_t^{(1)}, X_t^{(2)} \in \mathcal{L}_0$. Let $t_i$ be the times when either process changes and let $t_{m-1} < s < t_m$ and $t_n < t < t_{n+1}$.
+      \begin{gather*}
+        \mathbb{E} [(X_t^{(1)} - X_s^{(1)})(X_t^{(2)} - X_s^{(2)})] \\
+        = \mathbb{E} [ \alpha^{(1)}_{m-1}\alpha^{(2)}_{m-1}(M_{t_m}^{(1)} - M_{s}^{(1)})(M_{t_m}^{(2)} - M_{s}^{(2)}) \\
+          + \sum_{i=m}^{n-1}\alpha^{(1)}_{i}\alpha^{(2)}_{i}(M_{t_{i+1}}^{(1)} - M_{t}^{(1)})(M_{t_{i+1}}^{(2)} - M_{t}^{(2)}) \\
+          + \alpha^{(1)}_{n}\alpha^{(2)}_{n}(M_{t}^{(1)} - M_{t_n}^{(1)})(M_{t}^{(2)} - M_{t_n}^{(2)}) ] \\
+        = \mathbb{E} [ \alpha^{(1)}_{m-1}\alpha^{(2)}_{m-1} (\langle M^{(1)}, M^{(2)} \rangle_{t_m} -  \langle M^{(1)}, M^{(2)} \rangle_{s}) \\
+          + \sum_{i=m}^{n-1}\alpha^{(1)}_{i}\alpha^{(2)}_{i} (\langle M^{(1)}, M^{(2)} \rangle_{t_{i+1}} -  \langle M^{(1)}, M^{(2)} \rangle_{t}) \\
+          + \alpha^{(1)}_{n}\alpha^{(2)}_{n} (\langle M^{(1)}, M^{(2)} \rangle_{t} -  \langle M^{(1)}, M^{(2)} \rangle_{t_n})] \\
+        = \mathbb{E}[ \int_s^t X_u^{(1)} X_u^{(2)} d \langle M^{(1)}, M^{(2)} \rangle_{u} ]
+      \end{gather*}
+      Thus, if $\langle M^{(1)}, M^{(2)} \rangle_{u} = 0$, then the measure $d \langle M^{(1)}, M^{(2)} \rangle_{u}$ is also 0 and so the integral is 0.
+
+      Now we want to extend to $X_t^{(1)}, X_t^{(2)} \in \mathcal{L}$. First, we pick the convergent $\mathcal{L}_0$ sequence $X_t^{(1)^{(n)}}$. Then, $\lim_{n \rightarrow \infty} \int_0^t (X_u^{(1)^{(n)}} - X_u^{(1)})^2 d \langle M^{(1)} \rangle_u = 0$. Since co-variation is bilinear (partial proof in part c), we have,
+      \begin{gather*}
+        \lvert \langle I(X^{(1)^{(n)}}) - I(X^{(1)}), X^{(2)} \rangle_t \rvert^2 \leq \langle I(X^{(1)^{(n)}}) - I(X^{(1)}) \rangle_t \langle X^{(2)} \rangle_t
+      \end{gather*}
+      Using part a), we have
+      \begin{gather*}
+        = \int_0^t (X_u^{(1)^{(n)}} - X_u^{(1)})^2 d \langle X^{(1)} \rangle_u \langle X^{(2)} \rangle_t
+      \end{gather*}
+      Where the first multiplicand goes to 0 as $n \rightarrow \infty$. Thus, we have the following conclusion
+      \begin{gather*}
+        \lim_{n \rightarrow \infty} \langle I(X^{(1)^{(n)}}), X^{(2)} \rangle_t = \langle I(X^{(1)}), X^{(2)} \rangle_t
+      \end{gather*}
+      Now, we are going to show that \\ $\langle I(X^{(1)}), X^{(2)} \rangle_t = \int_0^t X^{(1)} d \rangle M^{(1)}, M^{(2)} \rangle_u$. Again, pick our sequence $X^{(1)^{(n)}}$ that converges to $X^{(1)}$. From this sequence, pick the almost sure subsequence. Then we have already shown this for simple processes
+      \begin{gather*}
+        \langle I(\tilde{X}^{(1)^{(n)}}), X^{(2)} \rangle_t = \int_0^t \tilde{X}_u^{(1)^{(n)}} d \langle M^{(1)}, M^{(2)} \rangle_u
+      \end{gather*}
+      Since the convergence is almost sure, we have
+      \begin{gather*}
+        \lim_{n \rightarrow \infty} \langle I(\tilde{X}^{(1)^{(n)}}), X^{(2)} \rangle_t = \lim_{n \rightarrow \infty} \int_0^t \tilde{X}_u^{(1)^{(n)}} d \langle M^{(1)}, M^{(2)} \rangle_u \\
+        \langle I(X^{(1)}), X^{(2)} \rangle_t = \int_0^t X^{(1)} d \langle M^{(1)}, M^{(2)} \rangle_u
+      \end{gather*}
+      In differential form, we have shown
+      \begin{gather*}
+        d \langle I(X^{(1)}), X^{(2)} \rangle_t = X^{(1)} d \langle M^{(1)}, M^{(2)} \rangle_u
+      \end{gather*}
+      By symmetry, we also have
+      \begin{gather*}
+        d \langle X^{(1)}, I(X^{(2)}) \rangle_t = X^{(2)} d \langle M^{(1)}, M^{(2)} \rangle_u
+      \end{gather*}
+      Thus,
+      \begin{gather*}
+        \int_0^t X_u^{(1)} X_u^{(2)} d \langle M^{(1)}, M^{(2)} \rangle_u \\
+        = \int_0^t X_u^{(1)} d \langle M^{(1)}, I(X^{(2)}) \rangle_u \\
+        = \int_0^t d \langle I(X^{(1)}), I(X^{(2)}) \rangle_u \\
+        = \langle I(X^{(1)}), I(X^{(2)}) \rangle_t
+      \end{gather*}
+      Thus, we have shown Ito's isometry for co-variation. Now, if \\ $d \langle M^{(1)}, M^{(2)} \rangle_t = 0$, then the measure is 0 and hence so is the integral. Thus, $\langle I(X^{(1)}), I(X^{(2)}) \rangle_t = 0$.
+
+    \item We show that $\langle X + Y, Z \rangle = \langle X, Z \rangle + \langle Y, Z \rangle$. First, we have that for natural and bounded variation that $\langle X, Y \rangle$ is the bounded variation equivalent to $X Y - \langle X, Y \rangle $ being a martingale. We have that $XZ - \langle X, Z \rangle$ and $YZ - \langle Y, Z \rangle$ are martingales by definition. Thus adding them together is also a martingale,
+    \begin{gather*}
+      XZ + YZ -(\langle X, Z \rangle + \langle Y, Z \rangle) \\
+      (X + Y)Z - (\langle X, Z \rangle + \langle Y, Z \rangle)
+    \end{gather*}
+    Thus, we conclude that since this is a martingale, that $\langle X + Y, Z \rangle = \langle X, Z \rangle + \langle Y, Z \rangle$. Now, we apply this to our problem by letting $X = \sum_{i=1}^m \int_0^t \frac{B_s^{(i)}}{\sqrt{R_s}} d B_s^{(i)}$ and computing $\langle X, X \rangle$. By additivity of the bilinear covariation,
+    \begin{gather*}
+      \langle X, X \rangle =
+      \sum_{i=1}^m \left \langle \int_0^t \frac{B_s^{(i)}}{\sqrt{R_s}} d B_s^{(i)}, \int_0^t \frac{B_s^{(i)}}{\sqrt{R_s}} d B_s^{(i)} \right \rangle \\
+      + \sum_{i,j,i \neq j}^m \left \langle \int_0^t \frac{B_s^{(i)}}{\sqrt{R_s}} d B_s^{(i)}, \int_0^t \frac{B_s^{(j)}}{\sqrt{R_s}} d B_s^{(j)} \right \rangle
+    \end{gather*}
+    However, this is a standard Brownian motion vector and so the covariance matrix is some multiple of the identity matrix. That is, the covariances are 0. For a joint Gaussian vector, this means the components are independent. Thus, $\langle B_s^{(i)}, B_s^{(j)} \rangle = 0$. Thus, by part b), the cross terms are all 0. By part a), the diagonal terms become
+    \begin{gather*}
+      \langle X, X \rangle = \sum_{i=1}^m \left \langle \int_0^t \frac{B_s^{(i)}}{\sqrt{R_s}} d B_s^{(i)}, \int_0^t \frac{B_s^{(i)}}{\sqrt{R_s}} d B_s^{(i)} \right \rangle \\
+      = \sum_{i=1}^m \int_0^t \frac{B_s^{(i)^2}}{R_s} d \langle B^{(i)} \rangle_s = \sum_{i=1}^m \int_0^t \frac{B_s^{(i)^2}}{R_s} d s \\
+      = \sum_{i=1}^m \frac{B_s^{(i)^2}}{R_s} \int_0^t ds = \frac{R_s}{R_s} t = t
+    \end{gather*}
+    Which is the result desired.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Orstein-Uhlenbeck process) Let $a \neq 0$, $b, \sigma \in \mathbb{R}$. Check that the process
+  \begin{gather*}
+    X_t := x e^{at} - \frac{b}{a} (1 - e^{at}) + \sigma \int_0^t e^{a(t-s)} d B_s, \ t \geq 0
+  \end{gather*}
+  where $B$ is a standard Brownian motion, solves the SDE
+  \begin{gather*}
+    d X_t = (a X_t + b) dt + \sigma d B_t, \ X_0 = x
+  \end{gather*}
+  $X$ is called the \textit{Ornstein-Uhlenbeck (OU) process} with parameters $a, b, \sigma$. Find the distribution of $X_t$ for a fixed $t \geq 0$. Do the random variables $X_t$ converge in the limit $t \rightarrow \infty$ in distribution and, if yes, to what limit?
+\end{exercise}
+
+\begin{answer}
+  First, it is trivial to check $X_0 = x$. We apply Ito's formula to $X_t$, with $f(X_t) = X_t$, \\ $M_t = \sigma \int_0^t e^{a(t-s)} d B_s$, and $\Gamma_t = x e^{at} - \frac{b}{a} (1 - e^{at})$.
+  \begin{gather*}
+    d X_t = f'(X_t) (d M_t + d \Gamma_t) + \frac{1}{2} f''(X_t) d \langle M \rangle_t
+  \end{gather*}
+  We have $f'(X_t) = 1$, $f''(X_t) = 0$. Which simplifies nicely to
+  \begin{gather*}
+    d X_t = d M_t + d \Gamma_t
+  \end{gather*}
+  Now, we compute these derivative. First, $d \Gamma_t$ is deterministic,
+  \begin{gather*}
+    d \Gamma_t = (x a e^{at} + be^{at}) dt
+  \end{gather*}
+  Now, $d M_t$ can be calculated by noting that $M_t = \sigma e^{at} \int_0^t e^{-as} d B_s$, and applying the multivariate version of Ito's formula to $f(t, Y_t) = e^{at} Y_t$, where $Y_t = \sigma \int_0^t e^{-as} d B_s$ to get
+  \begin{gather*}
+    d M_t = (a e^{at} \sigma \int_0^t e^{-as} d B_s )dt + e^{at} \sigma e^{-at} d B_t \\
+    d M_t = (a \sigma \int_0^t e^{a(t-s)} d B_s )dt + \sigma d B_t
+  \end{gather*}
+  Thus, we get
+  \begin{gather*}
+    d X_t = (x a e^{at} + be^{at} + a \sigma \int_0^t e^{a(t-s)} d B_s) dt + \sigma d B_t
+  \end{gather*}
+  which is
+  \begin{gather*}
+    d X_t = (a X_t + b) dt + \sigma d B_t
+  \end{gather*}
+  Now, we show that $X_t$ is Gaussian. First, let us assume $f(t)$ is a simple function. Then we have
+  \begin{gather*}
+    \int_0^\infty f(s) d B_s = \sum_{k = 1}^n \alpha_i (B_{t_k} - B_{t_{k-1}})
+  \end{gather*}
+  Since increments of Brownian motion is distributed Gaussian, this is a sum of Gaussians and hence is itself a Gaussian. Now, we define $f$ to be the limit of a series of simple functions $f_n$. Then we have
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} \sqrt{\int_0^\infty (f(t) - f_n(t))^2 dt} = 0
+  \end{gather*}
+  Now, we use this fact to show a Cauchy sequence of $\int_0^\infty f_k(t) d B_t$ converges to 0.
+  \begin{gather*}
+    \lVert \int_0^\infty f_k(t) d B_t - \int_0^\infty f_n(t) d B_t \rVert \\
+    = \sqrt{\mathbb{E} \left[ \left( \int_0^\infty f_k(t) d B_t - \int_0^\infty f_n(t) d B_t \right)^2 \right]} \\
+    = \sqrt{\mathbb{E} \left[ \left( \int_0^\infty f_k(t) - f_n(t) d B_t \right)^2 \right]} \\
+    = \sqrt{\mathbb{E} \left[ \int_0^\infty \left( f_k(t) - f_n(t) \right)^2 d t \right]}
+    = \lVert f_k(t) - f_n(t) \rVert
+  \end{gather*}
+  Note that the first norm is the one defined for processes and we used Ito's isometry to change to the $L^2$ norm. Now we use triangle inequality
+  \begin{gather*}
+    = \lVert f_k(t) - f_n(t) \rVert \leq \lVert f_k(t) - f(t) \rVert + \lVert f(t) - f_n(t) \rVert
+  \end{gather*}
+  But, we have that the right side converges to 0 as $k,n \rightarrow \infty$. Since the space of simple functions is dense, we conclude that
+  \begin{gather*}
+    \int_0^\infty f(t) d B_t = \lim_{n \rightarrow \infty} \int_0^\infty f_n(t) d B_t
+  \end{gather*}
+  Hence, we have that $X_t$ is a Gaussian added to a deterministic function which is itself Gaussian. Thus, we calculate the mean and variance of $X_t$ to get the parameters.
+  \begin{gather*}
+    \mathbb{E}[X_t] = \mathbb{E} \left[ x e^{at} - \frac{b}{a}(1-e^{at}) + \sigma \int_0^t e^{a(t-s)} d B_s \right]\\
+    = x e^{at} - \frac{b}{a}(1-e^{at}) + \sigma \mathbb{E} \left[ \int_0^t e^{a(t-s)} d B_s \right]
+  \end{gather*}
+  Using a similar argument as before, the mean of this integral is 0 since Brownian motion is distributed with mean 0. Thus,
+  \begin{gather*}
+    \mathbb{E}[X_t] = x e^{at} - \frac{b}{a}(1-e^{at})
+  \end{gather*}
+  Now, for the variance, we again use Ito's isometry.
+  \begin{gather*}
+    Var(X_t) = \mathbb{E} \left[ (\sigma \int_0^t e^{a(t-s)} d B_s)^2 \right] \\
+    = \sigma^2 \mathbb{E} \left[ \int_0^t e^{2a(t-s)} ds \right] \\
+    = \frac{\sigma^2}{2a} (e^{2at} - 1)
+  \end{gather*}
+  Thus, we have $X_t \sim \mathcal{N}(x e^{at} - \frac{b}{a}(1-e^{at}), \frac{\sigma^2}{2a} (e^{2at} - 1))$. In the limit, we consider two cases. If $a > 0$, then $X_t$ converges to $\mathcal{N}(\infty, \infty)$ which is certainly not a valid distribution. Thus, no convergence when $a > 0$. This can be explained by the fact that our process will drift exponentially larger according to our SDE solution. However, if $a < 0$, then the drift term gets smaller and so $X_t$ converges to $\mathcal{N}(-\frac{b}{a}, -\frac{\sigma^2}{2a})$
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  (Kimura diffusion) For any $\sigma \in \mathbb{R}$ find a solution of the SDE
+  \begin{gather*}
+    d X_t = \sigma X_t (1 - X_t) d B_t - \sigma^2 X_t^2 (1 - X_t) dt, \ X_0 = x \in (0,1)
+  \end{gather*}
+  where $B$ is a standard Brownian motion. $X$ is called a \textit{Kimura diffusion} and has been introduced in mathematical biology as a simple model for the relative frequency of a gene in a population.
+
+  \textit{Hint: start by formally applying Ito's formula to $Y_t := \log \frac{X_t}{1-X_t}, t \geq 0$.}
+\end{exercise}
+
+\begin{answer}
+  We apply Ito's formula to $f(X_t) = Y_t$, $\Gamma_t = -\sigma^2 \int_0^t X_s^2 (1-X_s) ds$, and $M_t = \sigma \int_0^t X_s (1 - X_s) d B_s$.
+  \begin{gather*}
+    d Y_t = \left( \frac{1}{X_t} + \frac{1}{1 - X_t} \right)(d M_t + d \Gamma_t) + \frac{1}{2} \left(\frac{1}{(1-X_t)^2} - \frac{1}{X_t^2} \right) d \langle M \rangle_t
+  \end{gather*}
+  Now, we compute $d M_t$, $d \Gamma_t$, and $d \langle M \rangle_t$.
+  \begin{gather*}
+    d M_t = \sigma X_t (1 - X_t) d B_t \\
+    d \Gamma_t = -\sigma^2 X_t^2 (1-X_t) dt\\
+    d \langle M \rangle_t = \sigma^2 X_t^2 (1 - X_t)^2 dt
+  \end{gather*}
+  Subbing in these expression,
+  \begin{gather*}
+    d Y_t = \left( \frac{1}{X_t} + \frac{1}{1 - X_t} \right)(\sigma X_t (1 - X_t) d B_t -\sigma^2 X_t^2 (1-X_t) dt) \\
+    + \frac{1}{2} \left(\frac{1}{(1-X_t)^2} - \frac{1}{X_t^2} \right) (\sigma^2 X_t^2 (1 - X_t)^2 dt) \\
+    = \sigma d B_t - \sigma^2 X_t dt + \frac{\sigma^2}{2}(X_t^2 - (1 - X_t)^2)dt \\
+    = \sigma d B_t - \sigma^2 X_t dt + \frac{\sigma^2}{2}(2 X_t - 1)dt \\
+    = \sigma d B_t - \frac{\sigma^2}{2} dt
+  \end{gather*}
+  Thus, we have that $Y_t$ is a Brownian motion with drift $- \frac{\sigma^2}{2}$ and diffusion $\sigma$. Which means that $Y_t \sim \mathcal{N}(-\frac{\sigma^2}{2} t, \sigma^2 t)$. Now, we can write $X_t$ in the following form
+  \begin{gather*}
+    X_t = \frac{1}{1 + e^{-Y_t}}
+  \end{gather*}
+  And so $X_t$ is a process that moves around the logistic function according to the Brownian motion $Y_t$. That is, for fixed $t$, a logit performed on a Gaussian RV. Its distribution is given by the logit-normal distribution. In this case, the pdf is
+  \begin{gather*}
+    f_{X_t} (x) = \frac{1}{\sqrt{2 \pi \sigma^2 t}} \frac{1}{x(1-x)} e^{- \frac{(\log(\frac{x}{1-x}) + \frac{\sigma^2}{2})^2}{2 \sigma^2 t}}
+  \end{gather*}
+  From here, it is easy to see that the negative causes $X_t$ to converge to 0 as $t \rightarrow 0$.
+\end{answer}
+
+\end{document}

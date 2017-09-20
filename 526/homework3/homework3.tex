@@ -1,0 +1,231 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 3}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{11}{10}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $X, Y \sim Exp(1)$ be two independent random variables, standard exponential distributed. Find the distribution $R = \frac{Y}{X}.$
+\end{exercise}
+
+\begin{answer}
+  We write the cumulative distribution for $R$:
+  \begin{gather*}
+    P(R < r) = P(\frac{Y}{X} < r) = P(Y < rX)
+  \end{gather*}
+  Which we condition on X,
+  \begin{gather*}
+    = \int_0^\infty P(Y < rX | X = x) dP(x)
+  \end{gather*}
+  But we note that $P(Y < rX | X = x) = \int_0^{rx} e^{-y} dy$ and $dP(x) = e^{-x}dx$
+  \begin{gather*}
+    = \int_0^\infty e^{-x}  \int_0^{rx} e^{-y} dy dx = \int_0^\infty e^{-x} (1-e^{-rx}) dx \\
+    = \int_0^\infty e^{-x} -e^{-(1+r)x} dx = 1 - \frac{1}{1+r}
+  \end{gather*}
+  Now differentiating to get the distribution,
+  \begin{gather*}
+    f_R(r) = \frac{d}{dr} 1 - \frac{1}{1+r} = \frac{1}{(1+r)^2}
+  \end{gather*}
+  Thus, the distribution for $R$ is $\frac{1}{(1+r)^2}$. For $r \in [0, \infty)$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X: \Omega \rightarrow E$ and $Y: \Omega \rightarrow F$ be two random variables, where $(E, \mathcal{E})$ and $(F, \mathcal{F})$ are measurable spaces. Assume there is a measurable function $f: E \rightarrow F$ such that $Y = f(X)$. Prove that $\sigma Y \subset \sigma X$
+\end{exercise}
+
+\begin{answer}
+  Let $A \in \sigma Y$,
+  \begin{align*}
+    A \in \sigma Y &\implies A \in \{B \subset \Omega: Y(B) \in \mathcal{F}\} \\
+    &\implies A \in \{B \subset \Omega: f(X(B)) \in \mathcal{F}\} \\
+    &\implies A \in \{B \subset \Omega: X(B) \in f^{-1}(\mathcal{F})\} \\
+    &\implies A \in \{B \subset \Omega: X(B) \in \mathcal{E}\} \\
+    &\implies A \in \sigma X
+  \end{align*}
+  Thus, $\sigma Y \subset \sigma X$
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the inertia momentum about axis $\{ x = a \}$ defined by
+  \begin{gather*}
+    f(a) = \int_\Omega (X(\omega) - a)^2 d\mathbb{P}(\omega)
+  \end{gather*}
+  \begin{enumerate}[label=\roman*)]
+    \item Show that $f$ is minimized by $a = \mathbb{E}[X]$
+    \item What is the value of its minimum?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  We expand the integral using its linearity,
+  \begin{gather*}
+    f(a) = \int_\Omega (X(\omega) - a)^2 d\mathbb{P}(\omega) = \int_\Omega \left(X(\omega)\right)^2 -2aX(\omega) + a^2 d\mathbb{P}(\omega) \\
+    = \int_\Omega \left(X(\omega)\right)^2 d\mathbb{P}(\omega) -2a \int_\Omega X(\omega)d\mathbb{P}(\omega) + a^2 \int_\Omega d\mathbb{P}(\omega)
+  \end{gather*}
+  By definition,
+  \begin{gather*}
+    \int_\Omega X(\omega)d\mathbb{P}(\omega) = \mathbb{E}[X] \text{ and } \int_\Omega d\mathbb{P}(\omega) = 1
+  \end{gather*}
+  So,
+  \begin{gather*}
+    f(a) = \int_\Omega \left(X(\omega)\right)^2 d\mathbb{P}(\omega) -2a\mathbb{E}[X] + a^2
+  \end{gather*}
+  Now we minimize over $a$ and we can drop the first time since it has no dependence on $a$,
+  \begin{gather*}
+    \min_a f(a) = \min_a -2a\mathbb{E}[X] + a^2
+  \end{gather*}
+  This is a convex function and so we can take the derivative and set it to 0 to find the min,
+  \begin{gather*}
+    \frac{d}{da} -2a\mathbb{E}[X] + a^2 = -2\mathbb{E}[X] + 2a =0 \\
+    \implies a = \mathbb{E}[X]
+  \end{gather*}
+  Thus, $a = \mathbb{E}[X]$ is the minimizer and $f(\mathbb{E}[X]) = \int_\Omega (X(\omega) - \mathbb{E}[X])^2 d\mathbb{P}(\omega)$ is the precise definition of $Var(X)$
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mu$ be a probability measure. Show that its Fourier transform, $\hat{\mu}$, is a bounded, continuous function satisfying $\hat{\mu}(0)=1$.
+\end{exercise}
+
+\begin{answer}
+  First, we show that $\hat{\mu}$ is bounded.
+  \begin{gather*}
+    \lvert \hat{\mu}(r) \rvert = \lvert E[e^{irX}] \rvert
+  \end{gather*}
+  By Jensen's inequality since the norm is convex,
+  \begin{gather*}
+    \lvert E[e^{irX}] \rvert \leq E[\lvert e^{irX} \rvert] = E[1] = 1
+  \end{gather*}
+  Since $\lvert e^{i \theta} \rvert = 1$ for all $\theta \in \mathbb{R}$. Thus, we have boundedness. To show continuity, consider the sequence $(r_n)_{n=1}^\infty$ with the limit $\lim_{n \rightarrow \infty} r_n = r^*$ and consider the sequence of functions $f_n = \hat{\mu}(r_n)$. Note that since it is bounded, let $g(x) = 1$,
+  \begin{gather*}
+    \lvert f_n \rvert \leq 1 = g(x)
+  \end{gather*}
+  and we have that $g$ is integrable since $\int_\mathbb{R} g(x) d\mu(x) = \int_\mathbb{R} d\mu(x) = 1 < \infty$. Thus, the conditions of dominated convergence theorem are met. So,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} \hat{\mu}(r_n) = \lim_{n \rightarrow \infty} f_n(r) = \lim_{n \rightarrow \infty} E[e^{ir_n X}] \\
+    = \lim_{n \rightarrow \infty} \int_\mathbb{R} e^{ir_n x} d\mu(x) = \int_\mathbb{R} \lim_{n \rightarrow \infty} e^{ir_n x} d\mu(x) = \int_\mathbb{R} e^{ir^* x} d\mu(x) = \hat{\mu}(r^*)
+  \end{gather*}
+  Where the limit and the integral can be swapped due to dominated convergence theorem and using the fact that $e^{\alpha r}$ is continuous in $r$. Thus $\hat{\mu}(r)$ is continuous since for any convergent sequence $(r_n)_{n=1}^\infty$, we have $\lim_{n \rightarrow \infty} \hat{\mu}(r_n) = \hat{\mu}(r^*)$.
+  Finally, $\hat{\mu}(0) = E[ e^{0}] = E[1] = 1$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Show that if $\displaystyle \int_H X d\mathbb{P} \geq 0$ for any $H \in \mathcal{H}$, then $X \geq 0$ a.s.
+\end{exercise}
+
+\begin{answer}
+  Define the sequence of measurable sets $H_n = X^{-1}((-\infty, -\frac{1}{n}))$. Then $H_n \nearrow H = X^{-1}((-\infty, 0))$. Now,
+  \begin{gather*}
+    \int_{H_n} X d\mathbb{P} = \int_{\mathcal{H}} X \cdot 1_{H_n} d\mathbb{P} \leq \int_{\mathcal{H}} -\frac{1}{n} \cdot 1_{H_n} d\mathbb{P} = -\frac{1}{n} P(H_n)
+  \end{gather*}
+  But we have $\int_H X d\mathbb{P} \geq 0$ by assumption,
+  \begin{gather*}
+    0 \leq \int_{H_n} X d\mathbb{P} \leq -\frac{1}{n} P(H_n) \\
+    \implies P(H_n) = 0
+  \end{gather*}
+  Thus $P(H_n) = 0$ for all $n$. So,
+  \begin{gather*}
+    \lim_{n \rightarrow \infty} P(H_n) = P(\lim_{n \rightarrow \infty} H_n) = P(H) = \lim_{n \rightarrow \infty} 0 = 0
+  \end{gather*}
+  The limit can be taken inside the probability by monotone convergence theorem. Hence, $P(X < 0) = 0$ or $P(X \geq 0) = 1$ a.s.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X \geq 0$ and $\mathbb{E}[X] < \infty$, with $X$ random variable. Show that $X < \infty$ a.s.
+\end{exercise}
+
+\begin{answer}
+  Let $A = X^{-1}(\{\infty\})$. Then,
+  \begin{gather*}
+    \mathbb{E}[X] = \int X d \mathbb{P} = \int_A X d \mathbb{P} + \int_{A^c} X d \mathbb{P} < \infty
+  \end{gather*}
+  However,
+  \begin{gather*}
+    \int_A X d \mathbb{P} = \infty \cdot P(A) < \infty \\
+    \implies P(A) = 0
+  \end{gather*}
+  Thus, $P(A^c) = P(X < \infty) = 1$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $(X_n)_n$ be a sequence of bounded random variables, with $\lvert X_n \rvert < M < \infty$, for all $n \geq 1$.
+  \begin{enumerate}[label=\roman*)]
+    \item Show that $\mathbb{E}[\lvert X_n \rvert] \leq M$, for all $n \geq 1$.
+    \item Use Markov's inequality to show
+      \begin{gather*}
+        \mathbb{E}[\lvert X_n \rvert \cdot 1_{\{ \lvert X_n \rvert > b \}}] < \frac{M^2}{b}, \quad \forall b > 0
+      \end{gather*}
+    \item Prove that the family $\{ X_n \}_n$ is uniformly integrable.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\roman*)]
+    \item By definition of the expectation,
+      \begin{gather*}
+        \mathbb{E}[\lvert X_n \rvert] = \int \lvert X_n \rvert d\mathbb{P} < \int M d\mathbb{P} = M \int d\mathbb{P} = M
+      \end{gather*}
+      So, $\mathbb{E}[\lvert X_n \rvert] < M$ for all $n \geq 1$.
+
+    \item We have the following,
+      \begin{gather*}
+        \mathbb{E}[\lvert X_n \rvert \cdot 1_{\{ \lvert X_n \rvert > b \}}] = \int \lvert X_n \rvert \cdot 1_{\{ \lvert X_n \rvert > b \}} d \mathbb{P} < M \int 1_{\{ \lvert X_n \rvert > b \}} = M \cdot P(\lvert X_n \rvert > b)
+      \end{gather*}
+      By Markov's inequality,
+      \begin{gather*}
+        P(\lvert X_n \rvert > b) \leq \frac{\mathbb{E}[\lvert X_n \rvert]}{b} < \frac{M}{b}
+      \end{gather*}
+      Thus,
+      \begin{gather*}
+        \mathbb{E}[\lvert X_n \rvert \cdot 1_{\{ \lvert X_n \rvert > b \}}] < M \cdot P(\lvert X_n \rvert > b) < \frac{M^2}{b} \quad \forall b > 0
+      \end{gather*}
+
+    \item We have by the previous part $\mathbb{E}[\lvert X_n \rvert \cdot 1_{\{ \lvert X_n \rvert > b \}}] < \frac{M^2}{b}$. So,
+      \begin{gather*}
+        \sup_{X \in \{X_n\}} \mathbb{E}[\lvert X \rvert \cdot 1_{\{ \lvert X \rvert > b \}}] \leq \frac{M^2}{b}
+      \end{gather*}
+      Taking the limit on both sides,
+      \begin{gather*}
+        \lim_{b \rightarrow \infty} \sup_{X \in \{X_n\}} \mathbb{E}[\lvert X \rvert \cdot 1_{\{ \lvert X \rvert > b \}}] \leq \lim_{b \rightarrow \infty} \frac{M^2}{b} = 0
+      \end{gather*}
+      Thus,
+      \begin{gather*}
+        \lim_{b \rightarrow \infty} \sup_{X \in \{X_n\}} \mathbb{E}[\lvert X \rvert \cdot 1_{\{ \lvert X \rvert > b \}}] = 0
+      \end{gather*}
+      And hence $\{ X_n \}_n$ is uniformly integrable.
+  \end{enumerate}
+\end{answer}
+
+\end{document}

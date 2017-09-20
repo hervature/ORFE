@@ -1,0 +1,241 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 524: Statistical Theory and Methods \\ Homework 1}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{30}{09}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Recall the definition of $\sigma$-Algebra. Let $(\Omega, \Sigma)$ be a measurable space, that is, $\Sigma$ satisfies the following three properties:
+
+  \begin{enumerate}
+    \item $\Sigma \neq \emptyset$, $\Sigma \subseteq 2^\Omega$.
+    \item $A \in \Sigma$ implies that $A^c \in \Sigma$. Here we use $A^c$ to denote the complement of A.
+    \item $\forall A_1, A_2, \mathellipsis \in \Sigma$, we have $\cap_{i \geq 1} A_i \in \Sigma$.
+  \end{enumerate}
+
+  \noindent
+  Based on these properties, solve the following problems:
+
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that $\Sigma$ is closed under union.
+    \item Show that $\Sigma$ must contain $\emptyset$ and $\Omega$.
+    \item Suppose $A \subseteq \Omega$, what is the smallest $\sigma$-algebra containing $A$?
+    \item Show that the set of all rational numbers, denoted by $\mathcal{Q}$, is Borel measurable. That is, $\mathcal{Q} \in \mathcal{B}(\mathcal{R})$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item We know by De Morgan's law that $A \cup B = (A^c \cap B^c)^c$. Let $A, B \in \Sigma$:
+      \begin{align*}
+          A, B \in \Sigma &\implies A^c, B^c \in \Sigma && \text{By property 2}\\
+          &\implies A^c \cap B^c \in \Sigma && \text{By property 3} \\
+          &\implies (A^c \cap B^c)^c \in \Sigma && \text{By property 2} \\
+          &\implies A \cup B \in \Sigma  && \text{By De Morgan's}
+      \end{align*}
+    \item Let $A \in \Sigma$ then $A^c \in \Sigma$ by property 2. Now,
+      \begin{gather*}
+        A \cap A^c = \emptyset \in \Sigma \text{ by property 3} \\
+        \emptyset^c = \Omega \in \Sigma \text{ by property 2}
+      \end{gather*}
+      Thus, $\emptyset, \Omega \in \Sigma$.
+    \item If $A \in \Sigma$ then $A^c \in \Sigma$ necessarily. Also, by 2), $\emptyset, \Omega \in \Sigma$, so the smallest possible set is:
+      \begin{gather*}
+        \Sigma = \{ \emptyset, A, A^c, \Omega \}
+      \end{gather*}
+      This is clearly closed under complementation. It is also very quick to verify that this set is closed under intersection:
+      \begin{gather*}
+        X \cap \Omega = X \in \Sigma, \text{ for all } X \in \Sigma \\
+        X \cap \emptyset = \emptyset \in \Sigma, \text{ for all } X \in \Sigma \\
+        \text{Lastly, } A \cap A^c = \emptyset \in \Sigma
+      \end{gather*}
+    \item Recall that $\mathcal{B}(\mathbb{R})$ is the $\sigma$-algebra formed by the open sets of $\mathbb{R}$. Equivalently, it is also formed by the closed sets. Also recall the facts from real analysis that singletons are closed and the rational numbers are countable. Using 1) that $\mathcal{B}(\mathbb{R})$ is closed under countable union,
+      \begin{gather*}
+        \mathbb{Q} = \big( \bigcup_{q \text{ rational}} q \big) \in \mathcal{B}(\mathbb{R})
+      \end{gather*}
+      That is, $\mathbb{Q}$ is the union of a countable number of closed sets, therefore, $\mathbb{Q} \in \mathcal{B}(\mathbb{R})$
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  let $P$ be a probability measure on $(\Omega, \Sigma)$. Only utilizing the definition of probability measure given in the class, solve the following problem.
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that for any $A, B \in \Sigma$ satisfying $A \subseteq B$, we have $0 \leq P(A) \leq P(B)$.
+    \item Show that for any positive k, we have
+      \begin{gather*}
+        P \big( \bigcup\limits_{i=1}^k A_i \big) \leq \sum_{i=1}^k P(A_i)
+      \end{gather*}
+    \item Does the previous inequality still hold when $k = \infty$?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item In general, we can write $B = B \backslash A \bigcup B \cap A$. But, $B \cap A = A$ since $A \subseteq B$. So, $B = B \backslash A \cup A$. By definition, $B \backslash A$ and $A$ are disjoint. So we can use the property of probability measures:
+      \begin{gather*}
+        P(B) = P(B \backslash A \cup A) = P(B \backslash A) + P(A) \\
+        P(B) \geq P(A) \text{ since } P(B \backslash A) \geq 0
+      \end{gather*}
+      Also, $P(A) \geq 0$ since it is a probability measure. Thus, $0 \leq P(A) \leq P(B)$.
+    \item We use a similar idea as in 1). We construct a new sequence that is a partition. Define:
+      \begin{gather*}
+        B_1 = A_1 \\
+        B_i = A_i \backslash (A_{i-1} \cup A_{i-2} \cup \mathellipsis \cup A_{1})
+      \end{gather*}
+      By construction, $B_i \subseteq A_i$ and $\bigcup\limits_{i=1}^k A_i = \bigcup\limits_{i=1}^k B_i$. So,
+      \begin{gather*}
+        P \big( \bigcup\limits_{i=1}^k A_i \big) = P \big( \bigcup\limits_{i=1}^k B_i \big) = \sum\limits_{i=1}^k P(B_i)
+      \end{gather*}
+      Since $B_i \subseteq A_i$, by the previous part,
+      \begin{gather*}
+        \sum\limits_{i=1}^k P(B_i) \leq \sum\limits_{i=1}^k P(A_i)
+      \end{gather*}
+      Which gives us the result $P \big( \bigcup\limits_{i=1}^k A_i \big) \leq \sum\limits_{i=1}^k P(A_i)$.
+    \item Yes, the inequality still holds if $k = \infty$. Let $\lim_{i \rightarrow \infty} A_i = A$. Then by the continuity of the probability measures,
+      \begin{gather*}
+        \lim_{i \rightarrow \infty} P \big( \bigcup\limits_{i=1}^k A_i \big) = P \big( \lim_{i \rightarrow \infty} \bigcup\limits_{i=1}^k A_i \big) = P(A)
+      \end{gather*}
+      Now taking the limit on the right side of the inequality,
+      \begin{gather*}
+        \lim_{i \rightarrow \infty} \sum\limits_{i=1}^k P(A_i) = \sum\limits_{i=1}^\infty P(A_i)
+      \end{gather*}
+      Thus, since the left hand side converges,
+      \begin{gather*}
+        \lim_{i \rightarrow \infty} P \big( \bigcup\limits_{i=1}^k A_i \big) \leq \lim_{i \rightarrow \infty} \sum\limits_{i=1}^k P(A_i) \\
+        \implies P \big( \bigcup\limits_{i=1}^\infty A_i \big) = P(A) \leq \sum\limits_{i=1}^\infty P(A_i)
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  For any measurable function $f$, show that
+  \begin{gather*}
+    \bigg\lvert \int f dP \bigg\rvert < \infty \text{ if and only if } \int \lvert f \rvert dP < \infty
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+  Suppose that $\big\lvert \int f dP \big\rvert < \infty$,
+  \begin{gather*}
+    \bigg\lvert \int f dP \bigg\rvert = \bigg\lvert \int f^+ dP - \int f^- dP \bigg\rvert < \infty
+  \end{gather*}
+  Then $f$ is integrable by definition since this implies $\int f^+ dP < \infty$ and $\int f^- dP < \infty$. Note that $\lvert f \rvert = f^+ + f^-$. So,
+  \begin{gather*}
+    \int \lvert f \rvert dP = \int f^+ + f^- dP = \int f^+ dP + \int f^- dP
+  \end{gather*}
+  But we have shown that both of these integrals are finite. So,
+  \begin{gather*}
+    \int \lvert f \rvert dP < \infty
+  \end{gather*}
+  Now suppose $\int \lvert f \rvert dP < \infty$. Note that,
+  \begin{align*}
+    &\int f^+ dP \leq \int \lvert f \rvert dP < \infty \text{ and} \\
+    &\int f^- dP \leq \int \lvert f \rvert dP < \infty
+  \end{align*}
+  Which implies $\bigg\lvert \int f dP \bigg\rvert = \bigg\lvert \int f^+ dP - \int f^- dP \bigg\rvert < \infty$.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  This exercise consists of two questions, concerns the $\sigma$-finiteness of a measure.
+  \begin{enumerate}[label=\arabic*)]
+    \item Show that the Lebesgue measure on $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$ is $\sigma$-finite.
+    \item Show that the counting measure on $(\Omega, 2^\Omega)$ is $\sigma$-finite if and only if $\Omega$ is countable.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Define the sequence of $A_i$'s as follows,
+      \begin{gather*}
+        A_i = (i, i+1]
+      \end{gather*}
+      Then we have $\mu(A_i) = 1$ for $i \in \mathbb{Z}$ and $\bigcup_{i \in \mathbb{Z}} A_i = \mathbb{R}$. Thus the Lebesgue measure on $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$ is $\sigma$-finite.
+    \item Suppose $\Omega$ is countable. That is, without loss of generality, $\Omega = \mathbb{N}$. Define the sequence of $A_i = i$. Then, $P(A_i) = 1$ for all $i \in \mathbb{N}$ and $\bigcup_{i \in \mathbb{N}} A_i = \mathbb{N}$. Thus, if $\Omega$ is countable, the counting measure is $\sigma$-finite.
+
+    Now suppose that the counting measure is $\sigma$-finite. Thus, there exists $\{ A_i \}$ measurable with $\bigcup_{i \in \mathbb{N}} A_i = \Omega$ and $P(A_i) < \infty$ by definition. However, this is a countable union of sets with a finite number of elements. Thus, $\bigcup_{i \in \mathbb{N}} A_i \neq \mathbb{R}$. Therefore, $\Omega$ is countable.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X: \Omega \rightarrow \mathbb{R}$ be a discrete random variable on probability space $(\Omega, \Sigma, P)$ and denote the corresponding induced measure by $P_X$. We define the support of $P_X$ as
+  \begin{gather*}
+    \Omega_X = \{ x \in \mathbb{R}: P(X =x) > 0 \}
+  \end{gather*}
+  Please answer the following two questions.
+  \begin{enumerate}[label=\arabic*)]
+    \item First assume that $\lvert \Omega_X \rvert < \infty$, that is, $\Omega_X$ contains finite numbers of elements. Show that the probability mass function (pmf) of $X$, denoted $f$, is indeed the density of $P_X$ with respect to the counting measure on $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$.
+    \item Show the same thing when $\lvert \Omega_X \rvert = \infty$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\arabic*)]
+    \item Let \# denote the counting measure. Then $P_X << \#$ since,
+      \begin{gather*}
+        \#(A) = 0 \implies P_X(A) = P(X^{-1}(A)) = P(X^{-1}(\emptyset)) = 0
+      \end{gather*}
+      Also, we proved that the counting measure \# is $\sigma$-finite if $\Omega_X$ countable in the previous question. Since it is finite, it is countable. By Radon-Nikodym theorem, if we restrict ourselves to $\Omega_X$, then we know a density exists. In this specific case, we do not need $\sigma$-finiteness. We only have to show that $P_X(A) = \int_A f d\#$ to show that $f$ is the density. Since $\Omega_X$ is finite, then $f: \Omega \rightarrow \mathbb{R}$ is simple and has the form,
+      \begin{gather*}
+        f = \sum\limits_{x \in A} f(x) 1_{\{ x \}}
+      \end{gather*}
+      Putting this into the integral above,
+      \begin{gather*}
+        \int_A f d\# = \int_A \sum\limits_{x \in A} f(x) 1_{\{ x \}} d\# = \sum\limits_{x \in A} f(x)
+      \end{gather*}
+      Which is exactly what we desire,
+      \begin{gather*}
+        P_X(A) = P(X^{-1}(A)) = P(\omega : X(\omega) \in A) = \sum\limits_{x \in A} f(x)
+      \end{gather*}
+      Where the last equality is the definition of the pmf
+
+      Thus, $P_X(A) = \int_A f d\#$ iff $f$ is the pmf.
+    \item If $\lvert \Omega_X \rvert = \infty$ then we must construct our $f$ different. Since $\Omega_X$ is $\sigma$-finite, we can construct an increasing sequence of sets $(A_i)$ such that $\cup_{i} A_i = \Omega_X$ and $A_{i-1} \subset A_i$. Then define $f_n$ as,
+      \begin{gather*}
+        f_n = \sum_{x \in A_n} f(x)1_{\{ x \}}
+      \end{gather*}
+      Since $(f_n)$ is an increasing sequence of simple functions with $f_n \rightarrow f$. Then,
+      \begin{gather*}
+        \int_{\Omega_X} f d\# = \lim_{n \rightarrow \infty} \int_{\Omega_X} f_n d\# = \lim_{n \rightarrow \infty} \int_{\Omega_X} \sum\limits_{x \in A_n} f(x) 1_{\{ x \}} d\# \\
+        = \lim_{n \rightarrow \infty} \sum\limits_{x \in A_n} f(x) = \sum\limits_{x \in \Omega_X} f(x)
+      \end{gather*}
+      We can exchange the limit and the integral due to the monotone convergence theorem. Now, as before,
+      \begin{gather*}
+        P_X(\Omega_X) = P(X^{-1}(\Omega_X)) = P(\omega : X(\omega) \in \Omega_X) = \sum\limits_{x \in \Omega_X} f(x)
+      \end{gather*}
+      Thus, $P_X(A) = \int_A f d\#$ iff $f$ is the pmf.
+  \end{enumerate}
+\end{answer}
+
+\end{document}

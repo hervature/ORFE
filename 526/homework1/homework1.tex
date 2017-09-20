@@ -1,0 +1,224 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 1}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{27}{09}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{E}$ be a $\sigma$-algebra and consider a sequence $(A_n)_n \subset \mathcal{E}$. Prove that $\bigcap\limits_{n \geq 1} A_n \in \mathcal{E}$.
+\end{exercise}
+
+\begin{answer}
+  We know by De Morgan's law that $\bigcap\limits_{n \geq 1} A_i = \Big( \bigcup\limits_{n \geq 1} A_i^c \Big)^c$. As well, $\sigma$-algebras are closed under complementation and union:
+  \begin{align*}
+      (A_n)_n \subset \mathcal{E} &\implies (A_n^c)_n \subset \mathcal{E} && \text{Since closed under complementation}\\
+      &\implies \bigcup\limits_{n \geq 1} A_i^c \in \mathcal{E} && \text{Since closed under union} \\
+      &\implies \Big( \bigcup\limits_{n \geq 1} A_i^c \Big)^c \in \mathcal{E} && \text{Since closed under complementation} \\
+      &\implies \bigcap\limits_{n \geq 1} A_i \in \mathcal{E}  && \text{By De Morgan's}
+  \end{align*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{D}$ be a a d-system on $E$. Fix $D$ in $\mathcal{D}$ and define
+  \begin{center}
+    $\widehat{\mathcal{D}} = \{A \in \mathcal{D}: A \cap D \in \mathcal{D}\}$
+  \end{center}
+  Prove that $\widehat{\mathcal{D}}$ is a d-system.
+\end{exercise}
+
+\begin{answer}
+  To show that something is a d-system, we must show the following 3 properties:
+
+  \begin{enumerate}
+    \item $E \in \mathcal{D}$
+    \item if $A, B \in \mathcal{D}$ and $A \subseteq B$, then $ B \backslash A \in \mathcal{D}$
+    \item if $A_1, A_2, A_3, \mathellipsis \in \mathcal{D}$ and $A_n \subseteq A_{n+1}$, $n \geq 1$, then $A_n \nearrow A \in \mathcal{D}$
+  \end{enumerate}
+
+  Proof of these properties for $\widehat{\mathcal{D}} = \{A \in \mathcal{D}: A \cap D \in \mathcal{D}\}$:
+
+  \begin{enumerate}
+    \item Let $A = E \in \mathcal{D}$, then $A \cap D = E \cap D = D$ since the intersection of a set and the universe is just the set. Note that $D \in \mathcal{D}$ by definition. So, $E \cap D \in \mathcal{D}$ which implies $E \in \widehat{\mathcal{D}}$
+    \item Let $A, B \in \widehat{\mathcal{D}}$ and $A \subseteq B$, then
+      \begin{align*}
+        & \text{Since $A, B \in \widehat{\mathcal{D}}$, then } (B \cap D) \in \mathcal{D} \text{ and } (A \cap D) \in \mathcal{D} \\
+        & \text{Since  $\mathcal{D}$ is a d-system, then } (B \cap D) \backslash (A \cap D) \in \mathcal{D} \\
+        & \text{Note that } (B \cap D) \backslash (A \cap D) =(B \backslash A) \cap D \\
+        & \text{So, } (B \backslash A) \cap D \in \mathcal{D} \\
+        & \text{Thus, } B \backslash A \in \widehat{\mathcal{D}}
+      \end{align*}
+    \item Let $A_1, A_2, A_3, \mathellipsis \in \widehat{\mathcal{D}}$ and $A_n \subseteq A_{n+1}$, $n \geq 1$, then
+      \begin{align*}
+        & \text{Since $A_1, A_2, A_3, \mathellipsis \in \widehat{\mathcal{D}}$, then } A_n \cap D \in \mathcal{D}, n \geq 1 \\
+        & \text{Since  $\mathcal{D}$ is a d-system, then } \bigcup\limits_{n \geq 1}(A_n \cap D) \in \mathcal{D} \\
+        & \text{Distributing the union we have, } (\cup_{n \geq 1}A_n) \bigcap (\cup_{n \geq 1}D) = A \cap D \\
+        & \text{Where } \cup_{n \geq 1}A_n = A \text{ since $\mathcal{D}$ is a d-system} \\
+        & \text{So, } A \cap D \in \mathcal{D} \\
+        & \text{Thus, } A \in \widehat{\mathcal{D}}
+      \end{align*}
+  \end{enumerate}
+
+  All 3 properties hold, thus $\widehat{\mathcal{D}}$ is a d-system.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $E$ be a set and $(F, \mathcal{F})$ a measurable space. Consider a function $f: E \rightarrow F$. Define $f^{-1}(\mathcal{F}) = \{ f^{-1}(B) : B \in \mathcal{F} \}$. Prove that:
+  \begin{enumerate}[label=(\roman*)]
+    \item $f^{-1}(\mathcal{F})$ is a $\sigma$-algebra.
+    \item $f^{-1}(\mathcal{F})$ is the smallest $\sigma$-algebra on $E$ such that $f$ is measurable relative to it and $\mathcal{F}$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=(\roman*)]
+    \item First, note that the inverse image preserves complements and union:
+      \par
+      Complementation:
+      \begin{align*}
+        a \in f^{-1}(A^c) &\Longleftrightarrow f(a) \in A^c \\
+        &\Longleftrightarrow f(a) \notin A \\
+        &\Longleftrightarrow a \notin f^{-1}(A) \\
+        &\Longleftrightarrow a \in f^{-1}(A)^c
+      \end{align*}
+      Union:
+      \begin{align*}
+        a \in f^{-1}(A \cup B) &\Longleftrightarrow f(a) \in A \cup B \\
+        &\Longleftrightarrow f(a) \in A \text{ or } f(a) \in B \\
+        &\Longleftrightarrow a \in f^{-1}(A) \text{ or } a \in f^{-1}(B) \\
+        &\Longleftrightarrow a \in f^{-1}(A) \cup f^{-1}(B)
+      \end{align*}
+      We now use these to show $f^{-1}(\mathcal{F})$ is closed under complementation and countable union:
+      \par
+      Complementation:
+      \begin{align*}
+        A \in f^{-1}(\mathcal{F}) &\Longleftrightarrow A = f^{-1}(B) \text{ for some } B \\
+        &\Longleftrightarrow A^c = f^{-1}(B)^c \\
+        &\Longleftrightarrow A^c = f^{-1}(B^c) \text{ , note that } B^c \in \mathcal{F} \text{ since it is $\sigma$-algebra} \\
+        &\Longleftrightarrow A^c \in f^{-1}(\mathcal{F})
+      \end{align*}
+      Union:
+      \begin{align*}
+        A_n \in f^{-1}(\mathcal{F}) &\Longleftrightarrow A_n = f^{-1}(B_n) \text{ for some } B_n \\
+        &\Longleftrightarrow \bigcup_{n \geq 1} A_n = \bigcup_{n \geq 1} f^{-1}(B_n) \\
+        &\Longleftrightarrow \bigcup_{n \geq 1} A_n = f^{-1}\big(\bigcup_{n \geq 1} B_n \big) \\
+      \end{align*}
+      Note that $\bigcup_{n \geq 1} B_n \in \mathcal{F}$ since it is $\sigma$-algebra
+      \begin{align*}
+        &\Longleftrightarrow \bigcup_{n \geq 1} A_n  \in f^{-1}(\mathcal{F})
+      \end{align*}
+      Also, $E \in f^{-1}(\mathcal{F})$ since $f^{-1}(F) = E$. Thus, $f^{-1}(\mathcal{F})$ is a $\sigma$-algebra.
+
+      \item Assume there is a smaller $\sigma$-algebra such that $\mathcal{E} \subset f^{-1}(\mathcal{F})$. But we know that $f$ is measurable so, $f^{-1}(\mathcal{F}) \subset \mathcal{E}$. But this contradicts our assumption, therefore there does not exist a smaller $\sigma$-algebra and $f^{-1}(\mathcal{F}) = \mathcal{E}$.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $f: \mathbb{R} \rightarrow \overline{\mathbb{R}}$ be an increasing function. Show that $f$ is Borel measurable.
+\end{exercise}
+
+\begin{answer}
+  A function is Borel measurable if for every $r \in \mathbb{R}$, then $E = \{ x: f(x) \leq r\}$ is measurable.
+  \begin{align*}
+    &\text{Define } b = \sup f^{-1}\big((-\infty, r]\big) \\
+    &\text{If } b = \infty \text{, then } E = \mathbb{R} \\
+    &\text{If } b = -\infty \text{, then } E = \emptyset \\
+    &\text{If } b \in \mathbb{R} \text{, then } E = (-\infty, b] \text{ or } E = (-\infty, b) \\
+    &\text{ because } f(x) \leq r \text{ for all } x \in E \text{ since f is increasing.}
+  \end{align*}
+  All of these $E$'s are elements of the Borel set and hence Borel measurable.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\mathcal{C}, \mathcal{D} \subset 2^E$. Show that $\mathcal{C} \subset \mathcal{D} \implies \sigma \mathcal{C} \subset \sigma \mathcal{D}$
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{align*}
+    &\text{By assumption and definition, } \mathcal{C} \subset \mathcal{D} \subset \sigma \mathcal{D} \\
+    &\text{The definition of $\sigma \mathcal{C}$ is: } \bigcap \mathcal{E} = \sigma \mathcal{C} \text{ where $\mathcal{E}$ is any $\sigma$-algebra containing $\mathcal{C}$} \\
+    &\sigma \mathcal{D} \text{ is one such $\mathcal{E}$. Thus, } \sigma \mathcal{C} \subset \sigma \mathcal{D}
+  \end{align*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $(E, \mathcal{E})$ be a measurable space and $f: E \rightarrow \mathbb{R}$ a Borel measurable function.
+  \begin{enumerate}[label=(\roman*)]
+    \item Show that $|f|$ is measurable
+    \item Let $f^+ = \max \{f, 0\}$ and $f^- = -\min \{f, 0\}$. Show that $|f| = f^+ + f^-$
+    \item Use (i) and (ii) to show that $f^+$ and $f^-$ are measurable
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=(\roman*)]
+    \item We will show that the absolute value does not change measurability
+      \begin{align*}
+        &\text{For $r < 0$, } \{ x: |f(x)| \leq r\} = \emptyset \\
+        &\text{For $r = \infty$, }\{ x: |f(x)| \leq \infty\} = E \\
+        &\text{For $r \geq 0$, } \{ x: |f(x)| \leq r\} = \{ x: -r \leq f(x) \leq r\} \\
+        &= \{ x: f(x) \leq r\} \bigcap \{ x: f(x) \leq -r\}^c \\
+        &\text{Note that the final line is the intersection of two measurable sets} \\
+        &\text{ since $f$ itself is measurable. Note that an intersection of two } \\
+        &\text{ measurable set is measurable since $\sigma$-algebras are closed under } \\
+        &\text{ countable intersection.}
+      \end{align*}
+      Thus, since for every $r \in \mathbb{R}$, $\{ x: |f(x)| \leq r\}$ is measurable, then $|f|$ is measurable.
+    \item Break $f$ into two cases, $f \geq 0$ and $f < 0$:
+      \begin{align*}
+        &f \geq 0: \text{ Then } \max\{f, 0\} = f \text{ and } -\min\{f,0\} = 0 \\
+        &f^+ + f^- = f + 0 = f \\
+        &f < 0: \text{ Then } \max\{f, 0\} = 0 \text{ and } -\min\{f,0\} = -f \\
+        &f^+ + f^- = 0 - f = -f
+      \end{align*}
+      Thus, we have $f^+ + f^-$ defined piecewise as:
+      $
+      f = \begin{cases}
+          f & f \geq 0 \\
+          -f & f < 0
+      \end{cases}
+      $
+      \par
+      Which is the exact definition of $|f|$. Hence, $|f| = f^+ + f^-$
+    \item One cleverly notes that we can rewrite $f^+$ and $f^-$ as follows:
+      \begin{align*}
+        &f^+ = \frac{|f| + f}{2} \\
+        &f^- = \frac{|f| - f}{2}
+      \end{align*}
+      And note from lecture that the sum of two measurable functions is measurable.
+  \end{enumerate}
+\end{answer}
+
+\end{document}

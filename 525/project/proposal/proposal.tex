@@ -1,0 +1,45 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{Converting Handwritting to LaTex Code via Neural Networks}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{02}{04}{2017}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  Neural networks are very good at classifying images and recognizing objects within images. In this project, we aim to leverage the stength of neural networks in order to take images of handwritten mathematical equations and output a correct LaTex representation of the formula. The goal is to use state of the art neural network architectures such as recurrent neural networks, convolutional neural networks, and generative adversarial networks to achieve accuracy comparable to non-neural network solutions.
+\end{abstract}
+
+\textbf{Background:}
+My background is an engineering degree from Queen's University in Canada. My degree major was Mathematics and Engineering with a specialty in Systems and Robotics. Furthermore, I completed a professional internship with Altera (now Intel) as a software engineer working on internal testing infrastructure. Other relevant experience includes completing a fourth year project in computer vision and another in Q-learning where both involved writting a non-trivial implementation of a mathematical algorithm.
+
+I wish to do this project primarily to reinforce my theoretical understanding with a state of the art empirical result. The fact that this problem is on Open AI is evidence that this project is near the state of the art and a meaningful result. Also, the difficulties of implementation are often different than those in theory and I hope to gain a better understanding of what these differences are.
+
+\end{document}

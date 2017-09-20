@@ -1,0 +1,46 @@
+\begin{thebibliography}{1}
+
+\bibitem{kumar_2013}
+M.~Kumar, ``Pca-based offline handwritten character recognition system,'' {\em
+  The Smart Computing Review}, vol.~3, no.~5, 2013.
+
+\bibitem{suzuki_tamari_fukuda_uchida_kanahori_2003}
+M.~Suzuki, F.~Tamari, R.~Fukuda, S.~Uchida, and T.~Kanahori, ``Infty,'' {\em
+  Proceedings of the 2003 ACM symposium on Document engineering}, 2003.
+
+\bibitem{1609.04938}
+Y.~Deng, A.~Kanervisto, and A.~M. Rush, ``What you get is what you see: A
+  visual markup decompiler,'' 2016.
+
+\bibitem{lecun_bottou_bengio_haffner_1998}
+Y.~Lecun, L.~Bottou, Y.~Bengio, and P.~Haffner, ``Gradient-based learning
+  applied to document recognition,'' {\em Proceedings of the IEEE}, vol.~86,
+  no.~11, p.~2278–2324, 1998.
+
+\bibitem{NIPS2012_4824}
+A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton, ``Imagenet classification with
+  deep convolutional neural networks,'' in {\em Advances in Neural Information
+  Processing Systems 25} (F.~Pereira, C.~J.~C. Burges, L.~Bottou, and K.~Q.
+  Weinberger, eds.), pp.~1097--1105, Curran Associates, Inc., 2012.
+
+\bibitem{szegedy2013deep}
+C.~Szegedy, A.~Toshev, and D.~Erhan, ``Deep neural networks for object
+  detection,'' in {\em Advances in Neural Information Processing Systems},
+  pp.~2553--2561, 2013.
+
+\bibitem{karpathy2014large}
+A.~Karpathy, G.~Toderici, S.~Shetty, T.~Leung, R.~Sukthankar, and L.~Fei-Fei,
+  ``Large-scale video classification with convolutional neural networks,'' in
+  {\em Proceedings of the IEEE conference on Computer Vision and Pattern
+  Recognition}, pp.~1725--1732, 2014.
+
+\bibitem{1406.1078}
+K.~Cho, B.~van Merrienboer, C.~Gulcehre, D.~Bahdanau, F.~Bougares, H.~Schwenk,
+  and Y.~Bengio, ``Learning phrase representations using rnn encoder-decoder
+  for statistical machine translation,'' 2014.
+
+\bibitem{1409.0473}
+D.~Bahdanau, K.~Cho, and Y.~Bengio, ``Neural machine translation by jointly
+  learning to align and translate,'' 2014.
+
+\end{thebibliography}

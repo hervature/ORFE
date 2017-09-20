@@ -1,0 +1,241 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[USenglish]{babel}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ORFE 526: Probability Theory \\ Homework 9}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{06}{12}{2016}
+\date{\displaydate{date}}
+
+\begin{document}
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $X_1, X_2, \mathellipsis, X_n, \mathellipsis$ be a sequence of independent random variables, with $X_n \geq 0$ and $\mathbb{E}[X_n] = 1$, for $n \geq 1$. Let $M_0 = 1$ and define $M_n = X_1 \cdot X_2 \cdot \mathellipsis \cdot X_n$.
+  \begin{enumerate}[label=\alph*)]
+    \item Show that there is an $M_\infty \in L^1$ such that $M_n \rightarrow M_\infty$ almost surely, as $n \rightarrow \infty$.
+    \item Assume that the sequence $(X_n)_n$ does not converge to 1 a.s., as $n \rightarrow \infty$. Find the limit $M_\infty$ in this case.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item We first note that $M_n$ is a martingale. Integrabilility follows from,
+      \begin{gather*}
+        \mathbb{E}[ \lvert M_n \rvert] = \mathbb{E}[ \lvert X_1 \cdot \mathellipsis \cdot X_n \rvert] \\
+        = \mathbb{E}[ X_1 \cdot \mathellipsis \cdot X_n ] \\
+        = \mathbb{E}[X_1] \cdot \mathellipsis \cdot \mathbb{E}[X_n]
+        = 1 \cdot \mathellipsis \cdot 1 = 1
+      \end{gather*}
+      $M_n$ is also $\mathcal{F}_n$-measurable since it is a function of $X_k$, $k \leq n$ which are $\mathcal{F}_n$-measurable.
+
+      Finally, the last martingale property,
+      \begin{gather*}
+        \mathbb{E}[M_{n+k} | \mathcal{F}_n] = \mathbb{E}[X_1 \cdot \mathellipsis \cdot X_{n+k} | \mathcal{F}_n] \\
+        = X_1 \cdot \mathellipsis \cdot X_n \cdot \mathbb{E}[X_{n+1} \cdot \mathellipsis \cdot X_{n+k} | \mathcal{F}_n] \\
+        = M_n \cdot \mathbb{E}[X_{n+1} | \mathcal{F}_n] \cdot \mathellipsis \cdot \mathcal{E}[X_{n+k} | \mathcal{F}_n] \\
+        = M_n \cdot 1 \cdot \mathellipsis \cdot 1 = M_n
+      \end{gather*}
+      Where $\mathbb{E}[X_j | \mathcal{F}_n] = 1$ for $j \neq n$ since they are i.i.d.
+
+      Now since $M_n$ is a martingale, it is also a submartingale. We also have that $\sup_n \mathbb{E}[\lvert X_n \rvert] = \mathbb{E}[\lvert X_n \rvert]$ since they are i.i.d. We showed that $\mathbb{E}[\lvert X_n \rvert] < \infty$. Thus, we have by martingale convergence theorem that there is an $M_\infty \in L^1$ such that $M_n \rightarrow M_\infty$ almost surely, as $n \rightarrow \infty$.
+    \item We first note that
+      \begin{gather*}
+        \frac{M_{n+1}}{M_n} = X_{n+1}
+      \end{gather*}
+      Thus, if $M_\infty = c > 0$, then we have
+      \begin{gather*}
+        \lim_{n \rightarrow \infty} \frac{M_{n+1}}{M_n} = \frac{c}{c} = 1 = \lim_{n \rightarrow \infty} X_{n+1}
+      \end{gather*}
+      However, this contradicts that $X_{n+1}$ does not converge to 1 a.s. We also note that $P(M_\infty = \infty) = 0$ a.s. Thus, since $X_n \geq 0$, the only remaining possibility is that $M_\infty$ = 0 a.s.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Assume that $X_1, X_2, X_3, \mathellipsis$ are i.i.d. random variables with the same distribution as $X$
+  \begin{gather*}
+    P(X = 1) = P(X = -1) = 1/2
+  \end{gather*}
+  Let $S_0 = 0$, $S_n = X_1 + \mathellipsis + X_n$, and consider $T = \inf \{ n : S_n = 1 \}$. Take the filtration $\mathcal{F}_0 = \{ \emptyset, \Omega \}$ and
+  \begin{gather*}
+    \mathcal{F}_n = \sigma(X_1, \mathellipsis, X_n) = \sigma(S_1, \mathellipsis, S_n), n \geq 1
+  \end{gather*}
+  For $\theta \in \mathbb{R}$, consider the process $M_n = (\text{sech } \theta)^n e^{\theta S_n}$.
+  \begin{enumerate}[label=\alph*)]
+    \item Show that $T$ is a stopping time.
+    \item Find the expectation $\mathbb{E}[e^{\theta X_n}]$.
+    \item Show that $M_n$ is an $\mathcal{F}_n$-martingale.
+    \item Verify that $\mathbb{E}[M_{T \land n}] = 1$.
+    \item Show that $\mathbb{E}[(\text{sech } \theta)^T] = e^{-\theta}$, for any $\theta > 0$.
+    \item Find the moment generating function of $T$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item Since we have that $S_n \in \mathcal{F}_n$, then we have that
+      \begin{gather*}
+        \{T \leq n\} = \inf \{ k : S_k = 1, k \leq n \} = \bigcup_{k = 0}^n \{ S_k = 1 \} \\
+        = \bigcup_{k = 0}^n S_k^{-1}(\{1\}) \in \mathcal{F}_n
+      \end{gather*}
+      Where the last part uses the fact that $\mathcal{F}_k \subset \mathcal{F}_n$ for all $k \leq n$ and that $\sigma$-algebras are closed under union.
+    \item We have
+      \begin{gather*}
+        \mathbb{E}[e^{\theta X_n}] = \frac{1}{2} e^\theta + \frac{1}{2} e^{-\theta} = \frac{e^\theta + e^{-\theta}}{2} = \text{cosh } \theta
+      \end{gather*}
+    \item We show integrability
+      \begin{gather*}
+        \mathbb{E}[\lvert M_n \rvert] = \mathbb{E}[\lvert (\text{sech } \theta)^n e^{\theta S_n} \rvert]
+      \end{gather*}
+      However, the inside is the product of two positive numbers so we can drop the absolute values
+      \begin{gather*}
+        = \mathbb{E}[(\text{sech } \theta)^n e^{\theta S_n}] \\
+        = (\text{sech } \theta)^n \mathbb{E}[e^{\theta (X_1 + \mathellipsis + X_n)}] \\
+        = (\text{sech } \theta)^n \mathbb{E}[e^{\theta X_1} \cdot \mathellipsis \cdot e^{\theta X_n}]
+      \end{gather*}
+      Now since they are i.i.d.
+      \begin{gather*}
+        = (\text{sech } \theta)^n \mathbb{E}[e^{\theta X_1}] \cdot \mathellipsis \cdot \mathbb{E}[e^{\theta X_n}] \\
+        = (\text{sech } \theta)^n \text{cosh } \theta \cdot \mathellipsis \cdot \text{cosh } \theta \\
+        = (\text{sech } \theta)^n \cdot (\text{cosh } \theta)^n \\
+        = 1 < \infty
+      \end{gather*}
+      We also have $M_n$ is $F_n$-measurable since it is a function of $S_n$ and $S_n \in \sigma(S_1, \mathellipsis, S_n) = \mathcal{F}_n$.
+
+      Now for the last property of matingales,
+      \begin{gather*}
+        \mathbb{E}[M_{n+k} | \mathcal{F}_n] = \mathbb{E}[(\text{sech } \theta)^{n+k} e^{\theta S_{n+k}} | \mathcal{F}_n] \\
+        = \mathbb{E}[(\text{sech } \theta)^{n+k} e^{\theta (X_1 + \mathellipsis + X_{n+k})} | \mathcal{F}_n]
+      \end{gather*}
+      Using the fact that the $X_i$ are i.i.d. again,
+      \begin{gather*}
+        = (\text{sech } \theta)^{n} \mathbb{E}[(\text{sech } \theta)^{k} e^{\theta X_1} \cdot \mathellipsis \cdot e^{\theta X_{n+k}} | \mathcal{F}_n]
+      \end{gather*}
+      Since we have that $X_1$ to $X_n$ are $\mathcal{F}_n$-measurable, we can take them out of the expectation,
+      \begin{gather*}
+        = (\text{sech } \theta)^{n} e^{\theta X_1} \cdot \mathellipsis \cdot e^{\theta X_n} \mathbb{E}[(\text{sech } \theta)^{k} e^{\theta X_{n+1}} \cdot \mathellipsis \cdot e^{\theta X_{n+k}} | \mathcal{F}_n] \\
+        = M_n \cdot \mathbb{E}[(\text{sech } \theta)^{k} e^{\theta X_{n+1}} \cdot \mathellipsis \cdot e^{\theta X_{n+k}} | \mathcal{F}_n] \\
+        = M_n \cdot (\text{sech } \theta)^{k} \mathbb{E}[e^{\theta X_{n+1}} | \mathcal{F}_n ] \cdot \mathellipsis \cdot \mathbb{E}[e^{\theta X_{n+k}} | \mathcal{F}_n ] \\
+        = M_n \cdot (\text{sech } \theta)^{k} \cdot (\text{cosh } \theta)^{k} \\
+        = M_n
+      \end{gather*}
+      Where we used that $\mathbb{E}[e^{\theta X_{n+1}} | \mathcal{F}_n] = \text{cosh } \theta$ since the $X_k$'s are i.i.d.
+    \item Since $M_n$ is a martingale, then $M_{T \land n}$ is a stopped process and so
+      \begin{gather*}
+        \mathbb{E}[M_{T \land n}] = \mathbb{E}[M_0] = \mathbb{E}[(\text{sech } \theta)^0 e^{\theta S_0}] = \mathbb{E}[1 \cdot e^{\theta \cdot 0}] = \mathbb{E}[1] = 1
+      \end{gather*}
+    \item The last part implies that $\mathbb{E}[M_T] = 1$ since we can choose $n$ large enough that $T \land n = T$ because random walks in 1 dimension are recurrent. Then,
+      \begin{gather*}
+        \mathbb{E}[M_T] = 1 \\
+        \Longleftrightarrow \mathbb{E}[(\text{sech } \theta)^T e^{\theta S_T}] = 1 \\
+        \Longleftrightarrow \mathbb{E}[(\text{sech } \theta)^T e^{\theta \cdot 1}] = 1 \\
+        \Longleftrightarrow e^\theta \mathbb{E}[(\text{sech } \theta)^T] = 1 \\
+        \Longleftrightarrow \mathbb{E}[(\text{sech } \theta)^T] = e^{-\theta}
+      \end{gather*}
+    \item Using the previous part, let $\theta = \text{arcsech } e^t$. Then,
+      \begin{gather*}
+        \mathbb{E}[(\text{sech } \theta)^T] = e^{-\theta} \\
+        \Longleftrightarrow \mathbb{E}[(\text{sech } \text{arcsech } e^t)^T] = e^{-\text{arcsech } e^t} \\
+        \Longleftrightarrow \mathbb{E}[e^{t T}] = e^{- \ln \left( \frac{1 + \sqrt{1 - e^{2t}}}{e^t} \right) } \\
+        \Longleftrightarrow \mathbb{E}[e^{t T}] = e^{\ln \left( \frac{e^t}{1 + \sqrt{1 - e^{2t}}} \right) } \\
+        \Longleftrightarrow \mathbb{E}[e^{t T}] = \frac{e^t}{1 + \sqrt{1 - e^{2t}}}
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X_n$ be a submartingale and consider its Doob decomposition
+  \begin{gather*}
+    X_n = X_0 + M_n + A_n
+  \end{gather*}
+  Show that if $X_n$ is $L^1$-bounded, then $X_n$, $M_n$, and $A_n$ converge almost surely.
+\end{exercise}
+
+\begin{answer}
+  Since $X_n$ is in $L^1$, then $\mathbb{E}[\lvert X_n \rvert] < \infty$ for all $n$. In particular, $\sup_n \mathbb{E}[\lvert X_n \rvert] < \infty$. Since it is also a submartingale we have by convergence theorem that $X_n \rightarrow X_\infty$ a.s. as $n \rightarrow \infty$. Since $X_n$ is a submartingale then $A_n$ is nonnegative and increasing. We also have that $A_n$ is $L^1$ since
+  \begin{gather*}
+    \mathbb{E}[\lvert A_n \rvert] = \mathbb{E}[A_n] = \mathbb{E}[X_n] - \mathbb{E}[X_0] - \mathbb{E}[M_n] \\
+    \leq \mathbb{E}[\lvert X_n \rvert] + \mathbb{E}[\lvert X_0 \rvert] + 0 < \infty
+  \end{gather*}
+  Thus, $A_n$ is $L^1$-bounded and increasing. Thus, it has a limit a.s. Finally, we note that $M_n = X_n - X_0 - A_n$ and since $A_n$ and $X_n$ have limits a.s. then a linear combination has a limit a.s.
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X_n$ be i.i.d. random variables and $T$ a stopping time for it.
+  \begin{enumerate}[label=\alph*)]
+    \item Let $\mu = \mathbb{E}[X_n]$ and assume that $X_n$ are nonnegative. Prove that
+      \begin{gather*}
+        Y_n = \sum_{j = 1}^n X_j - n \mu, \quad Y_0 = 0
+      \end{gather*}
+      is a martingale with respect to $\mathcal{F}_n = \sigma(X_1, \mathellipsis, X_n)$.
+    \item Show that
+      \begin{gather*}
+        \mathbb{E} \left[ \sum_{n = 1}^T X_n \right] = \mathbb{E}[T] \mathbb{E}[X_1],
+      \end{gather*}
+      provided $\mathbb{E}[T], \mathbb{E}[X_1] < \infty$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \leavevmode
+  \begin{enumerate}[label=\alph*)]
+    \item First show that $Y_n$ is integrable.
+      \begin{gather*}
+        \mathbb{E}[ \lvert Y_n \rvert ] = \mathbb{E}[ \lvert \sum_{j = 1}^n X_j - n \mu \rvert ] \\
+        \leq \mathbb{E}[ \sum_{j = 1}^n \lvert X_j \rvert  + \lvert n \mu \rvert ] \\
+        = \sum_{j = 1}^n \mathbb{E}[\lvert X_j \rvert] + \lvert n \mu \rvert \\
+      \end{gather*}
+      Since $X_j \geq 0$ then so is $\mu$, and we can drop all the absolute value signs.
+      \begin{gather*}
+        = \sum_{j = 1}^n \mathbb{E}[X_j] + n \mu \\
+        = 2 n \mu < \infty
+      \end{gather*}
+      We also have $Y_n$ is $F_n$-measurable since it is a function of $X_n$ and $X_n \in \sigma(X_1, \mathellipsis, X_n) = \mathcal{F}_n$.
+
+      We now show the last property of martingales.
+      \begin{gather*}
+        \mathbb{E}[Y{n+k} | \mathcal{F}_n ] = \mathbb{E}[\sum_{j = 1}^{n+k} X_j - (n+k) \mu | \mathcal{F}_n ] \\
+        = \sum_{j = 1}^n X_j + \mathbb{E}[\sum_{j = n+1}^{n+k} X_j | \mathcal{F}_n ] - (n+k) \mu \\
+        = \sum_{j = 1}^n X_j + \sum_{j = n+1}^{n+k} \mathbb{E}[X_j | \mathcal{F}_n ] - (n+k) \mu \\
+        = \sum_{j = 1}^n X_j + k \mu - (n+k) \mu \\
+        = \sum_{j = 1}^n X_j - n \mu = Y_n
+      \end{gather*}
+      Where $\mathbb{E}[X_j | \mathcal{F}_n ] = \mu$ since the $X_j$ are i.i.d. Thus, $Y_n$ is a martingale.
+    \item We use the fact that $\mathbb{E}[ \mathbb{E}[ \sum_{n = 1}^T X_n | T ]] = \mathbb{E}[ \sum_{n = 1}^T X_n ]$. So
+      \begin{gather*}
+        \mathbb{E}[ \sum_{n = 1}^T X_n ] = \mathbb{E}[ \mathbb{E}[ \sum_{n = 1}^T X_n | T ]] \\
+        = \mathbb{E}[ \sum_{n = 1}^T \mathbb{E}[ X_n | T ]] = \mathbb{E}[ \sum_{n = 1}^T \mu] \\
+        = \mathbb{E}[ T \mu] = \mathbb{E}[T] \mu = \mathbb{E}[T] \mathbb{E}[X_1]
+      \end{gather*}
+      Alternatively, since $\mathbb{E}[T] < \infty$, then $T$ is a.s. bounded and so we can apply the Optional Stopping Theorem
+      \begin{gather*}
+        \mathbb{E}[Y_T] = \mathbb{E}[Y_0] \\
+        \Longleftrightarrow \mathbb{E}[\sum_{j = 1}^T X_j - T \mu] = 0 \\
+        \Longleftrightarrow \mathbb{E}[\sum_{j = 1}^T X_j] = \mathbb{E}[T \mu] = \mathbb{E}[T] \mu = \mathbb{E}[T] \mathbb{E}[X_1]
+      \end{gather*}
+  \end{enumerate}
+\end{answer}
+
+\end{document}
