@@ -1,0 +1,464 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%   PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{lmodern} % gets rid of font warnings
+
+%----------------------------------------------------------------------------------------
+%   TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Short title]{Generals Exam: Enhancing AlphaZero to Accomodate a Larger Policy Space and Applications} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Zachary Hervieux-Moore} % Your name
+\date{18/05/18} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%   PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Review \& Preliminaries} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+\subsection{Markov Decision Processes and Dynamic Programming} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{MDPs}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Dynamic Programming}
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Multi-armed Bandit Theory}
+
+\begin{frame}
+\frametitle{Multi-armed Bandit Problems}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{UCB}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{EXP3}
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Monte Carlo Tree Search}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{MCTS}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Bandit Algorithms on MCTS}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Dynamic Programming Formulation of MCTS}
+\end{frame}
+
+%------------------------------------------------
+
+\section{AlphaZero}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{History of AlphaZero}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Overview of AlphaZero}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Policy and Value Learning}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Reinforcement Through Self Play}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Evaluating}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Putting it All Together}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Mathematical Formulation of AlphaZero}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Current Work}
+
+\subsection{Motivation}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Motivation: AlphaZero and Action Space}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Motivation: Example}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Motivation: Scrabble}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Motivation: Potential Solution}
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Progress}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Framework Overview}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Framework Progress}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Game Class}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{MCTS Class}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Parallel Architecture}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Technical Difficulties: Distributive Computing}
+Talk about GIL in Python
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Technical Difficulties: Differences with AlphaZero}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Technical Difficulties: Hyperparameters}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Proof of Concept: Pawns}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Demo}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Demo}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Next Steps and Future Directions}
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Next Steps: Low Hanging Fruit}
+
+  \begin{itemize}
+    \item Make code more performant in the MCTS loop
+      \begin{itemize}
+        \item{AlphaZero 0.4s vs. 4s}
+        \item{AlphaZero 800 rollouts vs. 100}
+      \end{itemize}
+    \item Optimize the parallelization
+    \item Add more complicated games and validate
+    \item Refactor code to make more modular
+  \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Next Steps: Compute Cluster}
+
+  \begin{itemize}
+    \item Write slurm wrapper for the framework
+    \item Need to refactor optimization code to allow splitting of batches across multiple GPUs
+    \item Predict that I will be able to get the framework doing 500 games per second on 1,000 CPUs which matches the production of AlpheZero
+  \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Next Steps: ELO Evaluation}
+
+  \begin{itemize}
+    \item Standard in all of the AlphaZero papers
+    \item Two ways ELO calculation can be done:
+      \begin{enumerate}
+        \item{Using the formula: }
+        \item{Using techniques that take into account cross-play}
+      \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Next Steps: Scrabble}
+
+  \begin{itemize}
+    \item The ultimate goal of the project
+    \item Generating moves presents a much harder challenge than the other games
+    \item Pre existing libraries written in C++
+  \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Future Directions: Robotics}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Future Directions: Multiplayer Games}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Future Directions: SmartDriving Cars}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Future Directions: Real World Applications}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}
+  \frametitle{Goals for PhD}
+\end{frame}
+
+%------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
