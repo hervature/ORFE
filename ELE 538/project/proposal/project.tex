@@ -1,0 +1,41 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[american]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ELE 538: Large-Scale Optimization \\ Project Proposal}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{18}{3}{2018}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	For the course project, I wish to due a survey on the ADMM literature with an application to neural network training. The goal is to understand ADMM better in a nonconvex setting so that neural network training may be approached. The main paper of interest is ‘‘Convergence Analysis of Alternating Direction Method of Multipliers for a Family of Nonconvex Problems, ’’ M. Hong, Z.Q. Luo, and M. Razaviyayn, 2016. After this paper, I want to review the literature of using ADMM specifically applied to the neural network setting such as ``Training Neural Networks Without Gradients: A Scalable ADMM Approach, '' G. Taylor et al., 2016. Finally, I would like to do my own analysis of a few toy neural network architectures as well as do some experiments to see if there are any improvements to training with ADMM in certain architectures.
+\end{abstract}
+
+\end{document}
