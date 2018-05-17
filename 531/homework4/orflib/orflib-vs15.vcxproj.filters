@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="math\stats\errorfunction.cpp">
+      <Filter>math\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="pricers\simplepricers.cpp">
+      <Filter>pricers</Filter>
+    </ClCompile>
+    <ClCompile Include="math\interpol\piecewisepolynomial.cpp">
+      <Filter>math\interpol</Filter>
+    </ClCompile>
+    <ClCompile Include="market\market.cpp">
+      <Filter>market</Filter>
+    </ClCompile>
+    <ClCompile Include="market\yieldcurve.cpp">
+      <Filter>market</Filter>
+    </ClCompile>
+    <ClCompile Include="market\volatilitytermstructure.cpp">
+      <Filter>market</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="defines.hpp" />
+    <ClInclude Include="exception.hpp" />
+    <ClInclude Include="sptr.hpp" />
+    <ClInclude Include="math\stats\errorfunction.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="math\stats\normaldistribution.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="math\stats\univariatedistribution.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="pricers\simplepricers.hpp">
+      <Filter>pricers</Filter>
+    </ClInclude>
+    <ClInclude Include="math\matrix.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\interpol\piecewisepolynomial.hpp">
+      <Filter>math\interpol</Filter>
+    </ClInclude>
+    <ClInclude Include="sptrmap.hpp" />
+    <ClInclude Include="market\market.hpp">
+      <Filter>market</Filter>
+    </ClInclude>
+    <ClInclude Include="market\yieldcurve.hpp">
+      <Filter>market</Filter>
+    </ClInclude>
+    <ClInclude Include="market\volatilitytermstructure.hpp">
+      <Filter>market</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="math">
+      <UniqueIdentifier>{32ed2f6b-7f82-446c-990e-4256749db9b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\stats">
+      <UniqueIdentifier>{da9a1c2c-8863-43be-9c64-68001f658e42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pricers">
+      <UniqueIdentifier>{44f10667-9071-439f-924f-72a3611a5132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\interpol">
+      <UniqueIdentifier>{e37d6e26-cfc6-4499-a0fa-27844e75f998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="market">
+      <UniqueIdentifier>{9a3a092f-55e6-478e-b75f-4165e2f38899}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

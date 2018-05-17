@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="math\stats\errorfunction.cpp">
+      <Filter>math\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="pricers\simplepricers.cpp">
+      <Filter>pricers</Filter>
+    </ClCompile>
+    <ClCompile Include="math\interpol\piecewisepolynomial.cpp">
+      <Filter>math\interpol</Filter>
+    </ClCompile>
+    <ClCompile Include="market\market.cpp">
+      <Filter>market</Filter>
+    </ClCompile>
+    <ClCompile Include="market\yieldcurve.cpp">
+      <Filter>market</Filter>
+    </ClCompile>
+    <ClCompile Include="pricers\bsmcpricer.cpp">
+      <Filter>pricers</Filter>
+    </ClCompile>
+    <ClCompile Include="market\volatilitytermstructure.cpp">
+      <Filter>market</Filter>
+    </ClCompile>
+    <ClCompile Include="math\random\sobolurng.cpp">
+      <Filter>math\random</Filter>
+    </ClCompile>
+    <ClCompile Include="methods\montecarlo\pathgenerator.cpp">
+      <Filter>methods\montecarlo</Filter>
+    </ClCompile>
+    <ClCompile Include="pricers\multiassetbsmcpricer.cpp">
+      <Filter>pricers</Filter>
+    </ClCompile>
+    <ClCompile Include="math\linalg\spectrunc.cpp">
+      <Filter>math\linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="math\linalg\choldcmp.cpp">
+      <Filter>math\linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="math\linalg\eigensym.cpp">
+      <Filter>math\linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="methods\pde\pdebase.cpp">
+      <Filter>methods\pde</Filter>
+    </ClCompile>
+    <ClCompile Include="methods\pde\pde1dsolver.cpp">
+      <Filter>methods\pde</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="defines.hpp" />
+    <ClInclude Include="exception.hpp" />
+    <ClInclude Include="sptr.hpp" />
+    <ClInclude Include="math\stats\errorfunction.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="math\stats\normaldistribution.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="math\stats\univariatedistribution.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="pricers\simplepricers.hpp">
+      <Filter>pricers</Filter>
+    </ClInclude>
+    <ClInclude Include="math\matrix.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\interpol\piecewisepolynomial.hpp">
+      <Filter>math\interpol</Filter>
+    </ClInclude>
+    <ClInclude Include="sptrmap.hpp" />
+    <ClInclude Include="market\market.hpp">
+      <Filter>market</Filter>
+    </ClInclude>
+    <ClInclude Include="market\yieldcurve.hpp">
+      <Filter>market</Filter>
+    </ClInclude>
+    <ClInclude Include="math\optim\polyfunc.hpp">
+      <Filter>math\optim</Filter>
+    </ClInclude>
+    <ClInclude Include="math\optim\roots.hpp">
+      <Filter>math\optim</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="math\random\normalrng.hpp">
+      <Filter>math\random</Filter>
+    </ClInclude>
+    <ClInclude Include="math\random\rng.hpp">
+      <Filter>math\random</Filter>
+    </ClInclude>
+    <ClInclude Include="math\stats\meanvarcalculator.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="math\stats\statisticscalculator.hpp">
+      <Filter>math\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="pricers\bsmcpricer.hpp">
+      <Filter>pricers</Filter>
+    </ClInclude>
+    <ClInclude Include="products\europeancallput.hpp">
+      <Filter>products</Filter>
+    </ClInclude>
+    <ClInclude Include="products\product.hpp">
+      <Filter>products</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\montecarlo\eulerpathgenerator.hpp">
+      <Filter>methods\montecarlo</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\montecarlo\mcparams.hpp">
+      <Filter>methods\montecarlo</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\montecarlo\pathgenerator.hpp">
+      <Filter>methods\montecarlo</Filter>
+    </ClInclude>
+    <ClInclude Include="market\volatilitytermstructure.hpp">
+      <Filter>market</Filter>
+    </ClInclude>
+    <ClInclude Include="math\random\primitivepolynomials.hpp">
+      <Filter>math\random</Filter>
+    </ClInclude>
+    <ClInclude Include="math\random\sobolurng.hpp">
+      <Filter>math\random</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\montecarlo\brownianbridge.hpp">
+      <Filter>methods\montecarlo</Filter>
+    </ClInclude>
+    <ClInclude Include="pricers\multiassetbsmcpricer.hpp">
+      <Filter>pricers</Filter>
+    </ClInclude>
+    <ClInclude Include="math\linalg\linalg.hpp">
+      <Filter>math\linalg</Filter>
+    </ClInclude>
+    <ClInclude Include="products\asianbasketcallput.hpp">
+      <Filter>products</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\pde\tridiagonalops1d.hpp">
+      <Filter>methods\pde</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\pde\pdeparams.hpp">
+      <Filter>methods\pde</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\pde\pdegrid.hpp">
+      <Filter>methods\pde</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\pde\pdebase.hpp">
+      <Filter>methods\pde</Filter>
+    </ClInclude>
+    <ClInclude Include="math\interpol\interpolation1d.hpp">
+      <Filter>math\interpol</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\pde\pde1dsolver.hpp">
+      <Filter>methods\pde</Filter>
+    </ClInclude>
+    <ClInclude Include="methods\pde\pderesults.hpp">
+      <Filter>methods\pde</Filter>
+    </ClInclude>
+    <ClInclude Include="products\americancallput.hpp">
+      <Filter>products</Filter>
+    </ClInclude>
+    <ClInclude Include="products\bermudancallput.hpp">
+      <Filter>products</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="math">
+      <UniqueIdentifier>{32ed2f6b-7f82-446c-990e-4256749db9b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\stats">
+      <UniqueIdentifier>{da9a1c2c-8863-43be-9c64-68001f658e42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pricers">
+      <UniqueIdentifier>{44f10667-9071-439f-924f-72a3611a5132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\interpol">
+      <UniqueIdentifier>{e37d6e26-cfc6-4499-a0fa-27844e75f998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="market">
+      <UniqueIdentifier>{9a3a092f-55e6-478e-b75f-4165e2f38899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\optim">
+      <UniqueIdentifier>{4423f3a1-71bd-47a9-83b1-5998176ec7cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\random">
+      <UniqueIdentifier>{2470590c-650e-48c7-89ce-4b765f7f1740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="products">
+      <UniqueIdentifier>{94f6d054-daaf-4224-9ca7-216a0141e626}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="methods">
+      <UniqueIdentifier>{8e10dce9-88bd-40b0-b0ba-f4dd6c66f923}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="methods\montecarlo">
+      <UniqueIdentifier>{1dc7b2ae-b48b-4636-ba8e-e203a5ab7f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\linalg">
+      <UniqueIdentifier>{f7c392d1-a21d-4ee5-b5fc-b9c8b26ca30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="methods\pde">
+      <UniqueIdentifier>{044cfe3e-7f8a-45f6-8ccd-d88891a8f50e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
