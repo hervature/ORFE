@@ -1,0 +1,76 @@
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: report.aux
+The style file: ieeetr.bst
+Database file #1: references.bib
+Warning--entry type for "tromp_sequence_2016" isn't style-file defined
+--line 38 of file references.bib
+Warning--empty journal in silver_mastering_2016
+Warning--empty year in silver_mastering_2016
+Warning--empty journal in silver_mastering_2017
+Warning--empty year in silver_mastering_2017
+Warning--empty journal in silver_mastering_2017-1
+Warning--empty year in silver_mastering_2017-1
+Warning--empty journal in auer_finite-time_2002
+Warning--empty year in auer_finite-time_2002
+Warning--empty year in kocsis_bandit_2006
+Warning--empty year in tesauro_-line_1997
+Warning--empty journal in billings_challenge_2002
+Warning--empty year in billings_challenge_2002
+Warning--empty journal in sheppard_world-championship-caliber_2002
+Warning--empty year in sheppard_world-championship-caliber_2002
+Warning--empty journal in browne_survey_2012
+Warning--empty year in browne_survey_2012
+Warning--empty journal in rosin_multi-armed_2011
+Warning--empty year in rosin_multi-armed_2011
+Warning--empty year in bjarnason_lower_2009
+Warning--empty booktitle in audibert_minimax_2009
+Warning--empty year in audibert_minimax_2009
+Warning--empty year in sturtevant_analysis_2008
+Warning--empty year in kulkarni_hierarchical_2016
+Warning--empty journal in dietterich_hierarchical_1999
+Warning--empty year in dietterich_hierarchical_1999
+Warning--empty journal in anthony_thinking_2017
+Warning--empty year in anthony_thinking_2017
+You've used 17 entries,
+            1876 wiz_defined-function locations,
+            562 strings with 7151 characters,
+and the built_in function-call counts, 5607 in all, are:
+= -- 468
+> -- 321
+< -- 0
++ -- 113
+- -- 96
+* -- 474
+:= -- 803
+add.period$ -- 13
+call.type$ -- 17
+change.case$ -- 17
+chr.to.int$ -- 0
+cite$ -- 44
+duplicate$ -- 267
+empty$ -- 486
+format.name$ -- 96
+if$ -- 1292
+int.to.chr$ -- 0
+int.to.str$ -- 17
+missing$ -- 16
+newline$ -- 54
+num.names$ -- 21
+pop$ -- 94
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 193
+stack$ -- 0
+substring$ -- 359
+swap$ -- 103
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 27
+while$ -- 54
+width$ -- 19
+write$ -- 142
+(There were 28 warnings)
