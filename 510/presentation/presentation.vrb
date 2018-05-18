@@ -1,0 +1,28 @@
+\frametitle{MCTS Class}
+
+  \begin{lstlisting}[basicstyle=\tiny, showstringspaces=false, language=Python]
+  class MCTS:
+
+  def __init__(self, root, game, node_config):
+      self.tree = Tree(root, node_config)
+      self.game = game
+      self.node_config = node_config
+
+  def selection(self):
+    raise NotImplementedError("Selection not implemented")
+
+  def expansion(self):
+    raise NotImplementedError("Expansion not implemented")
+
+  def simulation(self):
+    raise NotImplementedError("Simlation not implemented")
+
+  def backpropagation(self):
+    raise NotImplementedError("Backpropagation not implemented")
+
+  def selection_final(self):
+    raise NotImplementedError("Final selection not implemented")
+
+  def run(self):
+    raise NotImplementedError("Run not implemented")
+  \end{lstlisting}
