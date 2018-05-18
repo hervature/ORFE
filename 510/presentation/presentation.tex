@@ -165,7 +165,7 @@
     \item Let $T_j(n)$ be the number of times machine $j$ is pulled after $n$ turns
     \item Regret:
       \begin{gather*}
-        \mu^* n - \sum_i{K} \mu_j T_j(n)
+        \mu^* n - \sum_{j=1}^{K} \mu_j T_j(n)
       \end{gather*}
   \end{itemize}
 \end{frame}
@@ -243,7 +243,7 @@
 
   \begin{itemize}
     \item In MCTS, sampling of the paths through the tree can be thought of as a multi-armed bandit problem
-    \item MCTS is modeled like this because the finite/infinite horizon in MDPs is not enforced in certain decision trees
+    \item It is helpful to model MCTS like this because the assumptions finite/infinite horizon in MDPs is not enforced in certain decision trees
     \item This leads to the selection step following schemes like UCB, called UCT, which work well in practice
   \end{itemize}
 \end{frame}
@@ -338,7 +338,7 @@
       \end{itemize}
     \item Loss:
       \begin{gather*}
-        (p, v) = f_\theta(S), \quad \ell = (z - v) - \pi^T \log p + c \lVert \theta \rVert^2
+        (p, v) = f_\theta(S), \quad \ell = (z - v)^2 - \pi^T \log p + c \lVert \theta \rVert^2
       \end{gather*}
     \item Uses batches of size 4,096 turns sampled from the previous 500,000 games
     \begin{figure}
@@ -688,7 +688,7 @@
 
   \begin{itemize}
     \item Simplified version of chess where there are only pawns and the goal is to be the first one to get a pawn to the end
-    \item Ran both AlphaZero and my version with EXP3 for 1,000,000 training iterations
+    \item Ran both AlphaZero and my version with EXP3 for 100,000 training iterations
     \item Both develop more complicated structures as time progresses
   \end{itemize}
 \end{frame}
