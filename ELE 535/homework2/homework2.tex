@@ -1,0 +1,98 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+\usepackage{float}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 2}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{31}{09}{2018}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $u \in \mathbb{R}^m$, $v \in \mathbb{R}^n$, and $A \in \mathbb{R}^{m \times n}$. Find the orthogonal projection of $A$ onto span($u v^T$).
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \textbf{Norm Invariance under Orthogonal Transformations.} Show that for any $A \in \mathbb{R}^{m \times n}$, $Q \in \mathcal{O}_m$, $R \in \mathcal{O}_n$, $\lVert QAR \rVert_F = \lVert A \rVert_F$. Thus the Frovenius norm is invariant under orthogonal transformations. Similarly, show the induced 2-norm of $A \in \mathbb{R}^{m \times n}$ is invariant under orthogonal transformations.
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $A, B$ be matrices of appropriate size and $x \in \mathbb{R}^n$. Prove that
+
+  \begin{enumerate}[label=\alph*)]
+    \item $\lVert A x \rVert_2 \leq \lVert A \rVert_2 \lVert x \rVert_2$ ;
+    \item $\lVert A B \rVert_2 \leq \lVert A \rVert_2 \lVert B \rVert_2$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  For $A, B \in \mathbb{R}^{m \times n}$. Show that $\sigma_1 (A + B) \leq \sigma_1 (A) + \sigma_1 (B)$.
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \textbf{The Moore-Penrose pseudo-inverse.} The Moore-Penrose pseudo-inverse of a matrix $A \in \mathbb{R}^{m \times n}$ is the unique matrix $A^+ \in \mathbb{R}^{n \times m}$ satisfying the following four properties:
+
+  \begin{enumerate}[label=\alph*)]
+    \item $A(A^+ A) = A$
+    \item $(A^+ A)A^+ = A^+$
+    \item $(A^+ A)^T = A^+ A$
+    \item $(A A^+)^T = A A^+$
+  \end{enumerate}
+
+  Let $A$ have compact SVD $A = U \Sigma V^T$. Show that $A^+ = V \Sigma^{-1} U^T$. Give an interpretation of $A^+$ in terms of $\mathcal{N}(A)$, $\mathcal{N}(A)^\perp$, and $\mathcal{R}(A)$.
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\end{document}
