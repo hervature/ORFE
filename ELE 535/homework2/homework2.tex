@@ -43,6 +43,27 @@
 \end{exercise}
 
 \begin{answer}
+  This is equivalent to projecting onto a line and the proof from class is replicated here.
+
+  \begin{align*}
+    &\quad \min_{B \in \mathbb{R}^{m \times n}} \frac{1}{2} \lVert A - B \rVert^2 \\
+    &\quad \text{s.t. } B \in \text{span}(u v^T) \\
+    &\Longleftrightarrow \alpha^* = \argmin_{\alpha \in \mathbb{R}} \frac{1}{2} \lVert A - \alpha u v^T \rVert^2 \\
+    &\Longleftrightarrow \alpha^* = \argmin_{\alpha \in \mathbb{R}} \frac{1}{2} \lVert A \rVert^2 - \alpha \langle A, u v^T \rangle + \frac{1}{2} \lVert u v^T \rVert^2
+  \end{align*}
+
+  First order necessary condition and convexity yields a minimum of
+
+  \begin{gather*}
+    \alpha^* = \frac{\langle A, u v^T \rangle}{\lVert u v^T \rVert^2}
+  \end{gather*}
+  Which gives the projection as
+
+  \begin{gather*}
+    B = \frac{\langle A, u v^T \rangle}{\lVert u v^T \rVert^2} u v^T
+  \end{gather*}
+
+  Notice that the norm could be any one of the valid matrix norms.
 \end{answer}
 
 \clearpage
@@ -52,6 +73,30 @@
 \end{exercise}
 
 \begin{answer}
+  First, we show invariance for the Frobenius norm.
+
+  \begin{align*}
+    \lVert QAR \rVert_F &= \text{trace}(QAR(QAR)^T) \\
+    &= \text{trace}(QARR^TA^TQ^T) \\
+    &= \text{trace}(QAA^TQ^T) \\
+    &= \text{trace}(AA^TQ^TQ) \\
+    &= \text{trace}(AA^T) \\
+    &= \lVert A \rVert_F
+  \end{align*}
+
+  Now for the induced 2-norm.
+
+  \begin{align*}
+    \lVert QAR \rVert_2 &= \sqrt{\langle QAR, QAR \rangle} \\
+    &= \sqrt{\langle AR, Q^TQAR \rangle} \\
+    &= \sqrt{\langle AR, AR \rangle} \\
+    &= \lVert AR \rVert_2 \\
+    &= \max_{\lVert x \rVert_2 = 1} \lVert AR x \rVert_2 \\
+    &= \max_{\lVert y \rVert_2 = 1} \lVert Ay \rVert_2 \\
+    &= \lVert A \rVert_2
+  \end{align*}
+
+  Where the second last step of $y = Rx$ is justified because $R$ is orthogonal and so if $\lVert x \rVert_2 = 1$ then $\lVert R x \rVert_2 = 1$. As it is invertible, $x$ can always be retrieved with $x = R^T y$.
 \end{answer}
 
 \clearpage
@@ -66,6 +111,26 @@
 \end{exercise}
 
 \begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item This is direct from the definition.
+      \begin{align*}
+        &\quad \lVert A \rVert_2 = \max_{x \neq 0} \frac{\lVert A x \rVert_2}{\lVert x \rVert_x} \\
+        &\Longleftrightarrow \lVert A \rVert_2 \geq \frac{\lVert A x \rVert_2}{\lVert x \rVert_2} \quad \text{ if } x \neq 0 \\
+        &\Longleftrightarrow \lVert A \rVert_2 \lVert x \rVert_2 \geq \lVert A x \rVert_2 \quad \text{ if } x \neq 0
+      \end{align*}
+
+      Now, if $x = 0$, the inequality is trivially satisfied.
+
+    \item We simply use part a) twice
+      \begin{align*}
+        \lVert AB \rVert_2 &= \max_{\lVert x \rVert_2 = 1} \lVert A Bx \rVert_2 \\
+        &\leq \max_{\lVert x \rVert_2 = 1} \lVert A \rVert_2 \lVert Bx \rVert_2 \\
+        &\leq \max_{\lVert x \rVert_2 = 1} \lVert A \rVert_2 \lVert B \rVert_2 \lVert x \rVert_2 \\
+        &= \lVert A \rVert_2 \lVert B \rVert_2
+      \end{align*}
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -75,6 +140,14 @@
 \end{exercise}
 
 \begin{answer}
+   Using the fact that $\sigma(A)_1 = \lVert A \rVert_2$. We then apply the definition of the induced 2-norm and use the triangle inequality for vectors
+
+   \begin{align*}
+    \lVert A + B \rVert_2 &= \max_{\lVert x \rVert_2} \lVert (A+B)x \rVert_2 \\
+    &\leq \max_{\lVert x \rVert_2} \lVert Ax \rVert_2 + \lVert Bx \rVert_2 \\
+    &\leq \max_{\lVert x \rVert_2} \lVert Ax \rVert_2 + \max_{\lVert y \rVert_2} \lVert By \rVert_2 \\
+    &= \lVert A \rVert_2 + \lVert B \rVert_2
+   \end{align*}
 \end{answer}
 
 \clearpage
@@ -93,6 +166,33 @@
 \end{exercise}
 
 \begin{answer}
+  We simply verify the four properties for $A^+$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item
+      \begin{gather*}
+        A(A^+ A) = U \Sigma V^T (V \Sigma^{-1} U^T U \Sigma V^T) = U \Sigma V^T = A
+      \end{gather*}
+    \item
+      \begin{gather*}
+        (A^+ A)A^+ = (V \Sigma^{-1} U^T U \Sigma V^T) V \Sigma^{-1} U^T = V \Sigma^{-1} U^T = A^+
+      \end{gather*}
+    \item
+      \begin{gather*}
+        (A^+ A)^T = (V \Sigma^{-1} U^T U \Sigma V^T)^T = I^T = I = V \Sigma^{-1} U^T U \Sigma V^T = A^+ A
+      \end{gather*}
+    \item
+      \begin{gather*}
+        (A A^+)^T = (U \Sigma V^T V \Sigma^{-1} U^T)^T = I^T = I = U \Sigma V^T V \Sigma^{-1} U^T = A A^+
+      \end{gather*}
+  \end{enumerate}
+
+  Note that $A^T = V \Sigma U^T$, thus we have that $\mathcal{R}(A^T) = \mathcal{R}(A^+)$. Using the fact that $\mathcal{R}(A^T) = \mathcal{N}(A)^\perp$. So, $\mathcal{R}(A^+) = \mathcal{N}(A)^\perp$. Also, since $\Sigma$ and $\Sigma^{-1}$ are diagonal, then we have $\mathcal{N}(A^T) = \mathcal{N}(A^+)$ or $\mathcal{R}(A)^\perp = \mathcal{N}(A^+)$. Thus, we get the interpretation:
+
+  \begin{gather*}
+    \mathcal{N}(A) \oplus \mathcal{R}(A^+) = \mathbb{R}^n \\
+    \mathcal{R}(A) \oplus \mathcal{N}(A^+) = \mathbb{R}^m
+  \end{gather*}
 \end{answer}
 
 \end{document}
