@@ -1,0 +1,121 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+\usepackage{float}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 3}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{08}{10}{2018}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  In Chapter 1 we developed the binary MAP classifier
+
+  \begin{gather*}
+    f(x) = \begin{cases}
+      1, &\text{ if } \ln \left( \frac{p_1(x)}{p_0(x)} \right) > \ln \left( \frac{p(0)}{p(1)} \right) \\
+      0, &\text{ otherwise}
+    \end{cases}
+  \end{gather*}
+
+  This is based on an underlying generative model in which $p(k)$ is the prior probability of class $k$, and $p_k(x) = p(x | k)$ the conditional density of the datum $x$ given that the class $k$, $k \in \{0, 1\}$. Now assume that $x \in \mathbb{R}^n$, and that $p_k(x)$ is a multivariate Gaussian density
+
+  \begin{gather*}
+    p_k(x) = \frac{1}{(2 \pi)^{n/2}} \frac{1}{\lvert \Sigma_k \rvert^{1/2}} e^{-\frac{1}{2} (x - \mu_k)^T \Sigma_k^{-1} (x - \mu_k)}
+  \end{gather*}
+
+  \begin{enumerate}[label=\alph*)]
+    \item Determine the resulting MAP classifier in its simplest form.
+    \item Determine the form of the decision boundary for this classifier.
+    \item An empirical version of the MAP classifier is obtained by using training data to estimate any unknown parameters. Then using these estimates in the MAP classifier. Compare this empirical Bayes classifier to the nearest centroid classifier.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \textbf{(Naive Bayes classifier)} Derive the MAP classifier when the conditional probability density $p_k(x)$ is the multivariate Gaussian density as in 1) with $\Sigma_k$ a diagonal matrix, $k = 0, 1$. As before, the prior probability $p(k)$ of class $k \in \{0, 1\}$ is given
+
+  \begin{enumerate}[label=\alph*)]
+    \item Determine the resulting MAP classifier in its simplest form.
+    \item Determine the form of the decision boundary for this classifier.
+    \item An empirical version of the MAP classifier is obtained by using training data to estimate any unknown parameters. Then using these estimates in the MAP classifier. This yields the Naive Bayes classifier.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X \in \mathbb{R}^{n \times m}$ be a data matrix with data items stored in the columns of $X$. Show that the set of nonzero eigenvalues of $X X^T$ is the same as the set of nonzero eigenvalues of $X^T X$.
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \textbf{Some additional properties of singular values.} Let $\sigma_i(A)$ denote the $i^{th}$ singular value of the matrix $A$, $i \in [1:r]$ with $r = \text{rank}(A)$. Prove the following.
+
+  \begin{enumerate}[label=\alph*)]
+    \item If $\lambda$ is an eigenvalue of $A \in \mathbb{R}^{n \times n}$, then $\lvert \lambda \rvert \leq \sigma_1(A)$.
+    \item For $A \in \mathbb{R}^{m \times n}$, $\lvert A_{i,j} \rvert \leq \sigma_1(A)$, $i \in [1:m]$, $ j \in [1:n]$.
+    \item For $\alpha \in \mathbb{R}$ and $A \in \mathbb{R}^{m \times n}$, $\sigma_i(\alpha A) = \lvert \alpha \rvert \sigma_i(A)$, $i \in [1:r]$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  \textbf{Nuclear Norm.} Let $A \in \mathbb{R}^{m \times n}$ have rank $r$ with $r \leq q = \min (m,n)$. Define the nuclear norm of $A$ by $\lVert A \rVert_* = \sum_{i=1}^r \sigma_i(A)$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item Find $B \in \mathbb{R}^{m \times n}$ that maximizes $\langle A, B \rangle$ subject to $\sigma_1(B) \leq 1$.
+    \item Show that $\lVert A \rVert_* = \max_{\lVert C \rVert_2 \leq 1} \langle A, C \rangle$.
+    \item Show that $\lVert \cdot \rVert_*$ is a norm on $\mathbb{R}^{m \times n}$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+\end{answer}
+
+\end{document}
