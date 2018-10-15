@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1538665369 "homework3.tex" "/home/zachary/Documents/ORFE/ELE 535/homework3/homework3.pdf" "homework3" 1538665369
+["pdflatex"] 1539037722 "homework3.tex" "/home/zachary/Documents/ORFE/ELE 535/homework3/homework3.pdf" "homework3" 1539037755
   "/etc/texmf/web2c/texmf.cnf" 1525213490 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/zachary/Documents/ORFE/ELE 535/homework3/homework3.aux" 1538665369 30 00c4328e8c6c75fce40642ef2bcfb215 ""
+  "/home/zachary/Documents/ORFE/ELE 535/homework3/homework3.aux" 1539037722 30 00c4328e8c6c75fce40642ef2bcfb215 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1480098698 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy7.tfm" 1480098698 1120 7f9f170e8aa57527ad6c49feafd45d54 ""
@@ -119,11 +119,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1525646404 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1525646436 4131588 b9071b423e0e387990c1430b5ae89021 ""
-  "homework3.aux" 1538665369 30 00c4328e8c6c75fce40642ef2bcfb215 ""
-  "homework3.tex" 1538665369 4566 36d5a25db57d0e99d26950dc87d1d709 ""
+  "homework3.aux" 1539037722 30 00c4328e8c6c75fce40642ef2bcfb215 ""
+  "homework3.tex" 1539037755 13720 e47f96698c34fd10985f3637a56c8c10 ""
   (generated)
   "/home/zachary/Documents/ORFE/ELE 535/homework3/homework3.pdf"
   "/home/zachary/Documents/ORFE/ELE 535/homework3/homework3.log"
-  "homework3.pdf"
   "homework3.aux"
   "homework3.log"
+  "homework3.pdf"

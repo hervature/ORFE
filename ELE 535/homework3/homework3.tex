@@ -62,6 +62,41 @@
 \end{exercise}
 
 \begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item Substituting the conditional probabilities into the MAP classifier given, we get
+      \begin{gather*}
+        \ln \left(\frac{\frac{1}{(2 \pi)^{n/2}} \frac{1}{\lvert \sigma^2 I_n \rvert^{1/2}} e^{-\frac{1}{2 \sigma^2} (x - \mu_1)^T (x - \mu_1)}}{\frac{1}{(2 \pi)^{n/2}} \frac{1}{\lvert \sigma^2 I_n \rvert^{1/2}} e^{-\frac{1}{2 \sigma^2} (x - \mu_0)^T (x - \mu_0)}} \right) > \ln \left( \frac{p(0)}{p(1)} \right) \\
+        \lVert x - \mu_0 \rVert_2^2 - \lVert x - \mu_1 \rVert_2^2 > 2 \sigma^2 \ln \left( \frac{p(0)}{p(1)} \right)
+      \end{gather*}
+      Which I have left in the form simplest to me. This gives the classifier
+      \begin{gather*}
+        f(x) = \begin{cases}
+          1, &\text{ if } \lVert x - \mu_0 \rVert_2^2 - \lVert x - \mu_1 \rVert_2^2 > 2 \sigma^2 \ln \left( \frac{p(0)}{p(1)} \right) \\
+          0, &\text{ otherwise}
+        \end{cases}
+      \end{gather*}
+    \item The boundary occurs when
+      \begin{gather*}
+        \lVert x - \mu_0 \rVert_2^2 - \lVert x - \mu_1 \rVert_2^2 = 2 \sigma^2 \ln \left( \frac{p(0)}{p(1)} \right)
+      \end{gather*}
+      Expanding the terms and simplifying the LHS yields
+      \begin{gather*}
+        x^T (\mu_1 - \mu_0) = \sigma^2 \ln \left( \frac{p(0)}{p(1)} \right) + \frac{1}{2} \lVert \mu_1 \rVert_2^2 -  \frac{1}{2} \lVert \mu_0 \rVert_2^2
+      \end{gather*}
+
+      Which of course is a linear boundary that has an affine shift.
+    \item The empirical version of the classifier is
+      \begin{gather*}
+        f(x) = \begin{cases}
+          1, &\text{ if } \lVert x - \hat{\mu}_0 \rVert_2^2 - \lVert x - \hat{\mu}_1 \rVert_2^2 > 2 \sigma^2 \ln \left( \frac{p(0)}{p(1)} \right) \\
+          0, &\text{ otherwise}
+        \end{cases}
+      \end{gather*}
+
+      This corresponds precisely to the nearest centroid classifier when $p(0) = p(1)$. That is, our priors can bias which centroid we put a larger emphasis on.
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -77,6 +112,45 @@
 \end{exercise}
 
 \begin{answer}
+  We duplicate the steps from the question 1,
+  \begin{enumerate}[label=\alph*)]
+    \item Substituting the conditional probabilities into the MAP classifier given, we get
+      \begin{gather*}
+        \ln \left(\frac{\frac{1}{(2 \pi)^{n/2}} \frac{1}{\lvert \Sigma_1 \rvert^{1/2}} e^{-\frac{1}{2} (x - \mu_1)^T \Sigma_1^{-1} (x - \mu_1)}}{\frac{1}{(2 \pi)^{n/2}} \frac{1}{\lvert \Sigma_0 \rvert^{1/2}} e^{-\frac{1}{2} (x - \mu_0)^T \Sigma_0^{-1} (x - \mu_0)}} \right) > \ln \left( \frac{p(0)}{p(1)} \right) \\
+        \implies (x - \mu_0)^T \Sigma_0^{-1} (x - \mu_0) - (x - \mu_1)^T \Sigma_1^{-1} (x - \mu_1) \\
+        > 2 \ln \left( \frac{p(0)}{p(1)} \right) + 2 \ln \lvert \Sigma_1 \rvert^{1/2} - 2 \ln \lvert \Sigma_0 \rvert^{1/2}
+      \end{gather*}
+      This gives the classifier
+      \begin{gather*}
+        f(x) = \begin{cases}
+          1, &\text{ if } (x - \mu_0)^T \Sigma_0^{-1} (x - \mu_0) - (x - \mu_1)^T \Sigma_1^{-1} (x - \mu_1) \\
+          &\quad\quad > 2 \ln \left( \frac{p(0)}{p(1)} \right) + 2 \ln \lvert \Sigma_1 \rvert^{1/2} - 2 \ln \lvert \Sigma_0 \rvert^{1/2} \\
+          0, &\text{ otherwise}
+        \end{cases}
+      \end{gather*}
+    \item The boundary occurs when
+      \begin{gather*}
+        (x - \mu_0)^T \Sigma_0^{-1} (x - \mu_0) - (x - \mu_1)^T \Sigma_1^{-1} (x - \mu_1) \\
+        = 2 \ln \left( \frac{p(0)}{p(1)} \right) + 2 \ln \lvert \Sigma_1 \rvert^{1/2} - 2 \ln \lvert \Sigma_0 \rvert^{1/2}
+      \end{gather*}
+      Expanding the terms and simplifying the LHS yields
+      \begin{gather*}
+        x^T \left( \Sigma_0^{-1} - \Sigma_1^{-1} \right)x + 2x^T (\Sigma_1^{-1} \mu_1 - \Sigma_0^{-1} \mu_0) \\
+        + \mu_0^T \Sigma_0^{-1} \mu_0 - \mu_1^T \Sigma_1^{-1} \mu_1 = \sigma^2 \ln \left( \frac{p(0)}{p(1)} \right) + \frac{1}{2} \lVert \mu_1 \rVert_2^2 -  \frac{1}{2} \lVert \mu_0 \rVert_2^2
+      \end{gather*}
+
+      Which of course is a qudratic boundary.
+    \item The empirical version of the classifier is
+      \begin{gather*}
+        f(x) = \begin{cases}
+          1, &\text{ if } (x - \hat{\mu}_0)^T \hat{\Sigma}_0^{-1} (x - \hat{\mu}_0) - (x - \hat{\mu}_1)^T \hat{\Sigma}_1^{-1} (x - \hat{\mu}_1) \\
+          &\quad\quad > 2 \ln \left( \frac{p(0)}{p(1)} \right) + 2 \ln \lvert \hat{\Sigma}_1 \rvert^{1/2} - 2 \ln \lvert \hat{\Sigma}_0 \rvert^{1/2} \\
+          0, &\text{ otherwise}
+        \end{cases}
+      \end{gather*}
+
+      This corresponds precisely to the Naive Bayes estimator as reshuffling the above will yield $p_1(x) p(1) > p_0(x) p(0)$ where the conditional probabilities use the empirical parameters.
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -86,6 +160,17 @@
 \end{exercise}
 
 \begin{answer}
+  Let the SVD of $X$ be $U \Sigma V^T$ then the SVD of $X^T$ is $V \Sigma U^T$. Then we have
+  \begin{gather*}
+    X X^T = U \Sigma U^T \\
+    X^T X = V \Sigma V^T
+  \end{gather*}
+  Then the eigenvectors of the above are precisely the columns vectors of $U$ and $V$ respectively. Using the $i^{th}$ column yields
+  \begin{gather*}
+    X X^T u_i = U \Sigma U^T u_i = U \Sigma e_i = U \sigma_i e_i = \sigma_i u_i \\
+    X^T X v_i = V \Sigma V^T v_i = V \Sigma e_i = V \sigma_i e_i = \sigma_i v_i
+  \end{gather*}
+  Since this holds for all $i$ amd $U$ and $V$ have the same number of columns, the result follows.
 \end{answer}
 
 \clearpage
@@ -101,6 +186,26 @@
 \end{exercise}
 
 \begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item If $\lambda$ is an eigenvalue, we have $ Av = \lambda v$ for some eigenvector $v$ with norm equal to 1. We also have $\sqrt{v^T A^T A v} = \lvert \lambda \rvert$. Then, by definition
+      \begin{gather*}
+        \sigma_1(A) = \max_{\lVert x \rVert_2 = 1} \lVert A x \rVert_2 = \max_{\lVert x \rVert_2 = 1} \sqrt{x^T A^T A x} \geq \sqrt{v^T A^T A v} = \lvert \lambda \rvert
+      \end{gather*}
+
+    \item Doing similar steps as the previous part, we lower bound the maximum by using a canonical vector $e_i$
+      \begin{gather*}
+        \sigma_1(A) = \max_{\lVert x \rVert_2 = 1} \lVert A x \rVert_2 \geq \sqrt{e_i^T A^T A e_i} = \sqrt{A_{i,:}^T A_{:,i}} = \sqrt{ \sum_{j=1}^n A_{i,j}^2 } \geq \lvert A_{i,j} \rvert
+      \end{gather*}
+      Since this holds for all canonical vectors $e_i$, the result follows.
+
+    \item Let $A$ have the SVD $A = U \Sigma  V^T$ then we have $\alpha A = U (\alpha \Sigma) V^T$. This implies
+      \begin{gather*}
+        (\alpha A)^T (\alpha A) = U (\alpha^2 \Sigma) U^T = \alpha^2 U \Sigma U^T
+      \end{gather*}
+      and so we have that $\sigma_i (\alpha A)^2 = \alpha^2 \sigma_i (A)^2$. Taking the square root gives the result $\sigma_i(\alpha A) = \lvert \alpha \rvert \sigma_i(A)$.
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -116,6 +221,49 @@
 \end{exercise}
 
 \begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item First, let me show that we can assume that $A$ is diagonal. Let $A$ have SVD $A = U \Sigma V^T$. Then
+      \begin{gather*}
+        \langle A, B \rangle = \langle U \Sigma V^T, B \rangle = \langle \Sigma, U^T B V \rangle = \langle \Sigma, C \rangle
+      \end{gather*}
+      Where we can change $B$ to $C$ without changing the constraint of $\sigma(B) \leq 1$ because $U$ and $V$ are unitary and the spectral norm is invariant under unitary transformations. This simplifies the problems to
+      \begin{gather*}
+        \max_{\sigma(C) \leq 1} \langle \Sigma, C \rangle
+      \end{gather*}
+      for a diagonal $\Sigma$. But having a diagonal $\Sigma$ simplifies the trace to
+      \begin{gather*}
+        \langle \Sigma, C \rangle = \sum_i \sum_j \Sigma_{i,j} C_{i,j} = \sum_i \Sigma_{i,i} C_{i,i}
+      \end{gather*}
+      Using question 4a) which says $\lvert C_{i,i} \rvert \leq \sigma_1(C) = 1$, we maximize the objective by picking $C_{i,i} = 1$. Or pick $C = I_r$. Transforming this back to $B$ gives $B = U V^T$.
+
+    \item This is trivial by continuing with the summation at the end of the previous part and our choice of $C$. This yields
+      \begin{gather*}
+        \max_{\lVert B \rVert_2 \leq 1} \langle A, B \rangle = \max_{\sigma(B) \leq 1} \langle A, BC \rangle = \max_{\sigma(C) \leq 1} \langle \Sigma, C \rangle = \sum_i \Sigma_{i,i} = \sum_{i=1}^r \sigma_i(A)
+      \end{gather*}
+    \item The norm follows easily from the fact that the trace is an inner product and the maximum preserves all the inner product properties. However, it is presented here for completeness. The three properties of the norms are satisfied:
+
+      \begin{enumerate}[label=\roman*)]
+        \item Triangle inequality,
+          \begin{gather*}
+            \lVert A + B \rVert_* = \max_{\lVert C \rVert_2 \leq 1} \langle A + B, C \rangle = \max_{\lVert C \rVert_2 \leq 1} \langle A, C \rangle + \langle B, C \rangle \\
+            \leq \max_{\lVert C \rVert_2 \leq 1} \langle A, C \rangle + \max_{\lVert D \rVert_2 \leq 1} \langle B, D \rangle = \lVert A \rVert_* + \lVert B \rVert_*
+          \end{gather*}
+
+        \item Homogeneity, using question 4c)
+          \begin{gather*}
+            \lVert \alpha A \rVert_* = \sum_{i=1}^r \sigma_i(\alpha A) = \lvert \alpha \rvert \sum_{i=1}^r \sigma_i(A) = \lvert \alpha \rvert \lVert A \rVert_*
+          \end{gather*}
+
+        \item Positive definiteness,
+          \begin{align*}
+            \lVert A \rVert_* = 0 &\implies \sum_{i=1}^r \sigma_i(A) = 0 \\
+            &\implies \sigma_i(A) = 0 \quad \forall i \\
+            &\implies A = 0
+          \end{align*}
+      \end{enumerate}
+  \end{enumerate}
 \end{answer}
 
 \end{document}
