@@ -103,7 +103,33 @@
 \end{exercise}
 
 \begin{answer}
-  
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item We can formulate as follows:
+
+      \begin{gather*}
+        \min_{C \in \mathbb{R}^{2q + 1}} \lVert y - X^T c \rVert_2^2 + \lambda \lVert D c \rVert_2^2
+      \end{gather*}
+
+      where $D$ is diagonal with increasing values along the diagonal and
+
+      \begin{gather*}
+        c^T = \begin{bmatrix} a_0 & a_1 & b_1 & \dotsm & a_q & b_q \end{bmatrix} \\
+        X^T = \begin{bmatrix} 1/2 & \cos(2 \pi x_1) & \sin(2 \pi x_1) & \dotsm & \cos(2 q \pi x_1) & \sin(2 q \pi x_1) \\ \vdots & & & & & \vdots \\ 1/2 & \cos(2 \pi x_m) & \sin(2 \pi x_m) & \dotsm & \cos(2 q \pi x_m) & \sin(2 q \pi x_m) \end{bmatrix} \\
+        y^T = \begin{bmatrix} y_1 & \dotsm & y_m \end{bmatrix}
+      \end{gather*}
+
+    \item For $q = 2$, it looks like
+
+      \begin{gather*}
+        \min_{a_0, a_1, a_2, b_1, b_2 \in \mathbb{R}} \left\lVert \begin{bmatrix} y_1 \\ \vdots \\ y_m \end{bmatrix} - \begin{bmatrix} 1/2 & \cos(2 \pi x_1) & \sin(2 \pi x_1) & \cos(4 \pi x_1) & \sin(4 \pi x_1) \\ \vdots & & & & \vdots \\ 1/2 & \cos(2 \pi x_m) & \sin(2 \pi x_m) & \cos(4 \pi x_m) & \sin(4 \pi x_m) \end{bmatrix} \begin{bmatrix} a_0 \\ a_1 \\ b_1 \\ a_2 \\ b_2 \end{bmatrix} \right\rVert_2^2 \\
+        + \lambda \left\lVert \begin{bmatrix} 1 & 0 & 0 & 0 & 0 \\ 0 & 2 & 0 & 0 & 0 \\ 0 & 0 & 2 & 0 & 0 \\ 0 & 0 & 0 & 3 & 0 \\ 0 & 0 & 0 & 0 & 3 \end{bmatrix} \begin{bmatrix} a_0 \\ a_1 \\ b_1 \\ a_2 \\ b_2 \end{bmatrix} \right\rVert_2^2
+      \end{gather*}
+
+    \item To select $q$, split the data into test and training sets. Then try increasingly large $q$ values until overfitting occurs and testing accuracy decreases.
+  \end{enumerate}
+
 \end{answer}
 
 \clearpage
@@ -126,7 +152,43 @@
 \end{exercise}
 
 \begin{answer}
-  
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item We make the substitution $z = D x$ which gives
+      \begin{gather*}
+        \min_{z \in \mathbb{R}^n} \lVert D^{-1} z - y \rVert_2^2 + \lambda \lVert z \rVert_2^2
+      \end{gather*}
+
+      Where we assume $D$ is invertible without loss of generality. If there are 0's on the diagonal, simply invert the parts that are non zero. Now, using our solution to ridge regression, we get
+      \begin{gather*}
+        w_{rr}^*(\lambda) = ({D^{-1}}^2 + \lambda I_n)^{-1} D^{-1} y
+      \end{gather*}
+      However, since $D$ is diagonal, then so is $D^{-1}$ which yields the simplification
+      \begin{gather*}
+        {w_{rr}}_i^*(\lambda) = (\frac{1 + \lambda D_i^2}{D_i^2})^{-1} \frac{1}{D_i} _i \\
+        = \frac{D_i}{1 + \lambda D_i^2} y_i
+      \end{gather*}
+      But, $x = D^{-1} z$, so $x = \frac{1}{1 + \lambda D_i^2} y_i$
+
+    \item We have
+      \begin{gather*}
+        \min_{x \in \mathbb{R}^n} \lVert x - y \rVert_2^2 + \lambda \lVert D x \rVert_2^2 \\
+        = \min_{x \in \mathbb{R}^n} \sum_{i=1}^n (x_i - y_i)^2 + \lambda \sum_{i=1}^n D_i^2 x_i^2 \\
+        = \min_{x \in \mathbb{R}^n} \sum_{i=1}^n (x_i - y_i)^2 + \lambda D_i^2 x_i^2
+      \end{gather*}
+      Which are $n$ decoupled sums that become independent when the gradient is taken as seen in the next part.
+
+    \item Taking the gradient of the summation above and setting to 0 yields
+      \begin{gather*}
+        [\nabla f(x)]_i = 2(x_i - y_i) + 2 \lambda D_i^2 x_i = 0 \\
+        \implies x_i = \frac{y_i}{1 + \lambda D_i^2}
+      \end{gather*}
+      which is precisely what we found before
+
+    \item This can be written in the matrix form $x = (1 + \lambda D^2)^{-1} y$. We have that the solution of $x$ is precisely $y$ when either $D$ or $\lambda = 0$ (no regularization). However, by penalizing the size of $x_i$, we simply scale the optimal solution by the weightings in the objective function. That is, $x_i$ contributes $1+\lambda D_i^2$ to the objective, thus, we scale the individual components such that they contribute the same amount to the objective.
+  \end{enumerate}
+
 \end{answer}
 
 \clearpage
@@ -142,7 +204,23 @@
 \end{exercise}
 
 \begin{answer}
-  
+  We know that $w^* \in \mathcal{R}(X)$, so we have $X a^* = w^*$ for some $a \in \mathbb{R}^m$. Thus, the objective becomes
+
+  \begin{gather*}
+    a^* = \argmin_{a \in \mathbb{R}^m} \lVert y - X^T X a \rVert_2^2 + \lambda \lVert X a \rVert_2^2
+  \end{gather*}
+
+  Now, taking the gradient and setting to 0 yields
+
+  \begin{gather*}
+    X^T X (X^T X a + \lambda I_m a - y) = \bm{0}
+  \end{gather*}
+
+  Since the solution is unique, we know that $(X^T X a + \lambda I_m a - y) \notin \mathcal{N}(X^T X)$, otherwise, any scaling would be optimal. Thus, we have $X^T X a + \lambda I_m a - y = 0$ which gives $a^* = (X^T X + \lambda I_m)^{-1} y$, where the matrix is invertible has been shown in the notes. Thus, we conclude that
+
+  \begin{gather*}
+    w^* = X a^* = X (X^T X + \lambda I_m)^{-1} y
+  \end{gather*}
 \end{answer}
 
 \clearpage
@@ -163,7 +241,21 @@
 \end{exercise}
 
 \begin{answer}
-  
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item We use the same reformulation of the problem and use
+      \begin{gather*}
+        \lVert F w - y \rVert_2^2 + \lambda \lVert G w - g \rVert_2^2 = \lVert \tilde{F} w - \tilde{y} \rVert_2^2
+      \end{gather*}
+      where
+      \begin{gather*}
+        \tilde{F} = \begin{bmatrix} F \\ \sqrt{\lambda} G \end{bmatrix} \in \mathbb{R}^{(m+k) \times n}, \text{ and } \tilde{y} = \begin{bmatrix} y \\ \sqrt{\lambda} g \end{bmatrix} \in \mathbb{R}^{m+k}
+      \end{gather*}
+      From this, it is evident that if rank($G$) $= n$, then $\tilde{F}$ has rank of at least $n$ as well as $\tilde{F} w = \begin{bmatrix} F w \\ \sqrt{\lambda} G w \end{bmatrix}$. Then, $\tilde{F}^T \tilde{F} \in \mathbb{R}^{n \times n}$ is full rank and hence the solution to the least squares problem is unique.
+
+    \item As before, we have that a unique solution exists if and only if $\tilde{F}^T \tilde{F}$ is invertible. But since $\mathcal{N}(F) \cap \mathcal{N}(G) = \bm{0}$, then we must have that $\mathcal{N}(\tilde{F}) = \bm{0}$ as $\tilde{F} w = \begin{bmatrix} F w \\ \sqrt{\lambda} G w \end{bmatrix}$ implies you cannot make both entries 0 simultaneously. Since $\mathcal{N}(\tilde{F}) = \bm{0}$, then $\tilde{F}$ is full rank and hence $\tilde{F}^T \tilde{F}$ is invertible. This proves the result.
+  \end{enumerate}
 \end{answer}
 
 \end{document}
