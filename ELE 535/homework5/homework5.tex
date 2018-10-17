@@ -1,0 +1,261 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+\usepackage{float}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 4}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{15}{10}{2018}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Determine general sufficient conditions (if any exist) under which the indicated function $f$ is convex.
+
+  \begin{enumerate}[label=\alph*)]
+    \item $f: \mathbb{R} \rightarrow \mathbb{R}$ with $f(x) = \lvert x \rvert$.
+    \item $f: (0, \infty) \rightarrow \mathbb{R}$ with $f(x) = x \ln (x)$.
+    \item $f: \mathbb{R}^n \rightarrow \mathbb{R}$ with $f(x) = (x^T Q x)^3$. Here $Q \in \mathbb{R}^{n \times n}$ is symmetric PSD.
+    \item $f: \mathbb{R}^n \rightarrow \mathbb{R}$ with $f(x) = 1 + e^{\sum_{i=1}^n \lvert x_i \rvert^3}$.
+    \item For $x \in \mathcal{C} = \{ x \in \mathbb{R}^n: x_i > 0, i = 1, \mathellipsis, n \}$ let $\ln(x) = [\ln(x_i)] \in \mathbb{R}^n$ and define $f(x) = x^T \ln(x)$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item Simply applying the triangle inequality we get
+      \begin{gather*}
+        f(\lambda x + (1-\lambda)y) = \lvert \lambda x + (1-\lambda) y \rvert \\
+        \leq \lambda \lvert x \rvert + (1-\lambda) \lvert y \rvert = \lambda f(x) + (1-\lambda) f(y)
+      \end{gather*}
+      Thus, it is convex.
+
+    \item Here, we take the second derivative since it is continuous on the domain,
+      \begin{gather*}
+        f''(x) = \frac{1}{x} > 0 \quad \forall x \in (0,\infty)
+      \end{gather*}
+      As this is always positive, then we have that $f$ is strictly convex.
+
+    \item Here, we use theorem 7.3.2e) that states that $h(x) = g(f(x))$ is convex if $g$ is convex and non decreasing on the range of $f$. Here we have $f(x) = x^T Q x$ whose range is $[0, \infty)$ as $Q$ is PSD and $g(x) = x^3$. Thus, on $[0, \infty)$, we have that $g'(x) = 2 x^2 \geq 0$ and $g''(x) = 6 x \geq 0$ which means that $g$ is on decreasing and convex respectively. Thus, we have shown that the original function is convex.
+
+    \item Again, we use the same theorem as in the previous part. First $g(x) = 1 + e^x$ and $f(x) = (\sum_{i=1}^n \lvert x_i \rvert )^3$. The range of $f(x)$ is $[0, \infty)$. We also have $g'(x) = e^x$ and $g''(x) = e^x$ which are both always positive and so non decreasing and convex. This shows that the original function is convex.
+
+    \item We have that $f(x) = x^T \ln(x)$ which is just a short form for
+      \begin{gather*}
+        [f(x)]_i = x_i \ln(x_i)
+      \end{gather*}
+      Thus, we have
+      \begin{gather*}
+        [\nabla f(x)]_i = 1 + \ln(x_i) \\
+        [Hf(x)]_{ii} = \frac{1}{x_i} \text{ and } [Hf(x)]_{ij} = 0 \text{ for } i \neq j
+      \end{gather*}
+      Since the Hessian is diagonal and always positive, then it is positive definite and hence strictly convex.
+  \end{enumerate}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  You want to learn an unknown function $f: [0,1] \rightarrow \mathbb{R}$ using a set of noisy measurements $(x_j, y_j)$, with $y_j = f(x_j) + \epsilon_j$, $j = 1, \mathellipsis, m$. Your plan is to approximate $f(\cdot)$ by a Fourier series on $[0,1]$ with $q \in \mathbb{N}$ terms:
+
+  \begin{gather*}
+    f_q(x) = \frac{a_0}{2} + \sum_{k=1}^q a_k \cos(2 \pi k x) + b_k \sin(2 \pi k x).
+  \end{gather*}
+
+  To control the smoothness of $f_q(\cdot)$, you also decide to penalize the size of the coefficients $a_k, b_k$ more heavily as $k$ increases.
+
+  \begin{enumerate}[label=\alph*)]
+    \item Formulate the above problem as a regularized regression problem.
+    \item For $q=2$, display the regression matrix, the label vector $y$, and the regularization term.
+    \item Comment briefly on how to select $q$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item We can formulate as follows:
+
+      \begin{gather*}
+        \min_{C \in \mathbb{R}^{2q + 1}} \lVert y - X^T c \rVert_2^2 + \lambda \lVert D c \rVert_2^2
+      \end{gather*}
+
+      where $D$ is diagonal with increasing values along the diagonal and
+
+      \begin{gather*}
+        c^T = \begin{bmatrix} a_0 & a_1 & b_1 & \dotsm & a_q & b_q \end{bmatrix} \\
+        X^T = \begin{bmatrix} 1/2 & \cos(2 \pi x_1) & \sin(2 \pi x_1) & \dotsm & \cos(2 q \pi x_1) & \sin(2 q \pi x_1) \\ \vdots & & & & & \vdots \\ 1/2 & \cos(2 \pi x_m) & \sin(2 \pi x_m) & \dotsm & \cos(2 q \pi x_m) & \sin(2 q \pi x_m) \end{bmatrix} \\
+        y^T = \begin{bmatrix} y_1 & \dotsm & y_m \end{bmatrix}
+      \end{gather*}
+
+    \item For $q = 2$, it looks like
+
+      \begin{gather*}
+        \min_{a_0, a_1, a_2, b_1, b_2 \in \mathbb{R}} \left\lVert \begin{bmatrix} y_1 \\ \vdots \\ y_m \end{bmatrix} - \begin{bmatrix} 1/2 & \cos(2 \pi x_1) & \sin(2 \pi x_1) & \cos(4 \pi x_1) & \sin(4 \pi x_1) \\ \vdots & & & & \vdots \\ 1/2 & \cos(2 \pi x_m) & \sin(2 \pi x_m) & \cos(4 \pi x_m) & \sin(4 \pi x_m) \end{bmatrix} \begin{bmatrix} a_0 \\ a_1 \\ b_1 \\ a_2 \\ b_2 \end{bmatrix} \right\rVert_2^2 \\
+        + \lambda \left\lVert \begin{bmatrix} 1 & 0 & 0 & 0 & 0 \\ 0 & 2 & 0 & 0 & 0 \\ 0 & 0 & 2 & 0 & 0 \\ 0 & 0 & 0 & 3 & 0 \\ 0 & 0 & 0 & 0 & 3 \end{bmatrix} \begin{bmatrix} a_0 \\ a_1 \\ b_1 \\ a_2 \\ b_2 \end{bmatrix} \right\rVert_2^2
+      \end{gather*}
+
+    \item To select $q$, split the data into test and training sets. Then try increasingly large $q$ values until overfitting occurs and testing accuracy decreases.
+  \end{enumerate}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $D \in \mathbb{R}^{n \times n}$ be diagonal with nonnegative diagonal entries and consider the problem:
+
+  \begin{gather*}
+    \min_{x \in \mathbb{R}^n} \lVert x - y \rVert_2^2 + \lambda \lVert D x \rVert_2^2
+  \end{gather*}
+
+  This problem seeks to best approximate $y \in \mathbb{R}^n$ with a nonuniform penalty for large entries in $x$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item Solve this problem using the solution of ridge regression.
+    \item Show that the objective function is separable into a sum of decoupled terms. Show that this decomposes the problem into $n$ independent scalar problems.
+    \item Finc the solution of each scalar problem.
+    \item By putting these scalar solutions together, find and interpret the solution to the original problem.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item We make the substitution $z = D x$ which gives
+      \begin{gather*}
+        \min_{z \in \mathbb{R}^n} \lVert D^{-1} z - y \rVert_2^2 + \lambda \lVert z \rVert_2^2
+      \end{gather*}
+
+      Where we assume $D$ is invertible without loss of generality. If there are 0's on the diagonal, simply invert the parts that are non zero. Now, using our solution to ridge regression, we get
+      \begin{gather*}
+        w_{rr}^*(\lambda) = ({D^{-1}}^2 + \lambda I_n)^{-1} D^{-1} y
+      \end{gather*}
+      However, since $D$ is diagonal, then so is $D^{-1}$ which yields the simplification
+      \begin{gather*}
+        {w_{rr}}_i^*(\lambda) = (\frac{1 + \lambda D_i^2}{D_i^2})^{-1} \frac{1}{D_i} _i \\
+        = \frac{D_i}{1 + \lambda D_i^2} y_i
+      \end{gather*}
+      But, $x = D^{-1} z$, so $x = \frac{1}{1 + \lambda D_i^2} y_i$
+
+    \item We have
+      \begin{gather*}
+        \min_{x \in \mathbb{R}^n} \lVert x - y \rVert_2^2 + \lambda \lVert D x \rVert_2^2 \\
+        = \min_{x \in \mathbb{R}^n} \sum_{i=1}^n (x_i - y_i)^2 + \lambda \sum_{i=1}^n D_i^2 x_i^2 \\
+        = \min_{x \in \mathbb{R}^n} \sum_{i=1}^n (x_i - y_i)^2 + \lambda D_i^2 x_i^2
+      \end{gather*}
+      Which are $n$ decoupled sums that become independent when the gradient is taken as seen in the next part.
+
+    \item Taking the gradient of the summation above and setting to 0 yields
+      \begin{gather*}
+        [\nabla f(x)]_i = 2(x_i - y_i) + 2 \lambda D_i^2 x_i = 0 \\
+        \implies x_i = \frac{y_i}{1 + \lambda D_i^2}
+      \end{gather*}
+      which is precisely what we found before
+
+    \item This can be written in the matrix form $x = (1 + \lambda D^2)^{-1} y$. We have that the solution of $x$ is precisely $y$ when either $D$ or $\lambda = 0$ (no regularization). However, by penalizing the size of $x_i$, we simply scale the optimal solution by the weightings in the objective function. That is, $x_i$ contributes $1+\lambda D_i^2$ to the objective, thus, we scale the individual components such that they contribute the same amount to the objective.
+  \end{enumerate}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $X \in \mathbb{R}^{n \times m}$ and $y \in \mathbb{R}^{m}$ be given, and $\lambda > 0$. Consider the problem
+
+  \begin{gather*}
+    w^* = \argmin_{w \in \mathbb{R}^n} \lVert y - X^T w \rVert_2^2 + \lambda \lVert w \rVert_2^2
+  \end{gather*}
+
+  From the notes we know that there exists a unique solution $w^*$ and that $w^* \in \mathcal{R}(X)$. Using the above and these two results, show that $w^* = X (X^TX + \lambda I_m)^{-1} y$.
+\end{exercise}
+
+\begin{answer}
+  We know that $w^* \in \mathcal{R}(X)$, so we have $X a^* = w^*$ for some $a \in \mathbb{R}^m$. Thus, the objective becomes
+
+  \begin{gather*}
+    a^* = \argmin_{a \in \mathbb{R}^m} \lVert y - X^T X a \rVert_2^2 + \lambda \lVert X a \rVert_2^2
+  \end{gather*}
+
+  Now, taking the gradient and setting to 0 yields
+
+  \begin{gather*}
+    X^T X (X^T X a + \lambda I_m a - y) = \bm{0}
+  \end{gather*}
+
+  Since the solution is unique, we know that $(X^T X a + \lambda I_m a - y) \notin \mathcal{N}(X^T X)$, otherwise, any scaling would be optimal. Thus, we have $X^T X a + \lambda I_m a - y = 0$ which gives $a^* = (X^T X + \lambda I_m)^{-1} y$, where the matrix is invertible has been shown in the notes. Thus, we conclude that
+
+  \begin{gather*}
+    w^* = X a^* = X (X^T X + \lambda I_m)^{-1} y
+  \end{gather*}
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  One form of regularized least squares can be posed as:
+
+  \begin{gather*}
+    w^* = \argmin_{w \in \mathbb{R}^n} \lVert F w - y \rVert_2^2 + \lambda \lVert G w - g \rVert_2^2
+  \end{gather*}
+
+  where $F \in \mathbb{R}^{m \times n}$, $y \in \mathbb{R}^m$, $G \in \mathbb{R}^{k \times n}$, $g \in \mathbb{R}^k$, and $\lambda > 0$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item Show that a sufficient condition for the above to have a unique solution is that rank($G$) = $n$.
+    \item Show that a necessary and sufficient condition is that $\mathcal{N}(F) \cap \mathcal{N}(G) = \mathbf{0}$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item We use the same reformulation of the problem and use
+      \begin{gather*}
+        \lVert F w - y \rVert_2^2 + \lambda \lVert G w - g \rVert_2^2 = \lVert \tilde{F} w - \tilde{y} \rVert_2^2
+      \end{gather*}
+      where
+      \begin{gather*}
+        \tilde{F} = \begin{bmatrix} F \\ \sqrt{\lambda} G \end{bmatrix} \in \mathbb{R}^{(m+k) \times n}, \text{ and } \tilde{y} = \begin{bmatrix} y \\ \sqrt{\lambda} g \end{bmatrix} \in \mathbb{R}^{m+k}
+      \end{gather*}
+      From this, it is evident that if rank($G$) $= n$, then $\tilde{F}$ has rank of at least $n$ as well as $\tilde{F} w = \begin{bmatrix} F w \\ \sqrt{\lambda} G w \end{bmatrix}$. Then, $\tilde{F}^T \tilde{F} \in \mathbb{R}^{n \times n}$ is full rank and hence the solution to the least squares problem is unique.
+
+    \item As before, we have that a unique solution exists if and only if $\tilde{F}^T \tilde{F}$ is invertible. But since $\mathcal{N}(F) \cap \mathcal{N}(G) = \bm{0}$, then we must have that $\mathcal{N}(\tilde{F}) = \bm{0}$ as $\tilde{F} w = \begin{bmatrix} F w \\ \sqrt{\lambda} G w \end{bmatrix}$ implies you cannot make both entries 0 simultaneously. Since $\mathcal{N}(\tilde{F}) = \bm{0}$, then $\tilde{F}$ is full rank and hence $\tilde{F}^T \tilde{F}$ is invertible. This proves the result.
+  \end{enumerate}
+\end{answer}
+
+\end{document}
