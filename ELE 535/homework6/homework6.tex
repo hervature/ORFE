@@ -26,10 +26,10 @@
 \newtheorem{exercise}{Exercise}
 \newtheorem*{answer}{Answer}
 
-\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 5}
+\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 6}
 \author{Zachary Hervieux-Moore}
 
-\newdate{date}{22}{10}{2018}
+\newdate{date}{14}{11}{2018}
 \date{\displaydate{date}}
 
 \begin{document}
@@ -39,228 +39,114 @@
 \clearpage
 
 \begin{exercise}
-  Derive the derivative, and if exists the gradient, of the following functions.
+  The density $f_X(x)$ takes the exponential form
+  \begin{gather*}
+    f_X(x) = \frac{h(x)}{Z(\theta_0)} e^{\langle \theta_0, t(x) \rangle}
+  \end{gather*}
 
-  \begin{enumerate}[label=\alph*)]
-    \item For $x \in \mathbb{R}^n$, $f(x) = \sum_{j=1}^n x_j$.
-    \item For $x \in \mathbb{R}^n$, $f(x) = e^{\sum_{j=1}^n x_j}$.
-    \item For $x \in \mathbb{R}^n$, $f(x) = x^T A x + a^T x + b$, where $b \in \mathbb{R}$, $a \in \mathbb{R}^n$, and $A \in \mathbb{R}^{n \times n}$.
-    \item For $M \in \mathbb{R}^{n \times n}$, $f(M) = \lVert M \rVert_F^2$.
-    \item For $x \in \mathbb{R}^n$, $f(x) = x x^T \in \mathbb{R}^{n \times n}$.
-  \end{enumerate}
+  You want to use data from $m$ i.i.d. draws from $f_X$ to estimate the value of $\theta_0$. Given the training data, the likelihood function for any parameter value $\theta$ is
+
+  \begin{gather*}
+    L(\theta) = \prod_{i=1}^m \frac{1}{Z(\theta)} h(x_i) e^{\langle \theta, t(x_i) \rangle}
+  \end{gather*}
+
+  The maximum likelihood estimate $\hat{\theta}_0$ of $\theta_0$ is obtained by solving
+
+  \begin{gather*}
+    \hat{\theta}_0 = \argmax_\theta L(\theta)
+  \end{gather*}
+
+  Show that $\hat{\theta}_0$ must satisfy
+
+  \begin{gather*}
+    \nabla \ln (Z(\hat{\theta}_0)) = \frac{1}{m} \sum_{i=1}^m t(x_i)
+  \end{gather*}
 \end{exercise}
 
 \begin{answer}
-  \
 
-  \begin{enumerate}[label=\alph*)]
-    \item The $i^{th}$ component of the gradient is given by:
-      \begin{gather*}
-        [\nabla f(x)]_i = 1
-      \end{gather*}
-      Thus, we have that the gradient is $\nabla f(x) = \bm{1}$ and the derivative is $Df(x)(v) = \bm{1}^T v$.
-
-    \item The $i^{th}$ component of the gradient is given by:
-      \begin{gather*}
-        [\nabla f(x)]_i = e^{\sum_{j=1}^n x_j}
-      \end{gather*}
-      Thus, we have that the gradient is $\nabla f(x) = f(x) \cdot \bm{1}$ and the derivative is $Df(x)(v) = f(x) \bm{1}^T v$.
-
-    \item Taking the derivative directly, have that the gradient is $\nabla f(x) = 2 Ax + a$ and the derivative is $Df(x)(v) = (2x^T A^T + a^T) v$.
-
-    \item We have that $f(M) = \lVert M \rVert_F^2 = \sum_{i=1}^n \sum_{j=1}^n a_{ij}^2$. This means that the gradient is
-      \begin{gather*}
-        [\nabla_M f(M)]_{ij} = 2 a_{ij} \\
-        \implies \nabla_M f(M) = 2M \\
-        \implies D f(M)(V) = 2 a_{ij} v_{ij} = 2 \text{trace}(M^T V)
-      \end{gather*}
-      Thus, we have that the gradient is $\nabla_M f(M) = 2M$ and the derivative is $Df(M)(V) = 2 \text{trace}(M^T V)$.
-
-    \item The outer product is given by
-      \begin{gather*}
-        f(x) = x x^T = \begin{bmatrix} x_1^2 & x_1 x_2 & \dotsm & x_1 x_n \\ \vdots & & & \vdots \\ x_n x_1 & x_n x_2 & \dotsm & x_n^2 \end{bmatrix}.
-      \end{gather*}
-
-      For illustrative purposes, the $1^{st}$ partial derivative is given by:
-      \begin{gather*}
-        \frac{\partial f(x)}{\partial x_1} = \begin{bmatrix} 2 x_1 & x_2 & \dotsm & x_n \\ \vdots & & 0 & \\ x_n & & & \end{bmatrix}
-      \end{gather*}
-      The $i^{th}$ partial has a similar form except the 0's occur on the entries not in the $i^{th}$ row or column. This yields a derivative of
-      \begin{gather*}
-        D f(x)(v) = \sum_{j=1}^n \frac{\partial f(x)}{\partial x_j} v_j = \begin{bmatrix} 2 x_1 v_1 & x_2 v_1 & \dotsm & x_n v_1 \\ \vdots & & 0 & \\ x_n v_1 & & & \end{bmatrix} \\
-        + \dotsm + \begin{bmatrix} & & & x_1 v_n \\ & 0 & & \vdots \\ x_1 v_n & x_2 v_n & \dotsm & 2 x_n v_n \end{bmatrix} \\
-        D f(x)(v) = \begin{bmatrix} 2 x_1 v_1 & x_2 v_1 + x_1 v_2 & \dotsm & x_n v_1 + x_1 v_n \\ \vdots & & & \vdots \\ x_n v_1 + x_1 v_n & x_n v_2 + x_2 v_n & \dotsm & 2 x_n v_n \end{bmatrix} \\
-        D f(x)(v) = x \otimes v + v \otimes x
-      \end{gather*}
-  \end{enumerate}
 \end{answer}
 
 \clearpage
 
 \begin{exercise}
-  \textbf{Matrix Inversion Lemma.} Let $M = \begin{bmatrix} A & B \\ C & D \end{bmatrix}$ with $A \in \mathbb{R}^{p \times p}$, $D \in \mathbb{R}^{q \times q}$, $B \in \mathbb{R}^{p \times q}$, $C \in \mathbb{R}^{q \times p}$.
-
-  \begin{enumerate}[label=\alph*)]
-    \item If $A$ and $D$, and at least one of $S_A$ or $S_D$ are invertible, derive the equality (this was partially done in class):
-      \begin{gather*}
-        (A - B D^{-1} C)^{-1} = A^{-1} + A^{-1} B (D - C A^{-1} B)^{-1} C A^{-1}
-      \end{gather*}
-
-    \item Use part a) to show that if $A$ and $D$, and at least one of $A + B D C$ or $D^{-1} + C A^{-1} B$ are invertible, then:
-      \begin{gather*}
-        (A + B D C)^{-1} = A^{-1} - A^{-1} B (D^{-1} + C A^{-1} B)^{-1} C A^{-1}
-      \end{gather*}
-  \end{enumerate}
+  Given $m$ i.i.d. draws from a multivariate Gaussian density, use the method in (Q1) to find the maximum likelihood estimates of the mean $\mu$ and covariance matrix $\Sigma$ of the density.
 \end{exercise}
 
 \begin{answer}
-  \
 
-  \begin{enumerate}[label=\alph*)]
-    \item This can be shown directly by checking that multiplying the two results in the identity.
-      \begin{align*}
-        &\quad (A - BD^{-1}C)(A^{-1} + A^{-1} B (D - C A^{-1} B)^{-1} C A^{-1}) \\
-        &= I + B(D - C A^{-1} B)^{-1} C A^{-1} - BD^{-1}CA^{-1} - BD^{-1}CA^{-1} B (D - C A^{-1} B)^{-1} C A^{-1}) \\
-        &= I - BD^{-1}CA^{-1} + BD^{-1}(D - C A^{-1} B)^{-1} (D - C A^{-1} B)^{-1} C A^{-1} \\
-        &= I - BD^{-1}CA^{-1} + BD^{-1}CA^{-1} \\
-        &= I
-      \end{align*}
-
-    \item Using part a), simply substitute $D' = -D^{-1}$ into the identity above which we can do because $D$ is invertible by assumption.
-      \begin{align*}
-        (A + B D' C)^{-1} &= A^{-1} + A^{-1} B (-D'^{-1} - C A^{-1} B)^{-1} C A^{-1} \\
-        &= A^{-1} - A^{-1} B (D'^{-1} + C A^{-1} B)^{-1} C A^{-1}
-      \end{align*}
-  \end{enumerate}
 \end{answer}
 
 \clearpage
 
 \begin{exercise}
-  \textbf{On-line least squares with mini-batch updates.} You want to solve a least squares regression problem by processing the data in small batches (mini-batches), yielding a new least squares solution after each update. assume each mini-batch contains $k$ training examples. Group the examples in the $t^{th}$ mini-batch into the columns of $X_t \in \mathbb{R}^{n \times k}$, and the corresponding targets into the rows of $y_t \in \mathbb{R}^k$. Let $P_{t-1} = \sum_{i=1}^{t-1} X_i X_i^T \in \mathbb{R}^{n \times n}$. Assume $P_{t-1}^{-1}$ exists and is known. Similarly, let $s_{t-1} = \sum_{i=1}^{t-1} X_i y_i \mathbb{R}^n$. Derive the following equations for the $t^{th}$ mini-batch update:
+  \textbf{Empirical statistics, MSE affine prediction, and least squares.} Fix a training dataset $\{(x_i, y_i\}_{i=1}^m$, with examples $x_i \in \mathbb{R}^n$ and targets $y_i \in \mathbb{R}^q$. Let $X$ denote the matrix with the examples as its columns, $Y$ denote the matrix with the corresponding targets as its columns. Define the following first and second order empirical statistics of the data:
 
-  \begin{gather*}
-    \hat{y}_t \triangleq X_t^T w_{t-1}^* \text{ target prediction} \\
-    w_t^* = w_{t-1}^* + P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} (y_t - \hat{y}_t) \text{ update } w^* \\
-    P_t^{-1} = P_{t-1}^{-1} - P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} X_t^T P_{t-1}^{-1} \text{ update } P.
-  \end{gather*}
+  \begin{gather}
+    \label{eq:3.1}
+    \hat{\mu}_X = \frac{1}{m} X \bm{1}_m \quad \hat{\mu}_Y = \frac{1}{m} Y \bm{1}_m \\
+    \hat{\Sigma}_X = \frac{1}{m} (X - \hat{\mu}_X \bm{1}_m^T)(X - \hat{\mu}_X \bm{1}_m^T)^T \quad \hat{\Sigma}_{XY} = \frac{1}{m} (X - \hat{\mu}_X \bm{1}_m^T)(Y - \hat{\mu}_Y \bm{1}_m^T)^T \nonumber
+  \end{gather}
 
-  How do these equations change if the mini-batches are not all the same size?
+  An optimal MSE affine estimator $\hat{y}(x = W^T x + b$ based on the empirical statistics in (\ref{eq:3.1}) must satisfy
+
+  \begin{gather}
+    \label{eq:3.2}
+    \hat{\Sigma}_X W = \hat{\Sigma}_{XY} \quad b = \hat{\mu}_Y - W^T \hat{\mu}_X
+  \end{gather}
+
+  \begin{enumerate}[label=\alph*)]
+    \item Consider the least squares problem
+      \begin{gather}
+        \label{eq:3.3}
+        W_*, b_* = \argmin_{W \in \mathbb{R}^{n \times q}, b \in \mathbb{R}^q} \lVert Y - W^T X - b \bm{1}_m^T \rVert_F^2
+      \end{gather}
+      Show that $W_*, b_*$ satisfies (\ref{eq:3.2}). Thus directly solving the least squares problem (\ref{eq:3.3}) yields an optimal MSE affine estimator for the empirical first and second order statistics in (\ref{eq:3.1}).
+
+    \item Consider the ridge regression problem
+      \begin{gather*}
+        W_{r*}, b_{r*} = \argmin_{W \in \mathbb{R}^{n \times q}, b \in \mathbb{R}^q} \frac{1}{m} \lVert Y - W^T X - b \bm{1}_m^T \rVert_F^2 + \lambda \lVert W \rVert_F^2, \quad \lambda > 0
+      \end{gather*}
+      Determine if $W_{r*}, b_{r*}$ satisfy (\ref{eq:3.2}). If not, what needs to be changd in (\ref{eq:3.1}) to ensure $W_{r*}, b_{r*}$ satisfy (\ref{eq:3.2}). Interpret the change you suggest.
+  \end{enumerate}
 \end{exercise}
 
 \begin{answer}
-  We start by listing the following equations that easily result from the definitions in the question:
-  \begin{gather*}
-    P_t = P_{t-1} + X_t X_t^T \\
-    s_t = s_{t-1} + X_t y_t
-  \end{gather*}
-  We also have the normal equation $P_t w_t^* = s_t$ which is equivalent to
-  \begin{gather*}
-    w_t^* = P_t^{-1} (s_{t-1} + X_t y_t)
-  \end{gather*}
-  Now, using question 2b) with $A = P_{t-1}$, $B = X_t$, $C = X_t^T$, $D = I_k$. We have
-  \begin{gather*}
-    P_t^{-1} = (P_{t-1} + X_t X_t^T)^{-1} = P_{t-1}^{-1} - P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} X_t^T P_{t-1}^{-1}
-  \end{gather*}
-  Then, subbing this into our definition of $w_t^*$,
-  \begin{align*}
-    w_t^* &= (P_{t-1}^{-1} - P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} X_t^T P_{t-1}^{-1} )(s_{t-1} + X_t y_t) \\
-    &= (P_{t-1}^{-1} - P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} X_t^T P_{t-1}^{-1}) ((s_{t-2} + X_{t-1} y_{t-1}) + X_t y_t) \\
-    &= P_{t-1}^{-1}(s_{t-2} + X_{t-1} y_{t-1}) + P_{t-1}^{-1} X_t y_t \\
-    &\quad - P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} X_t^T P_{t-1}^{-1}(s_{t-2} + X_{t-1} y_{t-1}) \\
-    &\quad - P_{t-1}^{-1} X_t [I_k - (I_k + X_t^T P_{t-1}^{-1} X_t)^{-1} X_t^T P_{t-1}^{-1} X_t] y_t \\
-    &= w_{t-1}^* + P_{t-1}^{-1} X_t (I_k - X_t^T P_{t-1}^{-1} X_t)^{-1} X_t^T P_{t-1} X_t) y_t \\
-    &\quad - P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} X_t^T w_{t-1}^* \\
-    &= w_{t-1}^* + P_{t-1}^{-1} X_t (I_k - X_t^T P_{t-1}^{-1} X_t)^{-1}(I_k + X_t^T P_{t-1}^{-1} X_t - X_t^T P_{t-1}^{-1} X_t) y_t \\
-    &\quad - P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} \hat{y}_t \\
-    &= w_{t-1}^* + P_{t-1}^{-1} X_t [I_k + X_t^T P_{t-1}^{-1} X_t]^{-1} (y_t - \hat{y}_t)
-  \end{align*}
+
 \end{answer}
 
 \clearpage
 
 \begin{exercise}
-  \textbf{Linear regression with vector targets.} We are given training data $\{ (x_i, z_i)_{i=1}^m \}$ with input examples $x_i \in \mathbb{R}^n$ and vector targets $z_i \in \mathbb{R}^d$. Place the input examples into the columns of $X \in \mathbb{R}^{n \times m}$ and the targets into the columns of $Z \in \mathbb{R}^{d \times m}$. We want to learn a linear predictor of the vector targets $z \in \mathbb{R}^d$ of test inputs $x \in \mathbb{R}^n$. To do so, first use the training data to find:
+  \textbf{Bias, error covariance, and MSE.} Consider random vectors $X$ and $Y$ with a joint density $f_{XY}$ and PD covariance $\Sigma$. Let $X$ have mean $\mu_X \in \mathbb{R}^n$ and covariance $\Sigma_X \in \mathbb{R}^{n \times n}$, $Y$ have $\mu_Y \in \mathbb{R}^q$ and covariance $\Sigma_Y \in \mathbb{R}^{q \times q}$, and let the cross-covariance of $X$ and $Y$ be $\Sigma_{XY} \in \mathbb{R}^{n \times q}$.
 
-  \begin{gather*}
-    W^* = \argmin_{W \in \mathbb{R}^{n \times d}} \lVert Y - FW \rVert_F^2 + \lambda \lVert W \rVert_F^2,
-  \end{gather*}
-
-  where we have set $Y = Z^T$ and $F = X^T$, and we require $\lambda \leq 0$ ($\lambda = 0$ removes the ridge regularizer).
+  Let $\hat{y}(x)$ be an estimator of $Y$ given $X = x$, and denote the corresponding prediction error by $E \triangleq Y - \hat{y}(X)$. Of interest is $\mu_E$, $\Sigma_E$ and the MSE. The estimator is said to be \textit{unbiased} if $\mu_E = \bm{0}$.
 
   \begin{enumerate}[label=\alph*)]
-    \item Show that the above separates into $d$ standard ridge regression problems, each solvable separately.
-    \item Without using the property in a), set the derivative of the objective function w.r.t. $W$ equal to zero, and find an expression for the solution $W^*$. Is the separation property evident from this expression?
+    \item For any estimator $\hat{y}$ with finite $\mu_E$ and MSE, show that MSE($\hat{y}$) = trace($\Sigma_E$) + $\lVert \mu_E \rVert_2^2$. This shows that the MSE is the sum of two termsLvthe total variance trace($\Sigma_E$) of the error, and the squared norm of the bias $\lVert \mu_E \rVert_2^2$.
+
+    \item Let $\hat{y}(x) = \mu_Y$. Show that this is an unbiased estimator, determine $\Sigma_E$, show that $\Sigma_E$ is PD, and determine the estimator MSE.
+
+    \item The MMSE affine estimator of $Y$ given $X = x$ is
+      \begin{gather*}
+        \hat{y}^*(x) = \mu_Y + {W^*}^T (x - \mu_X) \quad \text{ with } \Sigma_X W^* = \Sigma_{XY}
+      \end{gather*}
+      Show that $\hat{y}^*(\cdot)$ is an unbiased estimator, determine $\Sigma_E$, show that $\Sigma_E$ is PD, and determine the estimator MSE.
   \end{enumerate}
 \end{exercise}
 
 \begin{answer}
-  \
 
-  \begin{enumerate}[label=\alph*)]
-    \item Using the definition of the Frobenius norm
-      \begin{gather*}
-        W^* = \argmin_{W \in \mathbb{R}^{n \times d}} \lVert Y - FW \rVert_F^2 + \lambda \lVert W \rVert_F^2 \\
-        = \argmin_{W \in \mathbb{R}^{n \times d}} \sum_{i = 1}^n \sum_{j = 1}^d (Y_{ij} - [FW]_{ij})^2 + \lambda W_{ij}^2
-      \end{gather*}
-      But we have that $[FW]_{ij} = F_{i:} W_{:j}$. That is, the inner product of the $i^{th}$ row of $F$ and the $j^{th}$ column of $W$. This gives
-      \begin{gather*}
-        W^* = \argmin_{W \in \mathbb{R}^{n \times d}} \sum_{j = 1}^d \sum_{i = 1}^n (Y_{ij} - F_{i:} W_{:j})^2 + \lambda W_{ij}^2 \\
-        = \argmin_{W \in \mathbb{R}^{n \times d}} \sum_{j = 1}^d \lVert Y_{:j} - FW_{:j} \rVert_2^2 + \lambda \lVert W_{:j} \Vert_2^2
-      \end{gather*}
-      That is, by splitting up the summation along the columns of $W$ and $Y$, you can turn the original problem into $d$ separate standard ridge regression.
-
-    \item Taking the derivative yields
-      \begin{gather*}
-        \nabla_W = 2 F^T (FW - Y) + \lambda 2 W = 0 \\
-        \implies W^* = (F^TF + \lambda I_n)^{-1} F^T Y
-      \end{gather*}
-      The separation property is evident from this equation because the entries of $W^*$, say $W_{ij}^*$, only requires the column of $Y_{:j}$ to perform the calculation for all $i \in [n]$ and fixed $j$.
-  \end{enumerate}
 \end{answer}
 
 \clearpage
 
 \begin{exercise}
-  \textbf{The softmax function.} This function maps $x \in \mathbb{R}^n$ to a probability mass function $s(x)$ on $n$ outcomes. It can be written as the composition of two functions $s(x) = q(p(x))$, where $p: \mathbb{R}^n \rightarrow \mathbb{R}_+^n$ and $q: \mathbb{R}_+^n \rightarrow \mathbb{R}_+^n$ are defined by
-
-  \begin{gather*}
-    p(x) = [e^{x_i}] \quad q(z) = z/(\bm{1}^T z)
-  \end{gather*}
-
-  Here $\mathbb{R}_+^n$ denotes the positive cone $\{ x \in \mathbb{R}^n: x_i > 0 \}$. The function $p(\cdot)$ maps $x \in \mathbb{R}^n$ into the positive cone $\mathbb{R}_+^n$, and for $z \in \mathbb{R}_+^n$, $q(\cdot)$ normalizes $z$ to a probability mass function in $\mathbb{R}_+^n$.
-
-  \begin{enumerate}[label=\alph*)]
-    \item Determine the derivative of $p(x)$ at $x$.
-    \item Determine the derivative of $q(z)$ at $z$.
-    \item Determine the derivative of the softmax function at $x$.
-  \end{enumerate}
+  \textbf{The derivative and gradient of $\lVert M \rVert_2$.} For $M \in \mathbb{R}^{m \times n}$ define $f(M) = \lVert M \rVert_2$. Determine a sufficient condition for the derivative of $f$ to exist at $M$, and under these conditions find $D f(M)(H)$ and $\nabla f(M)$.
 \end{exercise}
 
 \begin{answer}
-  \
 
-  \begin{enumerate}[label=\alph*)]
-    \item The $i^{th}$ partial derivative of $p(x)$ is $[\nabla p(x)]_i = e^{x_i}$ and so $\nabla p(x) = p(x)$ and so the derivative is
-      \begin{gather*}
-        D p(x)(v) = p(x) \otimes v \in \mathbb{R}^n \\
-        \text{or } D p(x)(v) = \begin{bmatrix} e^{x_1} & 0 & \dotsm & 0 \\ 0 & e^{x_2} & & \vdots \\ \vdots & & \ddots & \vdots \\ 0 & \dotsm & \dotsm & e^{x_n} \end{bmatrix} v
-      \end{gather*}
-
-    \item We have that the $i^{th}$ component of $q(z)$ is $[q(z)]_i = \frac{z_i}{\sum_{j=1}^n z_j}$. Thus, the partial derivatives are
-      \begin{gather*}
-        \frac{\partial [q(z)]_i}{\partial z_j} = \frac{\sum_{j=1}^n z_j - z_i}{(\sum_{j=1}^n z_j)^2} \text{ if } i = j \\
-        \frac{\partial [q(z)]_i}{\partial z_j} = \frac{-z_i}{(\sum_{j=1}^n z_j)^2} \text{ if } i \neq j \\
-        \implies Dg(z)(v) = \begin{bmatrix} \frac{\sum_{j=1}^n z_j - z_1}{(\sum_{j=1}^n z_j)^2} & \frac{-z_1}{(\sum_{j=1}^n z_j)^2} & \dotsm & \frac{-z_1}{(\sum_{j=1}^n z_j)^2} \\ \frac{-z_2}{(\sum_{j=1}^n z_j)^2} & \frac{\sum_{j=1}^n z_j - z_2}{(\sum_{j=1}^n z_j)^2} & & \vdots \\ \vdots & & \ddots & \vdots \\ \frac{-z_n}{(\sum_{j=1}^n z_j)^2} & \dotsm & \dotsm & \frac{\sum_{j=1}^n z_j - z_n}{(\sum_{j=1}^n z_j)^2} \end{bmatrix} v
-      \end{gather*}
-
-    \item Applying the chain rule
-      \begin{gather*}
-        D s(x)(v) = D g(p(x)) \circ Dp(x)(v) \\
-        = \begin{bmatrix} \frac{\sum_{j=1}^n e^{x_j} - e^{x_1}}{(\sum_{j=1}^n e^{x_j})^2} & \frac{-e^{x_1}}{(\sum_{j=1}^n e^{x_j})^2} & \dotsm & \frac{-e^{x_1}}{(\sum_{j=1}^n e^{x_j})^2} \\ \frac{-e^{x_2}}{(\sum_{j=1}^n e^{x_j})^2} & \frac{\sum_{j=1}^n e^{x_j} - e^{x_2}}{(\sum_{j=1}^n e^{x_j})^2} & & \vdots \\ \vdots & & \ddots & \vdots \\ \frac{-e^{x_n}}{(\sum_{j=1}^n e^{x_j})^2} & \dotsm & \dotsm & \frac{\sum_{j=1}^n e^{x_j} - e^{x_n}}{(\sum_{j=1}^n e^{x_j})^2} \end{bmatrix} \begin{bmatrix} e^{x_1} & 0 & \dotsm & 0 \\ 0 & e^{x_2} & & \vdots \\ \vdots & & \ddots & \vdots \\ 0 & \dotsm & \dotsm & e^{x_n} \end{bmatrix} v \\
-        = \begin{bmatrix} e^{x_1} \frac{\sum_{j=1}^n e^{x_j} - e^{x_1+x_2}}{(\sum_{j=1}^n e^{x_j})^2} & \frac{-e^{x_1+x_2}}{(\sum_{j=1}^n e^{x_j})^2} & \dotsm & \frac{-e^{x_1+x_n}}{(\sum_{j=1}^n e^{x_j})^2} \\ \frac{-e^{x_2 + x_1}}{(\sum_{j=1}^n e^{x_j})^2} & e^{x_2} \frac{\sum_{j=1}^n e^{x_j} - e^{x_2}}{(\sum_{j=1}^n e^{x_j})^2} & & \vdots \\ \vdots & & \ddots & \vdots \\ \frac{-e^{x_n+x_1}}{(\sum_{j=1}^n e^{x_j})^2} & \dotsm & \dotsm & e^{x_n} \frac{\sum_{j=1}^n e^{x_j} - e^{x_n}}{(\sum_{j=1}^n e^{x_j})^2} \end{bmatrix} v
-      \end{gather*}
-  \end{enumerate}
 \end{answer}
 
 \end{document}
