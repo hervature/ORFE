@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1542233140 "homework6.tex" "/home/zachary/Documents/ORFE/ELE 535/homework6/homework6.pdf" "homework6" 1542233141
+["pdflatex"] 1542233837 "homework6.tex" "/home/zachary/Documents/ORFE/ELE 535/homework6/homework6.pdf" "homework6" 1542233837
   "/etc/texmf/web2c/texmf.cnf" 1525213490 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/zachary/Documents/ORFE/ELE 535/homework6/homework6.aux" 1542233140 108 90b838ccf9825c315bae69efa867e3b3 ""
+  "/home/zachary/Documents/ORFE/ELE 535/homework6/homework6.aux" 1542233837 108 90b838ccf9825c315bae69efa867e3b3 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1480098698 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy7.tfm" 1480098698 1120 7f9f170e8aa57527ad6c49feafd45d54 ""
@@ -122,13 +122,13 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1525646404 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1539603915 4129817 732dfd4b04561c25c0bb56f8e6585056 ""
-  "homework6.aux" 1542233140 108 90b838ccf9825c315bae69efa867e3b3 ""
-  "homework6.tex" 1542232830 16473 32dd46616dae01e0b266b39947b1a943 ""
+  "homework6.aux" 1542233837 108 90b838ccf9825c315bae69efa867e3b3 ""
+  "homework6.tex" 1542233836 16728 57459a447d9086339cc01b7954365fbc ""
   (generated)
-  "homework6.pdf"
-  "/home/zachary/Documents/ORFE/ELE 535/homework6/homework6.pdf"
-  "/Users/zhm/Desktop/ORFE/ELE 535/homework6/homework6.log"
-  "/Users/zhm/Desktop/ORFE/ELE 535/homework6/homework6.pdf"
-  "homework6.log"
   "homework6.aux"
+  "/home/zachary/Documents/ORFE/ELE 535/homework6/homework6.pdf"
+  "homework6.pdf"
+  "homework6.log"
+  "/Users/zhm/Desktop/ORFE/ELE 535/homework6/homework6.log"
   "/home/zachary/Documents/ORFE/ELE 535/homework6/homework6.log"
+  "/Users/zhm/Desktop/ORFE/ELE 535/homework6/homework6.pdf"
