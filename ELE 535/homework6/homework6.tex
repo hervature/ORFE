@@ -64,7 +64,20 @@
 \end{exercise}
 
 \begin{answer}
+  Taking the $\log$ of the likelihood,
 
+  \begin{gather*}
+    \ln (L(\theta)) = \sum_{i=1}^m \ln(h(x_i)) + \langle \theta, t(x_i) \rangle - \ln(Z(\theta))
+  \end{gather*}
+
+  Now, taking the derivative and setting it to 0,
+
+  \begin{gather*}
+    \nabla_\theta \ln (L(\theta)) = \sum_{i=1}^m t(x_i) - \nabla \ln(Z(\theta)) = 0 \\
+    \implies \nabla \ln(Z(\theta)) = \frac{1}{m} \sum_{i=1}^m t(x_i)
+  \end{gather*}
+
+  Because the log likelihood of exponential families is concave, the $\hat{\theta}_0$ that satisfies this equation is the maximizer and we conclude that this shows the result.
 \end{answer}
 
 \clearpage
@@ -74,7 +87,45 @@
 \end{exercise}
 
 \begin{answer}
+  To use the result above, we parameterize the multivariate Gaussian as:
 
+  \begin{gather*}
+    \theta = (\Sigma^{-1} \mu, \Sigma^{-1}) = (\theta_1, \theta_2) \quad h(x) = 1 \quad t(x) = (x, -\frac{1}{2} x x^T) \\
+    Z(\theta) = (2 \pi)^{\frac{n}{2}} det(\theta_2)^{-\frac{1}{2}} e^{\frac{1}{2} \theta_1^T \theta_2^{-1} \theta_1}
+  \end{gather*}
+
+  Now, plugging this all into the above, first for $\theta_1$,
+
+  \begin{gather*}
+    \nabla_{\theta_1} \ln(Z(\theta)) = \nabla_{\theta_1} \left[ \frac{n}{2} \ln(2 \pi) - \frac{1}{2} \ln(det(\theta_2)) + \frac{1}{2} \theta_1^T \theta_2^{-1} \theta_1 \right] = \frac{1}{m} \sum_{i=1}^m x_i \\
+    \implies \theta_2^{-1} \theta_1 = \frac{1}{m} \sum_{i=1}^m x_i \\
+    \implies \Sigma \Sigma^{-1} \mu = \frac{1}{m} \sum_{i=1}^m x_i \\
+    \implies \mu = \frac{1}{m} \sum_{i=1}^m x_i
+  \end{gather*}
+
+  Now for $\theta_2$,
+
+  \begin{gather*}
+    \nabla_{\theta_2} \ln(Z(\theta)) = \nabla_{\theta_2} \left[ \frac{n}{2} \ln(2 \pi) - \frac{1}{2} \ln(det(\theta_2)) + \frac{1}{2} \theta_1^T \theta_2^{-1} \theta_1 \right] = \frac{1}{m} \sum_{i=1}^m -\frac{1}{2} x_i x_i^T \\
+    \implies -\frac{1}{2} \theta_2^{-T} + \frac{1}{2} \theta_2^{-T} \theta_1 \theta_1^T \theta_2^{-T}= \frac{1}{m} \sum_{i=1}^m -\frac{1}{2} x_i x_i^T \\
+    \implies \Sigma^{T} + \Sigma^{T} \Sigma^{-1} \mu \mu^T \Sigma^{-T} \Sigma^{T} = \frac{1}{m} \sum_{i=1}^m x_i x_i^T
+  \end{gather*}
+
+  Using the fact that $\Sigma$ is symmetric and the definition of $\mu$ above,
+
+  \begin{gather*}
+    \Sigma + \mu \mu^T = \frac{1}{m} \sum_{i=1}^m x_i x_i^T \\
+    \implies \Sigma = \frac{1}{m} \sum_{i=1}^m (x_i x_i^T + \mu \mu^T) - 2 \mu \mu^T\\
+    \implies \Sigma = \frac{1}{m} \sum_{i=1}^m (x_i x_i^T + \mu \mu^T) - \mu \left( \frac{1}{m} \sum_{i=1}^m x_i \right)^T - \left( \frac{1}{m} \sum_{i=1}^m x_i \right) \mu^T\\
+    \implies \Sigma = \frac{1}{m} \sum_{i=1}^m (x_i x_i^T - \mu x_i^T - x_i \mu^T + \mu \mu^T) \\
+    \implies \Sigma = \frac{1}{m} \sum_{i=1}^m (x_i - \mu)(x_i - \mu)^T
+  \end{gather*}
+
+  Thus, we have
+  \begin{gather*}
+    \hat{\mu} = \frac{1}{m} \sum_{i=1}^m x_i \\
+    \hat{\Sigma} = \frac{1}{m} \sum_{i=1}^m (x_i - \hat{\mu})(x_i - \hat{\mu})^T
+  \end{gather*}
 \end{answer}
 
 \clearpage
@@ -88,7 +139,7 @@
     \hat{\Sigma}_X = \frac{1}{m} (X - \hat{\mu}_X \bm{1}_m^T)(X - \hat{\mu}_X \bm{1}_m^T)^T \quad \hat{\Sigma}_{XY} = \frac{1}{m} (X - \hat{\mu}_X \bm{1}_m^T)(Y - \hat{\mu}_Y \bm{1}_m^T)^T \nonumber
   \end{gather}
 
-  An optimal MSE affine estimator $\hat{y}(x = W^T x + b$ based on the empirical statistics in (\ref{eq:3.1}) must satisfy
+  An optimal MSE affine estimator $\hat{y}(x) = W^T x + b$ based on the empirical statistics in (\ref{eq:3.1}) must satisfy
 
   \begin{gather}
     \label{eq:3.2}
@@ -112,7 +163,61 @@
 \end{exercise}
 
 \begin{answer}
+  \
 
+  \begin{enumerate}[label=\alph*)]
+    \item Rewriting the optimization problem and checking first order neccessary conditions for $b^*$,
+
+      \begin{gather*}
+        \lVert Y - W^T X - b \bm{1}_m^T \rVert_F^2 \\
+        \text{trace}((Y - W^T X - b \bm{1}_m^T)^T (Y - W^T X - b \bm{1}_m^T)) \\
+        \nabla_b: -Y \bm{1}_m + W^T X \bm{1}_m - Y \bm{1}_m + W^T X \bm{1}_m + 2 b \bm{1}_m^T \bm{1}_m = 0\\
+        \implies m b^* = (Y \bm{1}_m - {W^*}^T X \bm{1}_m) \\
+        \implies b^* = \hat{\mu}_Y - {W^*}^T \hat{\mu}_X
+      \end{gather*}
+
+      Doing the same process for $W^*$,
+
+      \begin{gather*}
+        \lVert Y - W^T X - b \bm{1}_m^T \rVert_F^2 \\
+        \text{trace}((Y - W^T X - b \bm{1}_m^T)^T (Y - W^T X - b \bm{1}_m^T)) \\
+        \nabla_W: -XY^T - XY^T + 2 XX^T W^* + X \bm{1} {b^*}^T + X \bm{1}_m {b^*}^T = 0 \\
+        \implies XX^T W^* = XY^T - X \bm{1}_m {b^*}^T \\
+        \implies XX^T W^* = XY^T - X \bm{1}_m (\hat{\mu}_Y - {W^*}^T \hat{\mu}_X)^T \\
+        \implies (XX^T - X \bm{1}_m \hat{\mu}_X^T) W^* = XY^T - X \bm{1}_m \hat{\mu}_Y^T
+      \end{gather*}
+
+      Adding and subtracting $\hat{\mu}_X \bm{1}_m^T \bm{1}_m \hat{\mu}_X^T$ and using the fact that $\bm{1}_m^T \bm{1}_m \hat{\mu}_X = X \bm{1}_m$ on the LHS. Doing the same thing on the RHS but with $\hat{\mu}_Y^T$ yields,
+      \begin{gather*}
+        (XX^T - X \bm{1}_m \hat{\mu}_X^T - \hat{\mu}_X \bm{1}_m^T X + \hat{\mu}_X \bm{1}_m^T \bm{1}_m \hat{\mu}_X^T) W^* \\
+        \quad= (XY^T - X \bm{1}_m \hat{\mu}_Y^T - \hat{\mu}_X \bm{1}_m^T Y + \hat{\mu}_X \bm{1}_m^T \bm{1}_m \hat{\mu}_Y^T) \\
+        \implies (X - \hat{\mu}_X \bm{1}_m^T)(X - \hat{\mu}_X \bm{1}_m^T)^T W^* = (X - \hat{\mu}_X \bm{1}_m^T)(Y - \hat{\mu}_Y \bm{1}_m^T)^T
+      \end{gather*}
+
+      Dividing both sides by $m$ yields the result,
+      \begin{gather*}
+        \hat{\Sigma}_X W^* = \hat{\Sigma}_{XY}
+      \end{gather*}
+
+    \item The first thing to notice is that the new term in the ridge regression only involves $W$ and this the first order neccessary conditions for $b^*$ remains unchanged. Thus, $b^*$ satisfies its original equation unchanged. Repeating the same steps as before, we get the following relations
+
+      \begin{gather*}
+        (XX^T - X \bm{1}_m \hat{\mu}_X^T + \lambda I_n) W^* = XY^T - X \bm{1}_m \hat{\mu}_Y^T
+      \end{gather*}
+
+      Using the same trick as before yields,
+      \begin{gather*}
+        (\hat{\Sigma}_X + \lambda I_n) W^* = \hat{\Sigma}_{XY}
+      \end{gather*}
+
+      Thus, we have to change $\hat{\Sigma}_X$ in (\ref{eq:3.1}) as follows:
+
+      \begin{gather*}
+        \hat{\Sigma}_{X_{ridge}} = \frac{1}{m} (X - \hat{\mu}_X \bm{1}_m^T)(X - \hat{\mu}_X \bm{1}_m^T)^T + \frac{\lambda}{m} I_n
+      \end{gather*}
+
+      My interpretation of this is as follows. We know that MSE can be decomposed into a bias-variance tradeoff. By using an unbiased estimator, all of your error is a result of the variance of your estimator. Introducing the penalty term in ridge regression introduces bias; namely in the $\Sigma_X$ term. This allows for control of the bias through $\lambda$ which may reduce MSE of your estimator.
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -123,7 +228,7 @@
   Let $\hat{y}(x)$ be an estimator of $Y$ given $X = x$, and denote the corresponding prediction error by $E \triangleq Y - \hat{y}(X)$. Of interest is $\mu_E$, $\Sigma_E$ and the MSE. The estimator is said to be \textit{unbiased} if $\mu_E = \bm{0}$.
 
   \begin{enumerate}[label=\alph*)]
-    \item For any estimator $\hat{y}$ with finite $\mu_E$ and MSE, show that MSE($\hat{y}$) = trace($\Sigma_E$) + $\lVert \mu_E \rVert_2^2$. This shows that the MSE is the sum of two termsLvthe total variance trace($\Sigma_E$) of the error, and the squared norm of the bias $\lVert \mu_E \rVert_2^2$.
+    \item For any estimator $\hat{y}$ with finite $\mu_E$ and MSE, show that MSE($\hat{y}$) = trace($\Sigma_E$) + $\lVert \mu_E \rVert_2^2$. This shows that the MSE is the sum of two terms: the total variance trace($\Sigma_E$) of the error, and the squared norm of the bias $\lVert \mu_E \rVert_2^2$.
 
     \item Let $\hat{y}(x) = \mu_Y$. Show that this is an unbiased estimator, determine $\Sigma_E$, show that $\Sigma_E$ is PD, and determine the estimator MSE.
 
@@ -136,7 +241,83 @@
 \end{exercise}
 
 \begin{answer}
+  \
 
+  \begin{enumerate}[label=\alph*)]
+    \item We have that
+      \begin{gather*}
+        MSE(\hat{y}) = \mathbb{E} [\lVert Y - \hat{y} \rVert_2^2] = \mathbb{E} [(Y - \hat{y})^T (Y - \hat{y})] \\
+        = \mathbb{E} [(Y - \hat{y} - \mu_E + \mu_E)^T (Y - \hat{y} - \mu_E + \mu_E)] \\
+        = \mathbb{E} [(Y - \hat{y} - \mu_E)^T (Y - \hat{y} - \mu_E)] + \mathbb{E}[\mu_E^T \mu_E] \\
+        \quad+ \mathbb{E} [\mu_E^T (Y - \hat{y} - \mu_E)] + \mathbb{E} [(Y - \hat{y} - \mu_E)^T \mu_E]
+      \end{gather*}
+
+      Expanding the above and using the fact that everything is a scalar and $\mu_E$ is a constant,
+
+      \begin{gather*}
+        = \mathbb{E} [trace((Y - \hat{y} - \mu_E)^T (Y - \hat{y} - \mu_E))] + \lVert \mu_E \rVert_2^2 \\
+        \quad -2 \mu_E^T \mathbb{E}[\hat{y}] - \lVert \mu_E \rVert_2^2 + 2 \mu_E^T \mu_Y
+      \end{gather*}
+
+      Now we use the following facts: $\mathbb{E}[\hat{y}] = \mu_Y - \mu_E$, the cyclic property of trace, and the fact that trace is linear so we exchange the expectation and the trace,
+      \begin{gather*}
+        = trace( \mathbb{E} [(Y - \hat{y} - \mu_E)(Y - \hat{y} - \mu_E)^T]) + \lVert \mu_E \rVert_2^2 \\
+        = trace( \mathbb{E} [(E - \mu_E)(E - \mu_E)^T]) + \lVert \mu_E \rVert_2^2 \\
+        = trace(\Sigma_E) + \lVert \mu_E \rVert_2^2
+      \end{gather*}
+
+    \item If $\hat{y}(x) = \mu_Y$ then $E = Y - \mu_Y$. This also means that
+      \begin{gather*}
+        \mu_E = \mathbb{E}[E] = \mathbb{E}[Y - \mu_Y] = \mathbb{E}[Y] - \mu_Y = \mu_Y - \mu_Y = 0
+      \end{gather*}
+
+      Thus, we have that it is unbiased. Now, we then have the following expression for $\Sigma_E$
+      \begin{gather*}
+        \Sigma_E = \mathbb{E}[(E - \mu_E)(E- \mu_E)^T] = \mathbb{E}[(Y - \mu_Y)(Y - \mu_Y)^T] = \Sigma_Y
+      \end{gather*}
+
+      As $\Sigma_Y$ is PD ($\Sigma$ is PD implies $\Sigma_Y$ is PD by picking vectors that zero out the $X$ components), so is $\Sigma_E$. Using part a), we get that the MSE is:
+      \begin{gather*}
+        MSE(\hat{y}) = trace(\Sigma_Y)
+      \end{gather*}
+
+    \item We check if it is unbiased first,
+      \begin{gather*}
+        \mu_E = \mathbb{E}[E] = \mathbb{E}[Y - \hat{y}] = \mu_Y - \mathbb{E}[\mu_Y + W^{*^T} (x - \mu_X)] \\
+        = - W^{*^T}\mathbb{E}[x] + W^{*^T}\mu_X = 0
+      \end{gather*}
+
+      Thus, it is unbiased. Now, by definition
+      \begin{gather*}
+        \Sigma_E = \mathbb{E}[(Y - \mu_Y -  W^{*^T} (x - \mu_X))(Y - \mu_Y -  W^{*^T} (x - \mu_X))^T] \\
+        = \mathbb{E}[(Y - \mu_Y)(Y - \mu_Y)^T] - \mathbb{E}[(Y - \mu_Y)(x - \mu_X)^T] W^* \\
+        \quad- W^{*^T} \mathbb{E}[(x - \mu_X)(Y - \mu_Y)^T] + W^{*^T} \mathbb{E}[(x - \mu_X)(x - \mu_X)^T] W^* \\
+        = \Sigma_Y - \Sigma_{YX} W^* - W^{*^T} \Sigma_{XY} + W^{*^T} \Sigma_X W^*
+      \end{gather*}
+
+      Using our relation that $\Sigma_X W^* = \Sigma_{XY}$ and $\Sigma_{XY} = \Sigma_{YX}^T$,
+      \begin{gather*}
+        = \Sigma_Y - 2 W^{*^T} \Sigma_X W^* + W^{*^T} \Sigma_X W^* \\
+        = \Sigma_Y- W^{*^T} \Sigma_X W^*
+      \end{gather*}
+
+      This is PD by the follwing Schur complement fact:
+      \begin{gather*}
+        \Sigma = \begin{bmatrix} \Sigma_X & \Sigma_{XY} \\ \Sigma_{YX} & \Sigma_Y \end{bmatrix} \succ 0 \Longleftrightarrow \Sigma_Y - \Sigma_{YX} \Sigma_X^{-1} \Sigma_{XY} \succ 0
+      \end{gather*}
+
+      Using the condition $\Sigma_X W^* = \Sigma_{XY}$ we get that
+      \begin{gather*}
+        \Sigma_E = \Sigma_Y- W^{*^T} \Sigma_X W^* \succ 0
+      \end{gather*}
+
+      Thus, we have that $\Sigma_E$ is PD and part a) shows that the MSE is
+      \begin{gather*}
+        MSE(\hat{y}) = trace(\Sigma_E) = trace(\Sigma_Y)- trace(W^{*^T} \Sigma_X W^*) \\
+        \text{or } trace(\Sigma_Y)- trace(\Sigma_{YX} \Sigma_X^{-1} \Sigma_{XY})
+      \end{gather*}
+
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -146,6 +327,20 @@
 \end{exercise}
 
 \begin{answer}
+  By SVD, we have that $M = U\Sigma V^T$. We also know that $\lVert M \rVert_2 = \sigma_1(M) = \Sigma_{11}$. Rearranging the SVD yields $\Sigma = U^T M \Sigma V$. Writing this out in summation form,
+  \begin{gather*}
+    \Sigma_{11} = \sum_{j=1}^n \sum_{i=1}^m u_{1_i} M_{ij} v_{1_j}
+  \end{gather*}
+
+  Where $u_1$ and $v_1$ are the first column vector of $U$ and $V$. Thus, we have that
+  \begin{gather*}
+    \frac{\partial \Sigma_{11}}{\partial M_{ij}} = u_{1_i} v_{1_j} \text{ and so } D f(M)(H) = \sum_{j=1}^n \sum_{i=1}^m u_{1_i} v_{1_j} H_{ij}
+  \end{gather*}
+
+  So we conclude that
+  \begin{gather*}
+    \nabla f(M) = u_1 v_1^T \text{ and } D f(M)(H) = trace(u_1 v_1^T H^T)
+  \end{gather*}
 
 \end{answer}
 
