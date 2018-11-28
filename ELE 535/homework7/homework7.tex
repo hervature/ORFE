@@ -1,0 +1,150 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+\usepackage{float}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 7}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{28}{11}{2018}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  \textbf{Sparse Representation in an ON Basis.} Let $r \leq n$ and $Q \in \mathbb{R}^{n \times r}$ have orthonormal columns.
+
+  \begin{enumerate}[label=\alph*)]
+    \item Find a solution of the following sparse approximation problem and determine if the solution is unique.
+
+      \begin{gather*}
+        \min_{w \mathbb{R}^r} \lVert y - Qw \rVert_2^2 \\
+        \text{s.t. } \lVert w \rVert_0 \leq k
+      \end{gather*}
+
+    \item Now let the columns of $X \in \mathbb{R}^{n \times m}$ be a centered set of unlabelled training data and the columns of $Q \in \mathbb{R}^{n \times r}$ be the left singular vectors of a compact SVD of $X$. In this context, interpret the solution of the above problem.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let
+
+  \begin{gather*}
+    M = \begin{bmatrix} \bm{e}_1 & \frac{1}{\sqrt{2}} (\bm{e}_1 + \bm{e}_2) & \bm{e}_3 & \frac{1}{\sqrt{3}} (\bm{e}_1 + \bm{e}_2 + \bm{e}_3)\end{bmatrix}
+  \end{gather*}
+
+  where $\bm{e}_i$ denotes the $i^{th}$ standard basis vector in $\mathbb{R}^n$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item Show that the columns of $M$ are linearly dependent.
+    \item Determine spark($M$).
+    \item Determine the mutual coherence $\mu(M)$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $A \in \mathbb{R}^{m \times n}$ with rank($A$) $= m < n$, and $y \in \mathbb{R}^m$. We seek the sparsest solution of $Ax = y$:
+
+  \begin{gather*}
+    \min_{x \in \mathbb{R}^n} \lVert x \rVert_0, \text{ s.t. } Ax = y
+  \end{gather*}
+
+  The convex relaxation of this problem is called Basis Pursuit:
+
+  \begin{gather*}
+    \min_{x \in \mathbb{R}^n} \lVert x \rVert_1, \text{ s.t. } Ax = y
+  \end{gather*}
+
+  Show that Basis Pursuit is equivalent to the linear program:
+  \begin{gather*}
+    \min_{x, z \in \mathbb{R}^n} \bm{1}^T z\\
+    \text{s.t. } Ax = y \\
+    x - z \leq \bm{0} \\
+    -x - z \leq \bm{0}
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  One way to create a dictionary is to combine known ON bases. Here we explore combining the standard basis with the Haar wavelet basis. The Haar wavelet basis consists of $n = 2^p$ ON vectors in $\mathbb{R}^n$. These can be arranged into the columns of an orthogonal matrix $H_p$ with
+
+  \begin{gather*}
+    H_1 = \begin{bmatrix} 
+      \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\
+      \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+    \end{bmatrix} \quad
+    H_2 = \begin{bmatrix} 
+      \frac{1}{2} & \frac{1}{2} & \frac{1}{\sqrt{2}} & 0 \\
+      \frac{1}{2} & \frac{1}{2} & -\frac{1}{\sqrt{2}} & 0 \\
+      \frac{1}{2} & -\frac{1}{2} & 0 & \frac{1}{\sqrt{2}} \\
+      \frac{1}{2} & -\frac{1}{2} & 0 & -\frac{1}{\sqrt{2}}
+    \end{bmatrix} \\
+    H_3 = \begin{bmatrix} 
+      \frac{1}{\sqrt{8}} & \frac{1}{\sqrt{8}} & \frac{1}{\sqrt{4}} & 0 & \frac{1}{\sqrt{2}} & 0 & 0 & 0 \\
+      \frac{1}{\sqrt{8}} & \frac{1}{\sqrt{8}} & \frac{1}{\sqrt{4}} & 0 & -\frac{1}{\sqrt{2}} & 0 & 0 & 0 \\
+      \frac{1}{\sqrt{8}} & \frac{1}{\sqrt{8}} & -\frac{1}{\sqrt{4}} & 0 & 0 & \frac{1}{\sqrt{2}} & 0 & 0 \\
+      \frac{1}{\sqrt{8}} & \frac{1}{\sqrt{8}} & -\frac{1}{\sqrt{4}} & 0 & 0 & -\frac{1}{\sqrt{2}} & 0 & 0 \\
+      \frac{1}{\sqrt{8}} & -\frac{1}{\sqrt{8}} & 0 & \frac{1}{\sqrt{4}} & 0 & 0 & \frac{1}{\sqrt{2}} & 0 \\
+      \frac{1}{\sqrt{8}} & -\frac{1}{\sqrt{8}} & 0 & \frac{1}{\sqrt{4}} & 0 & 0 & -\frac{1}{\sqrt{2}} & 0 \\
+      \frac{1}{\sqrt{8}} & -\frac{1}{\sqrt{8}} & 0 & -\frac{1}{\sqrt{4}} & 0 & 0 & 0 & \frac{1}{\sqrt{2}} \\
+      \frac{1}{\sqrt{8}} & -\frac{1}{\sqrt{8}} & 0 & -\frac{1}{\sqrt{4}} & 0 & 0 & 0 & -\frac{1}{\sqrt{2}}
+    \end{bmatrix}
+  \end{gather*}
+
+  The columns are arranged in groups. The first group consists of the vector $\frac{1}{\sqrt{n}} \bm{1}_n$, and second consists of the vector taking the value $\frac{1}{\sqrt{n}}$ in the first half, and $-\frac{1}{\sqrt{n}}$ in the second half. Subsequent group of vectors are derived by subsampling by 2, scaling by $\sqrt{2}$, and translating. This is illustrated above for $p = 1, 2, 3$. Form a dictionary $D \in \mathbb{R}^{n \times 2n}$ by setting $D \ [I_n, H_p]$ with $n = 2^p$. The matrix $H_p$ is the Haar matrix of size $n = 2^p$. Show that
+  \begin{enumerate}[label=\alph*)]
+    \item For $p = 1$, spark($D$) = 3 and $\mu_(D) = 1/\sqrt{2}$.
+    \item For all $p > 1$. determine spark($D$) and $\mu(D)$.
+    \item For a given $y \in \mathbb{R}^n$, we seek the sparsest solution of $y = Dw$. What condition on $y$ is sufficient to ensure the sparsest solution is unique.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\end{document}
