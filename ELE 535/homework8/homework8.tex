@@ -1,0 +1,131 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+\usepackage{float}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 8}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{07}{12}{2018}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Let $\{(x_i, y_i)\}_{i=1}^m$ with $x_i \in \mathbb{R}^n$ and $y_i \in \{\pm 1\}$, $i \in [1:m]$, be a linearly separable set of training data. Show that if $C$ is sufficiently large, the solution of the primal SVM problem will give the unique maximum margin separating hyperplane. How large does $C$ need to be?
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $\{(x_i, y_i)\}_{i=1}^m$ with $x_i \in \mathbb{R}^n$ and $y_i \in \{\pm 1\}$, $i \in [1:m]$ be a training dataset. For a fixed value of $C$, let the corresponding SVM classifier have parameters $w^*$, $b^*$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item Let $h \in \mathbb{R}^n$ and $Q \in \mathcal{O}_n$, and form the second training set: $\{(Q(x_i - h), y_i) \}_{i=1}^m$. Show that the SVM classifier for this second dataset using the same value of $C$ has parameters $Q w^*$, ${w^*}^T h + b^*$.
+
+    \item If we first center the training examples, how does this change the SVM classifer?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Give a clear and concise derivation of the dual of the primal linear SVM problem shown below and explain the origin of each of the constraints in the dual problem.
+
+  \begin{gather*}
+    \min_{w \in \mathbb{R}^n, b \in \mathbb{R}, s \in \mathbb{R}^m} \frac{1}{2} w^T w + C \bm{1}^T s \\
+    \text{s.t. } Z^T w + b y + s - \bm{1} \geq \bm{0} \\
+    s \geq \bm{0}
+  \end{gather*}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Suppose that instead of using $C \sum_{i=1}^m s_i$ as the penalty term in the objective of the primal SVM problem we use the quadratic penalty $\frac{1}{2} C \sum_{i=1}^m s_i^2$, while maintaining the constraint $s_i \geq 0$. 
+
+  \begin{enumerate}[label=\alph*)]
+    \item Formulate the new primal problem in vector form. When is the primal problem feasible?
+
+    \item Does strong duality hold for this problem? Justify your answer.
+
+    \item Write down the KKT conditions.
+
+    \item Find the dual problem.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  You are provided with $m > 1$ data points $\{x_j \in \mathbb{R}^n\}_{j=1}^m$ of which at least $d$, with $1 < d \leq m$ are distinct. Let $X = [x_1,  \mathellipsis, x_m]$ and consider the one class SVM problem:
+
+  \begin{gather*}
+    \min_{R \in \mathbb{R}, a \in \mathbb{R}^n, s \in \mathbb{R}^m} R^2 + C \bm{1}^T s \\
+    \text{s.t. } \lVert x_i - a \rVert_2^2 \leq R^2 + s_i, \quad i = 1, \mathellipsis, m \\
+    s \geq \bm{0}
+  \end{gather*}
+
+  \begin{enumerate}[label=\alph*)]
+    \item Show that this is a feasible convex program and that strong duality holds. [Hint: let $r = R^2$]
+
+    \item Write down the KKT conditions.
+
+    \item Show that $\alpha^* \neq \bm{0}$ and that if $C > 1/(d-1)$ then $(R^2)^* > 0$ (harder).
+
+    \item What are the support vectors for this problem?
+
+    \item Derive the dual problem.
+
+    \item Assume $C > 1/(d-1)$. Given the dual solution, how should $a$ and $R^2$ be selected?
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\end{document}
