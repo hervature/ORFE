@@ -43,7 +43,9 @@
 \end{exercise}
 
 \begin{answer}
+  We first note that if the data is linearly separable, then there exists a feasible solution to the primal SVM problem where $s_i = 0$ for all support vectors $i \in A$. Now, let $\alpha_{simple}$ be the solution to the simple linear SVM introduced in class. We will show that if $\max_i {\alpha_{simple}}_i < C$, that is, the largest component of the solution to the simple linear SVM is smaller than $C$, then the primal SVM problem returns the unique maximum margin separating hyperplane.
 
+  First, to extract the maximum margin separating hyperplane, we will need to force all the $s_i = 0$, $i \in A$. To accomplish this, by complementary slackness, we need $\mu_i > 0$ or equivalently $0 < \alpha_i^* < C$. Thus, if $C$ is sufficiently large, we extract the maximum margin separating hyperplane. However, as noted before, $\alpha_{simple}$ solves the maximum margin separating hyperplane, thus if we set $\max_i {\alpha_{simple}}_i < C$, then we will guarantee that $C$ is sufficiently large. $\alpha_{simple}$ can easily be retrieve by solving the dual problem of the simple linear SVM.
 \end{answer}
 
 \clearpage
@@ -54,12 +56,55 @@
   \begin{enumerate}[label=\alph*)]
     \item Let $h \in \mathbb{R}^n$ and $Q \in \mathcal{O}_n$, and form the second training set: $\{(Q(x_i - h), y_i) \}_{i=1}^m$. Show that the SVM classifier for this second dataset using the same value of $C$ has parameters $Q w^*$, ${w^*}^T h + b^*$.
 
-    \item If we first center the training examples, how does this change the SVM classifer?
+    \item If we first center the training examples, how does this change the SVM classifier?
   \end{enumerate}
 \end{exercise}
 
 \begin{answer}
+  \
 
+  \begin{enumerate}[label=\alph*)]
+    \item We have that the primal problem is:
+
+      \begin{gather*}
+       \min_{w \in \mathbb{R}^n, b \in \mathbb{R}, s \in \mathbb{R}^m} \frac{1}{2} w^T w + C \bm{1}^T s \\
+       Z^T w + b y + s - \bm{1} \geq \bm{0} \\
+       s \geq \bm{0}
+      \end{gather*}
+      where $Z = [y_1 x_1, \mathellipsis, y_m x_m]$. Suppose that $w^*$ and $b^*$ is the solution. Now we transform the input data to be $\tilde{x}_i = Q(x_i - h)$. Then we have $\tilde{Z} = [y_1 Q(x_1 - h), \mathellipsis, y_m Q(x_m -h )]$. The Primal problem for this shifted problem is
+
+      \begin{gather*}
+       \min_{w \in \mathbb{R}^n, b \in \mathbb{R}, s \in \mathbb{R}^m} \frac{1}{2} w^T w + C \bm{1}^T s \\
+       \tilde{Z}^T w + b y + s - \bm{1} \geq \bm{0} \\
+       s \geq \bm{0}
+      \end{gather*}
+
+      Expanding the first constraint yields
+
+      \begin{align*}
+       &\quad \tilde{Z}^T w + b y + s - \bm{1} \geq \bm{0} \\
+       &\Longleftrightarrow [y_1 Q(x_1 - h), \mathellipsis, y_m Q(x_m - h)]^T w + b y + s - \bm{1} \geq \bm{0} \\
+       &\Longleftrightarrow Z^T Q^T w - h^T Q^T w y + by + s - \bm{1} \geq \bm{0} \\
+       &\Longleftrightarrow Z^T Q^T w - (h^T Q^T w + b) y + s - \bm{1} \geq \bm{0}
+      \end{align*}
+
+      Now we make the substitution $\tilde{w} = Q^T w$ and $\tilde{b} = h^T \tilde{w} + b$ to get the primal problem
+
+      \begin{gather*}
+       \min_{w \in \mathbb{R}^n, b \in \mathbb{R}, s \in \mathbb{R}^m} \frac{1}{2} \tilde{w}^T \tilde{w} + C \bm{1}^T s \\
+       \tilde{Z}^T \tilde{w} + \tilde{b} y + s - \bm{1} \geq \bm{0} \\
+       s \geq 0
+      \end{gather*}
+
+      Notice that the orthonormal matrices canceled each other out in the objective. Also, this problem is identical to what we had before. Thus we have that $\tilde{w} = w^*$ and $\tilde{b} = b^*$. Or undoing the transformations, we have that the solution to the shifted problem is $w'^* = Q w^*$ and $b'^* = b^* + h^T w^*$.
+
+    \item If we center the data, this is equivalent to the previous problem with $Q = I_n$ and $b = \mu_x = \sum_{i=1}^m x_i$. Thus, the solution is
+      \begin{gather*}
+       w'^* = w^* \quad \text{ and } \quad b'^* = \mu_x^T w^* + b^*
+      \end{gather*}
+      So it only shifts the intercept which makes sense as all the points get the same translation and so the normal of the separating hyperplane does not change.
+
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -75,13 +120,63 @@
 \end{exercise}
 
 \begin{answer}
+  We have that the Lagrangian for this problem is:
 
+  \begin{gather*}
+    L(w, b, s, \alpha, \mu) = \frac{1}{2} w^T w + C \bm{1}^T s - \alpha^T (Z^T w + b y + s - \bm{1}) - \mu^T s
+  \end{gather*}
+
+   Now, following the procedure in Chapter 14, we have that the dual objective is
+
+  \begin{gather*}
+    g(\alpha, \mu) = \min_{w \in \mathbb{R}^n, b \in \mathbb{R}, s \in \mathbb{R}^m} L(w, b, s, \alpha, \mu)
+  \end{gather*}
+
+  To solve this, we take the derivatives and set them to 0. We also note the domain of $g(\cdot)$ is $\alpha \geq \bm{0}$ and $\mu \geq \bm{0}$.
+
+  \begin{gather*}
+    \nabla_w L = 0 \implies w - Z \alpha = \bm{0} \text{ or } w = Z \alpha\\
+    \nabla_b L = 0 \implies \alpha^T y = 0 \\
+    \nabla_s L = 0 \implies C \bm{1} - \alpha - \mu = \bm{0} \text{ or } \mu = C \bm{1} - \alpha
+  \end{gather*}
+
+  Putting these substitutions into the objective yields
+
+  \begin{gather*}
+    g(\alpha, \mu) = \frac{1}{2} \alpha^T Z^T Z \alpha + C \bm{1}^T s - \alpha^T (Z^T Z \alpha + by + s - \bm{1}) - (C \bm{1} - \alpha)^T s \\
+    = -b \alpha^T y + \alpha^T \bm{1} -\frac{1}{2} \alpha^T Z^T Z \alpha
+  \end{gather*}
+
+  But our derivatives above show that $\alpha^T y = 0$ so our dual objective is.
+
+  \begin{gather*}
+    g(\alpha, \mu) = \alpha^T \bm{1} -\frac{1}{2} \alpha^T Z^T Z \alpha
+  \end{gather*}
+
+  This objective coupled with our derivative constraints and domain requirements yields the dual problem
+
+  \begin{gather*}
+    \max_{\alpha \in \mathbb{R}^m, \mu \in \mathbb{R}^m} \alpha^T \bm{1} -\frac{1}{2} \alpha^T Z^T Z \alpha \\
+    \text{s.t. } \alpha^T y = 0 \\
+    C \bm{1} - \alpha - \mu = \bm{0} \\
+    \alpha \geq \bm{0} \\
+    \mu \geq \bm{0}
+  \end{gather*}
+
+  Where we can do the same trick done in the notes and remove $\mu$ from the constraints (as it is a direct function of $\alpha$)
+
+  \begin{gather*}
+    \max_{\alpha \in \mathbb{R}^m} \alpha^T \bm{1} -\frac{1}{2} \alpha^T Z^T Z \alpha \\
+    \text{s.t. } \alpha^T y = 0 \\
+    \alpha \leq C \bm{1} \\
+    \alpha \geq \bm{0}
+  \end{gather*}
 \end{answer}
 
 \clearpage
 
 \begin{exercise}
-  Suppose that instead of using $C \sum_{i=1}^m s_i$ as the penalty term in the objective of the primal SVM problem we use the quadratic penalty $\frac{1}{2} C \sum_{i=1}^m s_i^2$, while maintaining the constraint $s_i \geq 0$. 
+  Suppose that instead of using $C \sum_{i=1}^m s_i$ as the penalty term in the objective of the primal SVM problem we use the quadratic penalty $\frac{1}{2} C \sum_{i=1}^m s_i^2$, while maintaining the constraint $s_i \geq 0$
 
   \begin{enumerate}[label=\alph*)]
     \item Formulate the new primal problem in vector form. When is the primal problem feasible?
@@ -95,7 +190,60 @@
 \end{exercise}
 
 \begin{answer}
+  \
 
+  \begin{enumerate}[label=\alph*)]
+    \item The vector formulation of this problem is
+
+      \begin{gather*}
+        \min_{w \in \mathbb{R}^n, b \in \mathbb{R}, s \in \mathbb{R}^m} \frac{1}{2} w^T w + \frac{C}{2} s^T s \\
+        \text{s.t. } Z^T w + b y + s - \bm{1} \geq \bm{0} \\
+        s \geq \bm{0}
+      \end{gather*}
+
+      The primal problem is always feasible. For example, take $w = \bm{0}$, $b = 0$, and $s = \bm{1}$. These always satisfy the constraints and so the primal problem is always feasible. If one doesn't like the use of zeros, take any $w$ and $b$. Then $Z^T w + by$ will have some entry that is the smallest (most negative). Simply set $s = \bm{1} \lvert \min_i (Z^T w + by)_i \rvert$ and this will also be feasible.
+
+    \item Strong duality holds if Slater's condition is satisfied. First note that the problem is convex as the objective is quadratic and the constraints are affine. As the constraints are affine, Slater's condition just requires a feasible point in the primal problem. As we have shown this already, then strong duality holds for this problem.
+
+    \item The Lagrangian for the problem is
+
+      \begin{gather*}
+        L(w, b, s, \alpha, \mu) = \frac{1}{2} w^T w + \frac{C}{2} s^T s - \alpha^T (Z^T w + b y + s - \bm{1}) - \mu^T s
+      \end{gather*}
+
+      Thus the KKT conditions are (taking the requisite derivatives, primal constraints, dual constraints, and complementary slackness):
+
+      \begin{align*}
+        w - Z \alpha = 0& \quad (\nabla_w L = \bm{0}) \\
+        \alpha^T y = 0& \quad (\nabla_b L = 0) \\
+        C s - \alpha - \mu = \bm{0}& \quad (\nabla_s L = \bm{0})\\
+        Z^T w + b y + s - \bm{1} \geq \bm{0}& \quad \text{primal constraint} \\
+        s \geq \bm{0}& \quad \text{primal constraint} \\
+        \alpha \geq \bm{0}& \quad \text{dual constraint} \\
+        \mu \geq \bm{0}& \quad \text{dual constraint} \\
+        \alpha \otimes (Z^T w + b y + s - \bm{1})= \bm{0}& \quad \text{complementary slackness} \\
+        \mu \otimes s= \bm{0}& \quad \text{complementary slackness}
+      \end{align*}
+
+    \item We again follow the steps of deriving the dual objective from the previous question. Namely just substituting the derivatives from the KKT conditions into the primal objective.
+
+      \begin{gather*}
+        g(\alpha, \mu) = \min_{w \in \mathbb{R}^n, b \in \mathbb{R}, s \in \mathbb{R}^m} L(w, b, s, \alpha, \mu) \\
+        = \frac{1}{2} \alpha^T Z^T Z \alpha + \frac{C}{2} \frac{1}{C^2}(\alpha + \mu)^T (\alpha + \mu) - \alpha^T (Z^T Z \alpha + b y + \frac{1}{C}(\alpha + \mu) - \bm{1}) \\
+        - \frac{1}{C} \mu^T (\alpha + \mu) \\
+        = \alpha^T \bm{1} + \frac{1}{2C}(\alpha + \mu)^T (\alpha + \mu) - \frac{1}{C} (\alpha + \mu)^T (\alpha + \mu) - \frac{1}{2} \alpha^T Z^T Z \alpha \\
+        = \alpha^T \bm{1} - \frac{1}{2C} (\alpha + \mu)^T (\alpha + \mu) - \frac{1}{2} \alpha^T Z^T Z \alpha
+      \end{gather*}
+
+      Thus, the dual problem becomes
+
+      \begin{gather*}
+        \max_{\alpha \in \mathbb{R}^m, \mu \in \mathbb{R}^m} \alpha^T \bm{1} - \frac{1}{2C} (\alpha + \mu)^T (\alpha + \mu) - \frac{1}{2} \alpha^T Z^T Z \alpha \\
+        \text{s.t. } \alpha^T y = 0 \\
+        \alpha \geq \bm{0} \\
+        \mu \geq \bm{0}
+      \end{gather*}
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -125,7 +273,127 @@
 \end{exercise}
 
 \begin{answer}
+  \
 
+  \begin{enumerate}[label=\alph*)]
+    \item Following the hint, let $r = R^2$ and add the additional constraint that $r \geq 0$ to enforce positivity. Thus, the problem becomes
+
+      \begin{gather*}
+        \min_{r \in \mathbb{R}, a \in \mathbb{R}^n, s \in \mathbb{R}^m} r + C \bm{1}^T s \\
+        \text{s.t. } \lVert x_i - a \rVert_2^2 \leq r + s_i, \quad i = 1, \mathellipsis, m \\
+        s \geq \bm{0} \\
+        r \geq 0
+      \end{gather*}
+
+      In which case this has a linear (convex) objective and convex constraints. The main one being quadratic and hence convex. This implies the problem is convex. Again, this is feasible if we set $a = \bm{0}$, $r = 0$, and $s_i = \lVert x_i \rVert_2^2$. To show strong duality, we need Slater's condition to hold. Picking $a = \bm{0}$, $r = 1$, and $s_i = \lVert x_i \rVert_2^2$ means that $r > 0$, $\lVert x_i \rVert_2^2 < r + s_i$ and thus we have a point that satisfies Slater's condition. We conclude strong duality holds.
+
+    \item The Lagrangian for this problem is
+
+      \begin{gather*}
+        L(R, a, s, \alpha, \mu, \lambda) = R^2 + C \bm{1}^T s + \sum_{i=1}^m \alpha_i (\lVert x_i - a \rVert_2^2 - R^2 - s_i) - \mu^T s
+      \end{gather*}
+
+      Thus the KKT conditions are (taking the requisite derivatives, primal constraints, dual constraints, and complementary slackness):
+
+      \begin{align*}
+        R \cdot (1 - \sum_{i=1}^m \alpha_i) = 0& \quad (\nabla_R L = 0) \\
+        a \sum_{i=1}^m \alpha_i - \sum_{i=1}^m \alpha_i x_i = \bm{0}& \quad (\nabla_a L = \bm{0})\\
+        C \bm{1} - \alpha - \mu = \bm{0}& \quad (\nabla_s L = \bm{0})\\
+        \lVert x_i - a \rVert_2^2 \leq R^2 + s_i& \quad \text{primal constraint} \\
+        s \geq \bm{0}& \quad \text{primal constraint} \\
+        \alpha \geq \bm{0}& \quad \text{dual constraint} \\
+        \mu \geq \bm{0}& \quad \text{dual constraint} \\
+        \alpha_i \cdot (\lVert x_i - a \rVert_2^2 - R^2 - s_i)= \bm{0}& \quad \text{complementary slackness} \\
+        \mu \otimes s = \bm{0}& \quad \text{complementary slackness} \\
+      \end{align*}
+
+    \item We first show that $\alpha^* \neq \bm{0}$. Suppose by contradiction that $\alpha^* = \bm{0}$. Then by complementary slackness, we have that
+
+      \begin{gather*}
+        \lVert x_i - a \rVert_2^2 \leq R^2 + s_i \quad \forall i
+      \end{gather*}
+
+      As $\alpha = \bm{0}$, we also have that $R = 0$ from $\nabla_R L = 0$. This implies
+
+      \begin{gather*}
+        \lVert x_i - a \rVert_2^2 \leq s_i \quad \forall i
+      \end{gather*}
+
+      Also, from $\nabla_s L = \bm{0}$, we have that $\mu = C \bm{1}$. This again implies by complementary slackness that $s_i = 0$. Hence, this implies that
+
+      \begin{gather*}
+        \lVert x_i - a \rVert_2^2 \leq 0 \quad \forall i
+      \end{gather*}
+
+      However, this is only possible if all the $x_i$ are equal. But we have that there are $d > 1$ distinct data points and thus the last conclusion is a contradiction. Thus, we conclude that $\alpha^* \neq \bm{0}$.
+
+      We now show the second part. We do this by contraposition. That is, we will show that ${R^2}^* = 0 \implies C \leq 1/(d-1)$. If we assume that $R^2 = 0$, we get from $\nabla_R L = 0$ and $\alpha \geq \bm{0}$ that
+
+      \begin{gather*}
+        \sum_{i=1}^m \alpha_i \leq 1
+      \end{gather*}
+
+      We also have from $\nabla_s L = 0$ and $\mu \geq \bm{0}$ that
+
+      \begin{gather*}
+        \alpha \leq C \bm{1}
+      \end{gather*}
+
+      Now, we argue that the worst case is that $(d-1)$ components of $\alpha$ matter in the worst case. If we have that $x_i = a$ for $m-d+1$ data points (to maintain the assumption that there are $d$ distinct points). Then we have that $\lVert x_i - a \rVert_2^2 = 0 = s_i$. Recall that $R^2 = 0$ by assumption. In this case picking $s_i = 0$ clearly minimizes the objective. Also, note that if $x_i = a$, the then equality in $\nabla_a L = \bm{0}$ only depends on the components that $x_i \neq a$. Thus, we can set $\alpha_i$ to whatever we want for the components that $x_i = a$. In the worst case, we set $\alpha_i = 0$. Thus, our previous inequality become
+
+      \begin{gather*}
+        \sum_{i=1}^{d-1} \alpha_i \leq 1
+      \end{gather*}
+
+      Combining this with $\alpha \leq C \bm{1}$ yields
+
+      \begin{gather*}
+        (d-1) C \leq 1 \implies C \leq 1/(d-1)
+      \end{gather*}
+
+      Thus, we have shown that ${R^2}^* = 0 \implies C \leq 1/(d-1)$ whose contrapositive is $C > 1/(d-1) \implies {R^2}^* > 0$.
+
+    \item The support vectors are as follows.
+      \begin{enumerate}[label=\arabic*)]
+        \item When $0 < \alpha_i^* < C$, then we have that $\mu_i > 0$ from $\nabla_s L = 0$ which implies by complementary slackness that $s_i = 0$. Thus, these support vectors sits directly on the border of the sphere centered at $a$ with radius $R$.
+        \item If $\alpha_i^* = C$, then we have that $\mu_i = 0$ and $s_i \geq 0$. These vectors lie outside the sphere centered at $a$ with radius $R$.
+      \end{enumerate}
+
+    \item If we assume that $C > 1/(d-1)$, then we have that $R^2 > 0$ and that $\sum_{i=1}^m \alpha_i = 1$ from $\nabla_R = 0$. Which means that $a = \sum_{i=1}^m \alpha_i x_i$ from $\nabla_a L = \bm{0}$. Making this substitution into the primal problem and canceling out the terms that result from the derivatives in the KKT conditions (the same steps we've done in previous questions), the dual problem is
+
+      \begin{gather*}
+        g(\alpha, \mu) = \min_{R \in \mathbb{R}, a \in \mathbb{R}^n, s \in \mathbb{R}^m} L(R, a, s, \alpha, \mu) \\
+        = \sum_{i=1}^m \alpha_i (\lVert x_i - \sum_{j=1}^m \alpha_j x_j \rVert_2^2) \\
+        = \sum_{i=1}^m \left[ x_i^T x_i \alpha_i + \sum_{j=1}^m \left( -2x_i^T x_j \alpha_j \alpha_i + x_j^T x_j \alpha_j^2 \alpha_i \right) \right]
+      \end{gather*}
+
+      Bringing in the outside sum and using the fact that $\sum_{i=1}^m \alpha_i = 1$, we can change the last term to be
+
+      \begin{gather*}
+        g(\alpha, \mu) = \sum_{i=1}^m \left[ x_i^T x_i \alpha_i + \sum_{j=1}^m \left( -2x_i^T x_j \alpha_j \alpha_i + x_j^T x_j \alpha_j^2 \right) \right]
+      \end{gather*}
+
+      It is easy to show that the first term can be written as $ \text{diag}(X^T X)^T \alpha$ (\textbf{note:} the class notes incorrectly say it is $\bm{1}^T \text{diag}(X^T X) \alpha$ which does not make sense) and the second and third terms can be written as $-\alpha^T X^T X \alpha$ simply by writing these as summations and canceling the right terms. Thus, we get a compact formulation of the dual
+
+      \begin{gather*}
+        \max_{\alpha \in \mathbb{R}^m, \mu \in \mathbb{R}^m} \text{diag}(X^T X)^T \alpha - \alpha^T X^T X \alpha \\
+        \text{s.t. } 1 = \sum_{i=1}^m \alpha_i \\
+        C \bm{1} - \alpha - \mu = \bm{0} \\
+        \alpha \geq \bm{0} \\
+        \mu \geq \bm{0}
+      \end{gather*}
+
+      Using the same trick as before to get rid of $\mu$ and writing the first constraint in vector form,
+
+      \begin{gather*}
+        \max_{\alpha \in \mathbb{R}^m, \mu \in \mathbb{R}^m} \text{diag}(X^T X)^T  \alpha - \alpha^T X^T X \alpha \\
+        \text{s.t. } \bm{1}^T \alpha = \bm{1} \\
+        \alpha \leq C \bm{1} \\
+        \alpha \geq \bm{0} \\
+      \end{gather*}
+
+    \item Assuming that $C > 1/(d-1)$. Given the dual solution, we have that $a = \sum_{i=1}^m \alpha_i x_i$. Once you know $a$, then it is trivial to find $R^2$ and $s$ as the primal problem no longer has a quadratic constraint (the terms involving $a$ become constants). It becomes a linear program which is readily solved. Alternatively, without the linear program, complementary slackness ensures that there are $m$ equations involving $s$ and $R^2$. As $1 = \sum_{i=1}^m \alpha_i$, we know that $\lVert x_i - a \rVert_2^2 = R^2 + s_i$ for some $i$. If $\mu_i > 0$ and $\alpha_i > 0$ then we are done as $R^2$ is immediately available as $s_i = 0$. Suppose that $\mu_i = 0$ whenever $\alpha_i > 0$ and $\alpha_i = 0$ whenever $\mu_i > 0$, this is the worst case. Then we have $m$ equations but $m+1$ unknowns. However, as it is a minimization problem, we write out all the equations with $\lVert x_i - a \rVert_2^2 = R^2 + s_i$ and start out with $R^2 = 0$. Record the objective for this value of $R^2$. Then we increase $R^2$ while the objective keeps decreasing and stop (or decrease step size) when the objective increases. Binary search would provide quick convergence as we know the largest $R^2$ can become is the smallest $s_i$ value when $R^2 = 0$.
+  \end{enumerate}
 \end{answer}
 
 \end{document}
