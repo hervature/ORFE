@@ -1,0 +1,131 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+\usepackage{float}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{ELE 535: Machine Learning and Pattern Recognition \\ Homework 9}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{21}{12}{2018}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  Kernels:
+
+  \begin{enumerate}[label=\alph*)]
+    \item Let $\mathcal{A}$ be a finite set and for each subset $\mathcal{U} \subseteq \mathcal{A}$ let $\lvert \mathcal{U} \rvert$ denote the number of element in $\mathcal{U}$. For $\mathcal{U}, \mathcal{V} \subset \mathcal{A}$, let $k(\mathcal{U}, \mathcal{V}) = \lvert \mathcal{U} \cap \mathcal{V} \rvert$. By finding a suitable feature map, show that $k(\cdot, \cdot)$ is a kernel on the power set $\mathcal{P}(\mathcal{A})$ of all subsets of $\mathcal{A}$.
+
+    \item Show that $k(x,z) = \sum_{i=1}^n \cos^2 (x_i - z_i)$ is a kernel on $\mathbb{R}^n$.
+
+    \item Let $P \in \mathbb{n \times n}$ be a symmetrix PSD. Show that $k(x,z) = e^{-\frac{1}{2} (x-z)^T P (x-z)}$ is a kernel on $\mathbb{R}^n$.
+
+    \item $k(x,y) = h_t(Ax)^T h_t(Ay)$ where $A \in \mathbb{R}^{n \times n}$ and $h_t$ is a thresholding function that maps $z = [z_i]$ to $h_t(z) = [\tilde{z}_i]$ with $\tilde{z}_i = z_i$ if $\lvert z_i \rvert > t$ and 0 otherwise.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $k_j$ be a kernel on $\mathcal{X}$ with feature map $\phi_j: \mathcal{X} \rightarrow \mathbb{R}^q$, $j = 1, 2$. In each part below, find a simple feature map for the kernel $k$ in terms of feature maps for the kernels $k_j$. By this means, give an interpretation for the new kernel $k$.
+
+  \begin{enumerate}[label=\alph*)]
+    \item $k(x,z) = k_1(x,z) + k_2(x,z)$
+
+    \item $k(x,z) = k_1(x,z) k_2(x,z)$
+
+    \item $k(x,z) = k_1(x,z)/ \sqrt{k_1(x,x) k_2(z,z)}$
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  A binary labelled set of data in $\mathbb{R}^2$ is used to learn a SVM using the homogeneous quadratic kernel. By writing the equation for the decision boundary in terms of a quadratic form, reason about the types of decision boundaries that are possible in $\mathbb{R}^2$. In each case, give a neat sketch.
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Consider the defintie integral
+
+  \begin{gather*}
+    \int_0^\infty e^{-(ax^2 + \frac{b}{x^2})} dx = \frac{1}{2} \sqrt{\frac{\pi}{a}} e^{-2 \sqrt{ab}}
+  \end{gather*}
+
+  Show that it can be rewritten as
+
+  \begin{gather*}
+    \frac{\alpha}{\sqrt{\pi}} \int_0^\infty e^{-\frac{s}{t^2}} e^{-(\frac{\alpha t}{2})^2} dt = e^{-\alpha \sqrt{s}}, \quad \alpha > 0
+  \end{gather*}
+
+  Now use the above results to show that $k(x,z) = e^{-\alpha \lVert x - z \rVert_2}$ is a kernel.
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\clearpage
+
+\begin{exercise}
+  Let $a > 0$ and $L_2 [0,a]$ denote the set of real valued square integrable functions on the interval $[0,a]$. $L_2[0,a]$ is a Hilbert space under the inner product $\langle g, h \rangle = \int_0^a g(s) h(s) ds$. For $f \in L_2[0,a]$, let $g(t) = \int_0^t f^2(s) ds$ and $h(t) = \int_t^a f^2)s_ ds$, where $t \in [0,a]$. Show that for each $a > 0$,
+
+  \begin{enumerate}[label=\alph*)]
+    \item $k(x,z) = \min(x,z)$ is a kernel on $[0,a]$.
+
+    \item $k(x,z) = a - \max(x,z)$ is a kernel on $[0,a]$.
+
+    \item $k(x,z) = e^{-(\max(x,z) - \min(x,z))}$ is a kernel on $[0,a]$. Plot the function $\max(x,z) - \min(x,z)$ and use this to simplify the result further.
+
+    \item for each $a > 0$, and $\gamma \geq 0$, $k(x,z) = e^{-\gamma \lvert x - z \rvert}$ is a kernel on $[-a, a]$.
+
+    \item for each $\gamma \geq 0$, $k(x,z) = e^{-\gamma \lvert x - z \rvert}$ is a kernel on $\mathbb{R}$.
+  \end{enumerate}
+\end{exercise}
+
+\begin{answer}
+
+\end{answer}
+
+\end{document}
