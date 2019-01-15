@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1544587702 "homework9.tex" "/home/zachary/Documents/ORFE/ELE 535/homework9/homework9.pdf" "homework9" 1544587753
+["pdflatex"] 1547529904 "homework9.tex" "/home/zachary/Documents/ORFE/ELE 535/homework9/homework9.pdf" "homework9" 1547529905
   "/etc/texmf/web2c/texmf.cnf" 1525213490 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/zachary/Documents/ORFE/ELE 535/homework9/homework9.aux" 1544587702 30 00c4328e8c6c75fce40642ef2bcfb215 ""
+  "/home/zachary/Documents/ORFE/ELE 535/homework9/homework9.aux" 1547529905 30 00c4328e8c6c75fce40642ef2bcfb215 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1480098698 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy7.tfm" 1480098698 1120 7f9f170e8aa57527ad6c49feafd45d54 ""
@@ -44,6 +44,7 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb" 1480098733 32734 69e00a6b65cedb993666e42eedb3d48f ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1480098733 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1480098733 32569 5e5ddc8df908dea60932f3c484a54c0d ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb" 1480098733 32587 1788b0c1c5b39540c96f5e42ccd6dae8 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1480098733 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1480098734 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1480098806 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -118,11 +119,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1525646404 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1539603915 4129817 732dfd4b04561c25c0bb56f8e6585056 ""
-  "homework9.aux" 1544587702 30 00c4328e8c6c75fce40642ef2bcfb215 ""
-  "homework9.tex" 1544587702 4489 92b675517c89f11fdbbb7b613bdc4558 ""
+  "homework9.aux" 1547529905 30 00c4328e8c6c75fce40642ef2bcfb215 ""
+  "homework9.tex" 1547529904 12889 50dbdf68c1026dccc993be29f1763aa1 ""
   (generated)
   "/home/zachary/Documents/ORFE/ELE 535/homework9/homework9.pdf"
-  "homework9.pdf"
   "homework9.log"
   "homework9.aux"
   "/home/zachary/Documents/ORFE/ELE 535/homework9/homework9.log"
+  "homework9.pdf"

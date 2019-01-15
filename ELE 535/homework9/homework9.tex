@@ -46,13 +46,73 @@
 
     \item Show that $k(x,z) = \sum_{i=1}^n \cos^2 (x_i - z_i)$ is a kernel on $\mathbb{R}^n$.
 
-    \item Let $P \in \mathbb{n \times n}$ be a symmetrix PSD. Show that $k(x,z) = e^{-\frac{1}{2} (x-z)^T P (x-z)}$ is a kernel on $\mathbb{R}^n$.
+    \item Let $P \in \mathbb{R}^{n \times n}$ be symmetric PSD. Show that $k(x,z) = e^{-\frac{1}{2} (x-z)^T P (x-z)}$ is a kernel on $\mathbb{R}^n$.
 
     \item $k(x,y) = h_t(Ax)^T h_t(Ay)$ where $A \in \mathbb{R}^{n \times n}$ and $h_t$ is a thresholding function that maps $z = [z_i]$ to $h_t(z) = [\tilde{z}_i]$ with $\tilde{z}_i = z_i$ if $\lvert z_i \rvert > t$ and 0 otherwise.
   \end{enumerate}
 \end{exercise}
 
 \begin{answer}
+  \
+
+  \begin{enumerate}[label=\alph*)]
+    \item Let us use the indicator $I_{\mathcal{U}}$ as our feature map $\phi(\mathcal{U})$ in the $L^2$ Hilbert space which has the norm
+
+      \begin{gather*}
+        \int_{\mathcal{A}} f(a) g(a) d \mu(a)
+      \end{gather*}
+
+      Thus, our kernel becomes
+
+      \begin{align*}
+        k(\mathcal{U}, \mathcal{V}) &= \int_{\mathcal{A}} \phi(\mathcal{U}) \phi(\mathcal{V}) d \mu(a) \\
+        &= \int_{\mathcal{A}} I_{\mathcal{U}} (a) I_{\mathcal{V}} (a) d \mu(a) \\
+        &= \lvert \mathcal{U} \cap \mathcal{V} \rvert
+      \end{align*}
+
+      We conclude that the kernel is defined on the powerset $\mathcal{P}(\mathcal{A})$.
+
+
+    \item We make use of the trig identity,
+
+      \begin{gather*}
+        \cos^2 (x_i - z_i) = \cos^2(x_i) \cos^2(z_i) + \sin^2(x_i) \sin^2(z_i) + 2 \cos(x_i)\sin(x_i)\cos(z_i)\sin(z_i) \\
+        = \begin{bmatrix}
+          \cos^2(x_i) & \sin^2(x_i) & \sqrt{2}\cos(x_i)\sin(x_i)
+        \end{bmatrix} \begin{bmatrix}
+          \cos^2(z_i) \\ \sin^2(z_i) \\ \sqrt{2}\cos(z_i)\sin(z_i)
+        \end{bmatrix}
+      \end{gather*}
+
+      Thus we use the feature map
+
+      \begin{gather*}
+        \phi(x) = \begin{bmatrix}
+          \cos^2(x_1) \\ \sin^2(x_1) \\ \sqrt{2}\cos(x_1)\sin(x_1) \\ \vdots \\ \cos^2(x_n) \\ \sin^2(x_n) \\ \sqrt{2}\cos(x_n)\sin(x_n)
+        \end{bmatrix}
+      \end{gather*}
+
+      Which is in $\mathbb{R}^{3n}$ and hence a Hilbert space. This feature map coupled with the standard inner product yields our kernel.
+
+    \item We know that the Gaussian kernel is a valid kernel:
+      \begin{gather*}
+        k_G(x,z) = e^{-\gamma \lVert x - z \rVert_2^2}
+      \end{gather*}
+
+      Now, using the fact that $P$ is PSD and hence diagonalizable, say $P = U^T \Sigma U$, we can write the kernel in question as:
+
+      \begin{align*}
+        k(x,z) &= e^{-\frac{1}{2} (x-z)^T P (x-z)} \\
+        &= e^{-\frac{1}{2} (x'-z')^T U^T P U (x'-z')} \\
+        &= e^{-\frac{1}{2} (x'-z')^T \Sigma (x'-z')} \\
+        &= e^{-\frac{\sigma_1}{2} \lVert x' - z' \rVert_2^2} \cdot \hdots \cdot e^{-\frac{\sigma_n}{2} \lVert x' - z' \rVert_2^2} \\
+        &= K_{G_1} (x', z') \cdot \hdots \cdot K_{G_n} (x', z')
+      \end{align*}
+
+      We use the transformation $x' = U x$. A product of kernels is a kernel and so we conclude that the original is a kernel.
+
+    \item We have that $h_t(A x)$ is a composition of feature maps $\phi(x) = A x$ and $\varphi(x) = h_t(x)$ where they both map from $\mathbb{R}^n$ to $\mathbb{R}^n$ and so this is the standard Euclidean Hilbert space. Thus our kernel is $k_{\phi \circ \varphi}(x,y) = h_t(Ax)^T h_t(Ay)$.
+  \end{enumerate}
 
 \end{answer}
 
@@ -66,12 +126,41 @@
 
     \item $k(x,z) = k_1(x,z) k_2(x,z)$
 
-    \item $k(x,z) = k_1(x,z)/ \sqrt{k_1(x,x) k_2(z,z)}$
+    \item $k(x,z) = k_1(x,z)/ \sqrt{k_1(x,x) k_1(z,z)}$
   \end{enumerate}
 \end{exercise}
 
 \begin{answer}
+  \
 
+  \begin{enumerate}[label=\alph*)]
+    \item We have that
+      \begin{align*}
+        k(x,z) &= k_1(x,z) + k_2(x,z) \\
+        &= \langle \phi_1(x), \phi_1(z) \rangle + \langle \phi_2(x), \phi_2(z) \rangle \\
+        &= \left\langle \begin{bmatrix} \phi_1(x) \\ \phi_2(x) \end{bmatrix}, \begin{bmatrix} \phi_1(z) \\ \phi_2(z) \end{bmatrix} \right\rangle
+      \end{align*}
+
+      So our new feature map is $\phi(x) = \begin{bmatrix} \phi_1(x) \\ \phi_2(x) \end{bmatrix}$ thus adding kernels is equivalent to stacking in the feature space.
+
+    \item A product in kernel space yields,
+      \begin{align*}
+        k(x,z) &= k_1(x,z) k_2(x,z) \\
+        &= \langle \phi_1(x), \phi_1(z) \rangle \langle \phi_2(x), \phi_2(z) \rangle \\
+        &= \langle \phi_1(x) \otimes \phi_2(x), \phi_1(z) \otimes \phi_2(z) \rangle
+      \end{align*}
+
+      Where the last line is the trace operator on matrix multiplication; the standard inner product for matrices. So our new feature map is $\phi(x) = \phi_1(x) \otimes \phi_2(x)$ thus multiplying kernels is equivalent to tensor product in the feature space.
+
+    \item Simplifying the expression yields,
+      \begin{align*}
+        k(x,z) &= k_1(x,z)/ \sqrt{k_1(x,x) k_1(z,z)} \\
+        &= \frac{\langle \phi_1(x), \phi_1(z) \rangle}{\lVert \phi_1(x)\rVert \lVert \phi_1(z) \rVert}   \\
+        &= \left\langle \frac{\phi_1(x)}{\lVert \phi_1(x) \rVert}, \frac{\phi_1(z)}{\lVert \phi_1(z) \rVert} \right\rangle
+      \end{align*}
+
+      So our new feature map is $\phi(x) = \frac{\phi_1(x) }{\lVert \phi_1(x) \rVert}$ thus this transformation in kernel space is normalization in feature space.
+  \end{enumerate}
 \end{answer}
 
 \clearpage
@@ -81,13 +170,31 @@
 \end{exercise}
 
 \begin{answer}
+  The kernel SVM problem is as follows,
 
+  \begin{gather*}
+    \max_{\alpha \in \mathbb{R}^m} \bm{1}^T \alpha - \frac{1}{2} \alpha^T K \alpha \\
+    y^T \alpha = \bm{0} \\
+    \alpha \leq C \bm{1} \\
+    \alpha \geq \bm{0}
+  \end{gather*}
+
+  Where $K$ is the kernel matrix of $y_i \langle \phi(x_i), \phi(x_j) \rangle y_j$. In this case, our kernel is the quadratic kernel of $k(x,z) = (x^T z)^2$. After solving the above optimization problem, the decision boundary becomes
+
+  \begin{gather*}
+    \sum_{i \in A} \alpha_i^* y_i (x_i^T x)^2 + b^* \geq 0 \\
+    \sum_{i \in A} \alpha_i^* y_i x^T x_i x_i^T x + b^* \geq 0 \\
+    x^T \left( \sum_{i \in A} \alpha_i^* y_i x_i x_i^T \right) x + b \geq 0 \\
+    x^T Q x + b^* \geq 0
+  \end{gather*}
+
+  Thus, the decision boundaries if, $Q \neq 0$, are simply ellipses in $\mathbb{R}^2$. If $Q = 0$, then this is the degenerate case of assigning all entries to the sign of $b^*$.
 \end{answer}
 
 \clearpage
 
 \begin{exercise}
-  Consider the defintie integral
+  Consider the definite integral
 
   \begin{gather*}
     \int_0^\infty e^{-(ax^2 + \frac{b}{x^2})} dx = \frac{1}{2} \sqrt{\frac{\pi}{a}} e^{-2 \sqrt{ab}}
@@ -103,13 +210,21 @@
 \end{exercise}
 
 \begin{answer}
+  by letting $\alpha = 2 \sqrt{a}$ and $s = b$, the change is immediate. Then, using this result, we have that
 
+  \begin{align*}
+    k(x,z) &= e^{-\alpha \lVert x - z \rVert_2} \\
+    &= e^{-\alpha \sqrt{\lVert x - z \rVert_2^2}} \\
+    &= \frac{\alpha}{\sqrt{\pi}} \int_0^\infty e^{-\frac{\lVert x - z \rVert_2^2}{t^2}} e^{-(\frac{\alpha t}{2})^2} dt
+  \end{align*}
+
+  Now, using Thereom 16.4.1 about smoothed kernels, we have that $p(t) = \frac{\alpha}{\sqrt{\pi}} e^{-(\frac{\alpha t}{2})^2}$ and $k(t, x, z) = e^{-\frac{\lVert x - z \rVert_2^2}{t^2}}$ which is the Gaussian kernel parameterized by $1/t^2$. As $p(t)$ is integrable on $[0, \infty)$, Theorem 16.4.1 applies. Thus, we conclude that $e^{-\alpha \lVert x - z \rVert_2}$ is a kernel.
 \end{answer}
 
 \clearpage
 
 \begin{exercise}
-  Let $a > 0$ and $L_2 [0,a]$ denote the set of real valued square integrable functions on the interval $[0,a]$. $L_2[0,a]$ is a Hilbert space under the inner product $\langle g, h \rangle = \int_0^a g(s) h(s) ds$. For $f \in L_2[0,a]$, let $g(t) = \int_0^t f^2(s) ds$ and $h(t) = \int_t^a f^2)s_ ds$, where $t \in [0,a]$. Show that for each $a > 0$,
+  Let $a > 0$ and $L_2 [0,a]$ denote the set of real valued square integrable functions on the interval $[0,a]$. $L_2[0,a]$ is a Hilbert space under the inner product $\langle g, h \rangle = \int_0^a g(s) h(s) ds$. Show that for each $a > 0$,
 
   \begin{enumerate}[label=\alph*)]
     \item $k(x,z) = \min(x,z)$ is a kernel on $[0,a]$.
@@ -125,7 +240,43 @@
 \end{exercise}
 
 \begin{answer}
+  \
 
+  \begin{enumerate}[label=\alph*)]
+    \item Let $\phi(\cdot) = g_x(t) = \bm{1}_{\{t \leq x\}}$ be our feature map, then we get that the kernel is
+      \begin{align*}
+        k(x, z) &= \langle g_x, g_z \rangle \\
+        &= \int_0^a \phi_x(t) \phi_z(t) dt \\
+        &= \int_0^a \bm{1}_{\{t \leq x\}} \bm{1}_{\{t \leq z\}} dt \\
+        &= \int_0^a \bm{1}_{\{t \leq x \cap t \leq z\}} dt \\
+        &= \int_0^a \bm{1}_{\{t \leq \min(x,z)\}} dt \\
+        &= \int_0^{\min(x,z)} dt \\
+        &= \min(x,z)
+      \end{align*}
+
+    \item By changing the sign of the inequality in the indicator above, we get that the feature map is $\phi(\cdot) = g_x(t) = \bm{1}_{\{x \leq t\}}$ and the kernel becomes
+      \begin{align*}
+        k(x, z) &= \langle g_x, g_z \rangle \\
+        &= \int_0^a \phi_x(t) \phi_z(t) dt \\
+        &= \int_0^a \bm{1}_{\{x \leq t\}} \bm{1}_{\{z \leq t\}} dt \\
+        &= \int_0^a \bm{1}_{\{x \leq t \cap z \leq t\}} dt \\
+        &= \int_0^a \bm{1}_{\{\max(x,z) \leq t\}} dt \\
+        &= \int_{\max(x,z)}^a dt \\
+        &= a - \max(x,z)
+      \end{align*}
+
+    \item Simplifying the kernel, we get that
+      \begin{align*}
+        k(x, z) &= e^{-(\max(x,z) - \min(x,z))} \\
+        &= e^{\min(x,z)} \cdot e^{-a} \cdot e^{a - \max(x,z)}
+      \end{align*}
+
+      From parts a) and b), we get that $e^{\min(x,z)}$ and $e^{a - \max(x,z)}$ are kernels by 16.2.1. We also get that the above is the product of two kernels with a scalar. By the properties of kernels in 16.2.1, we have that the entire result is a kernel. We also have that $\max(x,z) - \min(x,z) = \lvert x - z \rvert$ (the plot is a v-shaped trough in the first quadrant) and so we conclude that $k(x,z) = e^{-\lvert x - z \rvert}$ is a kernel on $[0,a]$.
+
+    \item From the previous part, $k(x,z) = - \lvert x - z \rvert = \min(x,z) - a + a - \max(x,z)$ which is the sum of kernels and hence a kernel. By non-negative scaling, we also have that $k(x,z) = -\gamma \lvert x - z \rvert$ is a kernel. Again, by properties of 16.2.1, we have that $k(x,z) = e^{-\gamma \lvert x - z \rvert}$ is a kernel on $[0,a]$. We can extend this to $[-a,a]$ by repeating the steps in part a) to c) but with the inner product $\langle g, h \rangle = \int_{-a}^a g(s) h(s) ds$ and using $k(x,z) = \min(x,z) + a$ for part a).
+
+    \item From part d), we have kernels $\{K_a\}_{a > 0}$, taking the limit $\lim_{a \rightarrow \infty} K_a$ yields a kernel $k(x,z) = e^{-\gamma \lvert x - z \rvert}$ for $\gamma \geq 0$ and valid on $\mathbb{R}$.
+  \end{enumerate}
 \end{answer}
 
 \end{document}
