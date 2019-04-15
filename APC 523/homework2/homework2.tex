@@ -1,0 +1,122 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{datetime}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[makeroom]{cancel}
+\usepackage{afterpage}
+\usepackage{capt-of}
+\usepackage{bm}
+\usepackage{float}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newtheoremstyle{colon}{\topsep}{\topsep}{}{}{\bfseries}{:}{ }{}
+\theoremstyle{colon}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{answer}{Answer}
+
+\title{APC 523: Numerical Algorithms for Scientific Computing \\ Homework 2}
+\author{Zachary Hervieux-Moore}
+
+\newdate{date}{20}{04}{2019}
+\date{\displaydate{date}}
+
+\begin{document}
+
+\maketitle
+
+\clearpage
+
+\begin{exercise}
+  \textbf{"Barycentric" interpoloation formula}
+\end{exercise}
+
+\begin{answer}
+  \begin{enumerate}[label=\alph*)]
+    \item Recall the definitions:
+      \begin{gather*}
+        L_j(x) = \prod_{\substack{k = 0 \\ k \neq j}}^N \frac{x - x_k}{x_j - x_k} \\
+        p_N(x) = \sum_{j=0}^N f_j L_j(x)
+      \end{gather*}
+
+      Suppose we are interpolating $f(x) = 1$, then our interpolating function $p_N(x) = 1$ and all $f_j = 1$ and thus we have
+      \begin{gather*}
+        p_N(x) = \sum_{j=0}^N f_j L_j(x) = \sum_{j=0}^N L_j(x) = 1
+      \end{gather*}
+
+    \item Substituting their definitions, we get,
+      \begin{gather*}
+        \frac{w_j^{(N)}}{x-x_j} \cdot L^{(N)}(x) = \frac{\prod_{\substack{k = 0 \\ k \neq j}}^N \frac{1}{x_j - x_k}}{x - x_j} \cdot \prod_{k=0}^N (x - x_k) \\
+        = \prod_{\substack{k = 0 \\ k \neq j}} \frac{1}{x_j - x_k} \cdot \prod_{\substack{k = 0 \\ k \neq j}} x - x_k \\
+        = \prod_{\substack{k = 0 \\ k \neq j}} \frac{x - x_k}{x_j - x_k} = L_j(x)
+      \end{gather*}
+
+      Now, taking the definition, we have
+      \begin{gather*}
+        L_j(x_j) = \prod_{\substack{k = 0 \\ k \neq j}}^N \frac{x_j - x_k}{x_j - x_k} = 1
+      \end{gather*}
+
+      Thus, $L_j(x_j)=1$ and we have $L_k(x_j) = 0$ for $k \neq j$  since $L^{(N)}(x_j)/(x-x_j) = 0$. Thus, the logical branch is
+      \begin{gather*}
+        L_j(x) = \begin{cases}
+          \frac{w_j^{(N)}}{x-x_j} \cdot L^{(N)}(x), \text{ if } x \neq x_j \\
+          1, \text{ o.w.}
+        \end{cases}
+      \end{gather*}
+
+    \item Now, suppose $x = x_k$ for some $k$, then we have
+      \begin{gather*}
+        p_N(x_k) = \sum_{j=0}^N f_j L_j(x) = \sum_{j=0}^N f_j L_j(x_k) = f_k
+      \end{gather*}
+
+      Thus, we get that $p_N(x)$ can be rewritten as when substituing b) as
+      \begin{gather*}
+        p_N(x) = \begin{cases}
+          L^{(N)}(x) \sum_{j=0}^N \frac{w_j^{(N)}}{x-x_j} f_j, \quad x \neq x_0, \mathellipsis, x_N \\
+          f_k, \quad x = x_k
+        \end{cases}
+      \end{gather*}
+
+    \item Using our results
+      \begin{gather*}
+        \sum_{j=0}^N L_j(x) = 1 \\
+        L_j(x) = \frac{w_j^{(N)}}{x-x_j} \cdot L^{(N)}(x)
+      \end{gather*}
+
+      then,
+      \begin{gather*}
+        \sum_{j=0}^N \frac{w_j^{(N)}}{x-x_j} \cdot L^{(N)}(x) = 1 \\
+        \implies L^{(N)}(x) \sum_{j=0}^N \frac{w_j^{(N)}}{x-x_j} = 1
+      \end{gather*}
+
+      Now, injecting this into the denominator of part c) yields,
+      \begin{gather*}
+        p_N(x) = \begin{cases}
+          \frac{L^{(N)}(x) \sum_{j=0}^N \frac{w_j^{(N)}}{x-x_j} f_j}{L^{(N)}(x) \sum_{j=0}^N \frac{w_j^{(N)}}{x-x_j}}, \quad x \neq x_0, \mathellipsis, x_N \\
+          f_k, \quad x = x_k
+        \end{cases} \\
+        \implies p_N(x) = \begin{cases}
+          \frac{\sum_{j=0}^N \frac{w_j^{(N)}}{x-x_j} f_j}{\sum_{j=0}^N \frac{w_j^{(N)}}{x-x_j}}, \quad x \neq x_0, \mathellipsis, x_N \\
+          f_k, \quad x = x_k
+        \end{cases}
+      \end{gather*}
+
+    \item See the implementation in \texttt{question1.ipynb}
+
+    \item See the implementation in \texttt{question1.ipynb}
+
+  \end{enumerate}
+\end{answer}
+
+\end{document}
