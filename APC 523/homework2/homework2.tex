@@ -119,4 +119,194 @@
   \end{enumerate}
 \end{answer}
 
+\clearpage
+
+\begin{exercise}
+  \textbf{Chebyshev nodes of the second kind}
+\end{exercise}
+
+\begin{answer}
+  \begin{enumerate}[label=\alph*)]
+
+    \item See the implementation in \texttt{question2.ipynb}
+
+    \item See the implementation in \texttt{question2.ipynb}
+
+    \item See the implementation in \texttt{question2.ipynb}
+
+      \begin{enumerate}[label=\roman*)]
+        \item The maximum relative errors are listed below
+          \begin{center}
+            \begin{tabular}{ c | c }
+              Nodes & Relative error \\
+              \hline
+              4 & 1.58662e-2 \\
+              8 & 1.62741e-6 \\
+              16 & 1.03328e-13 \\
+            \end{tabular}
+          \end{center}
+
+        \item The maximum relative errors are listed below
+          \begin{center}
+            \begin{tabular}{ c | c }
+              Nodes & Relative error \\
+              \hline
+              4 & 1.25691 \\
+              8 & 3.67927 \\
+              16 & 51.0769 \\
+            \end{tabular}
+          \end{center}
+
+        \item The maximum relative errors are listed below for the $1^{st}$ kind
+          \begin{center}
+            \begin{tabular}{ c | c }
+              Nodes & Relative error \\
+              \hline
+              4 & 1.21570e-2 \\
+              8 & 4.84377e-7 \\
+              16 & 8.07804e-16 \\
+            \end{tabular}
+          \end{center}
+
+          The maximum relative errors are listed below for the $2^{nd}$ kind
+          \begin{center}
+            \begin{tabular}{ c | c }
+              Nodes & Relative error \\
+              \hline
+              4 & 1.17164e-2 \\
+              8 & 5.27579e-7 \\
+              16 & 1.02670e-15 \\
+            \end{tabular}
+          \end{center}
+
+        \item The maximum relative errors are listed below for the $1^{st}$ kind
+          \begin{center}
+            \begin{tabular}{ c | c }
+              Nodes & Relative error \\
+              \hline
+              4 & 7.50300e-1 \\
+              8 & 3.91740e-1 \\
+              16 & 8.31070e-2 \\
+            \end{tabular}
+          \end{center}
+
+          The maximum relative errors are listed below for the $2^{nd}$ kind
+          \begin{center}
+            \begin{tabular}{ c | c }
+              Nodes & Relative error \\
+              \hline
+              4 & 8.28912e-1 \\
+              8 & 4.59605e-1 \\
+              16 & 9.93219e-2 \\
+            \end{tabular}
+          \end{center}
+
+      \end{enumerate}
+
+    \item See the implementation in \texttt{question2.ipynb}.
+
+      \begin{enumerate}[label=\roman*)]
+        \item See the plots below. The slopes match the expected $\kappa$ as $N$ gets large enough.
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2dia.png}
+            \caption{Convergence of $f(x) = \lvert x \rvert$}
+          \end{figure}
+
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2dib.png}
+            \caption{Convergence of $f(x) = \lvert \sin(5 \pi x) \rvert^3$}
+          \end{figure}
+
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2dic.png}
+            \caption{Convergence of $f(x) = \lvert \sin(3 \pi x) \rvert^5$}
+          \end{figure}
+
+        \item See the plots below. The slopes are linear before rounding errors occur.
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2diia.png}
+            \caption{Convergence of $f(x) = \frac{1}{1+25x^2}$}
+          \end{figure}
+
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2diib.png}
+            \caption{Convergence of $f(x) = \sqrt{x+3}$}
+          \end{figure}
+
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2diic.png}
+            \caption{Convergence of $f(x) = \tan x$}
+          \end{figure}
+
+        \item See the plots below. The slopes do appear to curve increasingly steep before rounding errors occur for the first two functions. For the last function, $f(x) = \cos(100 \pi x)$, the number of zeroes in $[-1,1]$ are so great that even for $N=256$, there are not enough points to interpolate accurately.
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2diiia.png}
+            \caption{Convergence of $f(x) = \cosh x$}
+          \end{figure}
+
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2diiib.png}
+            \caption{Convergence of $f(x) = e^{-x^2}$}
+          \end{figure}
+
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=0.8\textwidth]{q2diiic.png}
+            \caption{Convergence of $f(x) = \cos(100 \pi x)$}
+          \end{figure}
+
+      \end{enumerate}
+
+  \end{enumerate}
+\end{answer}
+
+\begin{exercise}
+  \textbf{Chebyshev coefficients via the DCT}
+\end{exercise}
+
+\begin{answer}
+  \begin{enumerate}[label=\alph*)]
+
+    \item See the implementation in \texttt{question3.ipynb}
+
+    \item
+      \begin{enumerate}[label=\roman*)]
+        \item By inspection, the following Chebyshev polynomials satisfy the equation
+          \begin{gather*}
+            f(x) = T_4(x) + T_3(x) + 5 T_2(x) + 4 T_1(x) + 5 T_0(x)
+          \end{gather*}
+
+        \item See the implementation in \texttt{question3.ipynb}. It matches the above.
+      \end{enumerate}
+
+    \item The running times are in the table below. See the implementation in \texttt{question3.ipynb}.
+      \begin{center}
+        \begin{tabular}{ c | c }
+          Nodes & Time \\
+          \hline
+          $2^{10}$ & 330.6 $\mu$s \\
+          $2^{13}$ & 61.03 ms \\
+          $2^{13}$+1 & 520.0 $\mu$s \\
+          $2^{17}$ & 14.91 s \\
+          $2^{17}$+1 & 5.792 ms \\
+        \end{tabular}
+      \end{center}
+
+      The plot below shows the computation time for different number of nodes. Notice that the computation time rises somewhere between $O(k)$ (orange line) and $O(k^2)$ (green line).
+      \begin{figure}[H]
+        \centering
+          \includegraphics[width=0.8\textwidth]{q3c.png}
+        \caption{Computation Time vs. Number of Nodes}
+      \end{figure}
+  \end{enumerate}
+\end{answer}
+
 \end{document}
