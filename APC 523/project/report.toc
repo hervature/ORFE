@@ -1,0 +1,21 @@
+\contentsline {title}{Numerical integration of stochastic differential equations}{1}{section*.1}% 
+\tocdepth@munge 
+\contentsline {section}{\numberline {}Contents}{1}{section*.2}% 
+\tocdepth@restore 
+\contentsline {section}{\numberline {I}Introduction and background}{1}{section*.3}% 
+\contentsline {subsection}{\numberline {A}Motivation}{1}{section*.4}% 
+\contentsline {subsection}{\numberline {B}The Weiner Process}{2}{section*.5}% 
+\contentsline {subsection}{\numberline {C}Ito calculus}{3}{section*.6}% 
+\contentsline {subsection}{\numberline {D}Stratonovich calculus}{4}{section*.7}% 
+\contentsline {section}{\numberline {II}Algorithms to integrate stochastic differential equations}{5}{section*.8}% 
+\contentsline {subsection}{\numberline {A}Explicit Euler algorithm}{5}{section*.9}% 
+\contentsline {subsection}{\numberline {B}Milstein algorithm}{5}{section*.10}% 
+\contentsline {subsection}{\numberline {C}Semi-Implicit Euler}{5}{section*.11}% 
+\contentsline {section}{\numberline {III}Convergence and Stability}{5}{section*.12}% 
+\contentsline {subsection}{\numberline {A}Strong and weak convergence}{5}{section*.13}% 
+\contentsline {subsection}{\numberline {B}Stability}{6}{section*.14}% 
+\contentsline {section}{\numberline {IV}Results}{6}{section*.15}% 
+\contentsline {subsection}{\numberline {A}Geometric Brownian Motion}{6}{section*.16}% 
+\contentsline {subsection}{\numberline {B}Ornstein-Uhlenbeck Process}{10}{section*.17}% 
+\contentsline {section}{\numberline {V}Conclusions}{15}{section*.18}% 
+\contentsline {section}{\numberline {}References}{15}{section*.19}% 
