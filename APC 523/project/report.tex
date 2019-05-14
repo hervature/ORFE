@@ -1,10 +1,8 @@
+\documentclass[onecolumn,notitlepage,pra,10pt,aps]{revtex4-1}
 
-
-\documentclass[notitlepage,pra,10pt,aps]{revtex4-2}
-
-\usepackage{geometry}
-%\usepackage[hmargin=0.69in, vmargin=0.75in] {geometry}
-\geometry{letterpaper}
+\usepackage{geometry}  
+%\usepackage[hmargin=0.69in, vmargin=0.75in] {geometry}  
+\geometry{letterpaper}  
 %\usepackage{fullpage}
 %\topmargin 0cm
 \usepackage{bm}
@@ -41,6 +39,7 @@
 
 
 
+\usepackage{listings}
 
 
 \begin{document}
@@ -64,10 +63,10 @@
 % used to model lots of systems
 % solve fokker plank by simulating SDE
 % many techni
-In this course, we studied algorithms such as Runge-Kutta and Adams-Bashforth for solving systems of ordinary differential equations (ODEs).  However, in our research we occasionally encounter stochastic differential equations (SDEs): these models describe a wide variety of phenomena, from financial systems to quantum measurement.  Generally, any system whose evolution is continuous and has a non-deterministic evolution can be described by a set of SDEs.  This is equivalent to saying the probability density function of such a system obeys a Fokker-Plank equation (FPE), and indeed, the ability to map a FPE to an equivalent set of SDEs is a powerful solution method, regularly exploited in quantum optics \cite{Carmichael1999}, to treat FPEs which are otherwise difficult to solve.
+In this course, we studied algorithms such as Runge-Kutta and Adams-Bashforth for solving systems of ordinary differential equations (ODEs).  However, in our research we occasionally encounter stochastic differential equations (SDEs): these models describe a wide variety of phenomena, from financial systems to quantum measurement.  Generally, any system whose evolution is continuous and has a non-deterministic evolution can be described by a set of SDEs.  This is equivalent to saying the probability density function of such a system obeys a Fokker-Plank equation (FPE), and indeed, the ability to map a FPE to an equivalent set of SDEs is a powerful solution method, regularly exploited in quantum optics \cite{Carmichael1999}, to treat FPEs which are otherwise difficult to solve.  
 
 However, the solution of SDEs, both numerically and even analytically, is considerably different than their deterministic counterparts.  All but the most simple algorithms for ODEs cannot be directly adapted to their stochastic counterparts because of the non-differentiability of the noise portion of their evolution.  Furthermore, these algorithms when adapted to SDEs result in a lower order of convergence.
-There are only a few straightforward and broadly applicable algorithms for the solution of general systems of SDEs, which we present in this report. In addition, there are no widely-used python packages or libraries of SDE algorithms, and a naive attempt at solving a set of SDEs, for the reasons presented above, often ends in failure.  In this report, we consider the convergence and stability of three popular algorithms for solving SDEs:  Explicit Euler, Milstein, and Semi-Implicit Euler.  After presenting a background on SDEs, and describing each algorith, we discuss, evaluate and compare their convergence and stability properties.  We also wrote our own python SDE integrator class as a part of this project, the documentation for which is found in the appendix
+There are only a few straightforward and broadly applicable algorithms for the solution of general systems of SDEs, which we present in this report. In addition, there are no widely-used python packages or libraries of SDE algorithms, and a naive attempt at solving a set of SDEs, for the reasons presented above, often ends in failure.  In this report, we consider the convergence and stability of three popular algorithms for solving SDEs:  Explicit Euler, Milstein, and Semi-Implicit Euler.  After presenting a background on SDEs and describing each algorithm, we discuss, evaluate, and compare their convergence and stability properties.  We also wrote our own python SDE integrator class as a part of this project, the documentation for which is found in the appendix.
 
 \subsection{The Weiner Process}
 \label{subsec:Weiner}
@@ -90,15 +89,19 @@ p(W, t| 0, t_0)=[(2\pi)(t-t_0)]^{-\frac{1}{2}}e^{\frac{-W^2}{2(t-t_0)}} \label{e
 with zero mean $\expect{{W}(t)}=0$ and  linearly growing variance \cite{Gardiner2004} $\expect{W(t)^2}=t-t_0$. The Weiner process can be thought of as the limit of a continuous-time random walk.
 
 
- If one breaks the Weiner process into increments (which we will do shortly when solving SDEs) ${\Delta W_i}=W(t_i)-{W}(t_{i-1})$, from Eq.~\eqref{eq:pwien} we have the joint probability density $p({\Delta W_n}; {\Delta W_{n-1}};\dots{\Delta W_0})=\prod_{i=1}^n(2\pi\Delta t_i)^{-\frac{1}{2}}e^{\frac{-{\Delta W}_i^2}{2\Delta t_i}}p(W_0, t_0)$ \cite{Gardiner2004}.  Since the joint probability can been factorized into a product of individual probabilities for each Wiener increment  ${\Delta W_i}$, the $\{ {\Delta W_i}\}$ are statistically independent from each other.  Using this independence of increments, it can be seen that
+ If one breaks the Weiner process into increments (which we will do shortly when solving SDEs) ${\Delta W_i}=W(t_i)-{W}(t_{i-1})$, from Eq.~\eqref{eq:pwien} we have the joint probability density  \cite{Gardiner2004}:
 \be
- \expect{{W}(t){W}(s)}=\min(t, s). \label{eq:Wcov}
+p({\Delta W_n}; {\Delta W_{n-1}};\dots{\Delta W_0})=\prod_{i=1}^n(2\pi\Delta t_i)^{-\frac{1}{2}}e^{\frac{-{\Delta W}_i^2}{2\Delta t_i}}p(W_0, t_0). \label{eq:probdens}
+\ee
+  Since the joint probability can been factorized into a product of individual probabilities for each Wiener increment  ${\Delta W_i}$, the $\{ {\Delta W_i}\}$ are statistically independent from each other.  Using this independence of increments, it can be seen that
+\be
+ \expect{{W}(t){W}(s)}=\min(t, s). \label{eq:Wcov} 
 \ee
 Lastly, the Wiener process is non-differentiable, since $\lim_{h\to 0} {\rm Prob}(|W(t+h)-W(t)|/h>k)=\lim_{h\to 0} 2\int_{kh}^\infty (2\pi h)^{-\frac{1}{2}}e^{\frac{-W^2}{2h}}dW = 1$.  Thus the derivative is infinite, since $\lim_{h\to 0} |W(t+h)-W(t)|/h$ is larger than any value of $k$.
 
 Because of this non-differentiablity, we should instead consider the integral form of  Eq.~\eqref{eq:lang}:
 \be
-x(t)=x(0)+\int_0^t A(x(s), s)+\int_0^t B(x(s), s) dW(s). \label{eq:ilang}
+x(t)=x(t_0)+\int_{t_0}^t A(x(s), s)ds+\int_{t_0}^t B(x(s), s) dW(s). \label{eq:ilang}
 \ee
 where
 \be
@@ -111,20 +114,20 @@ is the Wiener increment.
 %%%
 Now once the Wiener increment has been defined, the question immediately arises of how to evaluate a stochastic integral, such as the final term of Eq.~\eqref{eq:ilang}.  Defining the stochastic integral $S=\int f(t')dW(t')$ as the $n\to\infty$ limit of partial sums:
 \be
-S_n\sum_i^n f(\tau_i)\left(W(t_i)-W(t_{i-1})\right),
+S_n=\sum_i^n f(\tau_i)\left(W(t_i)-W(t_{i-1})\right),
 \ee
-it is apparent that the value of this quantity depends on where $\tau_i$ falls in the interval $t_{i-1}\to t_i$.  The Ito calculus is defined by the choice $\tau_i=t_{i-1}$ so that the Ito stochastic integral is
+it is apparent that the value of this quantity depends on where $\tau_i$ falls in the interval $t_{i-1}\to t_i$.  The Ito calculus is defined by the choice $\tau_i=t_{i-1}$ so that the Ito stochastic integral is 
 \be
 \int_{t_0}^t f(t')dW(t')=\lim_{n\to\infty} \sum_i^n f(t_{i-1})\left(W(t_i)-W(t_{i-1})\right) \label{eq:ItoInt}
 \ee
-where the limit above is technically the mean square limit, indicating that the mean of the sequence converges to this value.  For a non-anticipating (ie.e.~physical) function, $f(t)$ in the Ito integral will be statistically independent of the Weiner increment and since  $\expect{dW(t)}=0$
+where the limit above is technically the mean square limit, indicating that the mean of the sequence converges to this value.  For a non-anticipating (ie.e.~physical) function, $f(t)$ in the Ito integral will be statistically independent of the Weiner increment and since  $\expect{dW(t)}=0$ 
 \be
 \expect{\int_{t_0}^t f(t')dW(t')}=0 \label{eq:meandw}
 \ee
 Furthermore, a straightforward application of Eq.~\eqref{eq:Wcov} to Eq.~\eqref{eq:Winc} gives $\expect{dW(t)^2}=dt$. It is also straightforward to derive $\int f(t') dW(t')^2=\lim_{n\to\infty} \sum_i^n f(t_{i-1})\left(W(t_i)-W(t_{i-1})\right)^2=\lim_{n\to\infty} \sum_i^n f(t_{i-1})\Delta t_i=\int f(t') dt'$.     Since $dW(t')$ only appears under an integral, we can therefore make the identification for Ito calculus that
 $
-dW(t)^2=dt
-$.  This can be quickly extended to multi-dimensional systems $d\mathbf{W}$ and using the statistical independence of components $dW_i(t)$ and $dW_j(t)$ we have
+dW(t)^2=dt 
+$.  This can be quickly extended to multi-dimensional systems $d\mathbf{W}$ and using the statistical independence of components $dW_i(t)$ and $dW_j(t)$ we have 
   \be
   dW_i(t)dW_j(t)=\delta_{ij}dt \quad \quad
   dW_i(t)^{2+n}=0  \label{eq:dw2}
@@ -132,9 +135,9 @@ $.  This can be quickly extended to multi-dimensional systems $d\mathbf{W}$ and 
 
 These results can be readily understood by treating $dW(t)$ as an infinitesimal of order $\frac{1}{2}$, thus  $dW(t)^2=dt$ and $dW(t)^{2+n}=0$ since it is an infinitesimal of order greater than 1.  Now that an understanding of the Wiener process has been developed, we can define the Ito SDE for a multidimensional stochastic quantity $\mathbf{x}(t)$
 \be
-d\mathbf{x}(t)=\mathbf{A}(\mathbf{x}, t)dt+\mathbf{B}(\mathbf{x}, t)d\mathbf{W}
+d\mathbf{x}(t)=\mathbf{A}(\mathbf{x}, t)dt+\mathbf{B}(\mathbf{x}, t)d\mathbf{W}\label{eq:sde}
 \ee
-solved by
+solved by 
 \be
 \mathbf{x}(t)=\mathbf{x}(t_0)+\int_{t_0}^t \mathbf{A}(\mathbf{x}, t')dt'+\int_{t_0}^t \mathbf{B}(\mathbf{x}, t)d\mathbf{W}(t').\label{eq:intsde}
 \ee
@@ -146,10 +149,10 @@ df(\mathbf{x})=&f(\mathbf{x}+d\mathbf{x})-f(\mathbf{x})=\partial_{x_i}f(\mathbf{
 \end{align}
 where in the both lines we drop all terms of order greater than $dt$ (note that we needed to continue the expansion to second order to produce all terms of order $dt$, unlike in standard calculus), and used Eq.~\eqref{eq:dw2} to yield the second line. Grouping terms we arrive at Ito's formula:
 \be
-df(\mathbf{x})=\left(A_i(\mathbf{x})\partial_{x_i}f(\mathbf{x})+ \frac{1}{2} \left[\mathbf{B}(\mathbf{x})\mathbf{B}^T(\mathbf{x})\right]_{ij}\partial_{x_i}\partial_{x_j}f(\mathbf{x})\right)dt
+df(\mathbf{x})=\left(A_i(\mathbf{x})\partial_{x_i}f(\mathbf{x})+ \frac{1}{2} \left[\mathbf{B}(\mathbf{x})\mathbf{B}^T(\mathbf{x})\right]_{ij}\partial_{x_i}\partial_{x_j}f(\mathbf{x})\right)dt  
 +B_{ij}(\mathbf{x})\partial_{x_i}f(\mathbf{x})dW_j \label{eq:itos}
 \ee
- which is used to derive SDEs for arbitrary functions of a fundamental stochastic variable $\mathbf{x}(t)$
+ which is used to derive SDEs for arbitrary functions of a fundamental stochastic variable $\mathbf{x}(t)$ 
 
 %%%
 \subsection{Stratonovich calculus}
@@ -164,7 +167,7 @@ where the additional subscript $S$ differentiates this from an Ito stochastic in
 \lim_{n\to\infty} \sum_i^n f(x(\frac{t_i+t_{i-1}}{2}))\left(W(t_i)-W(t_{i-1})\right)=& \lim_{n\to\infty} \sum_i^n f(x(t_{i-1}))\left(W(t_i)-W(t_{i-1})\right) \nonumber \\
 +&\frac{1}{2}\sum_i^n B(x(t_{i-1}))\partial_x B(x(t_{i-1}))(t_i-t_{i-1})\nonumber
 \end{align}
-The first term on the right side is the Ito integral, and the second is a standard integral over time and can thus be  grouped in with the integration over the drift vector.  In general, an Ito SDE $d\mathbf{x}=\mathbf{A}^{\rm Ito}dt+\mathbf{B}d\mathbf{W}$ is equivalent to the Stratonovich SDE $d\mathbf{x}=\mathbf{A}^{\rm strat}dt+\mathbf{B}d\mathbf{W}$ with $\mathbf{A}^{\rm strat}=\mathbf{A}^{\rm Ito}+\mathbf{A}^{\rm corr}$, with
+The first term on the right side is the Ito integral, and the second is a standard integral over time and can thus be  grouped in with the integration over the drift vector.  In general, an Ito SDE $d\mathbf{x}=\mathbf{A}^{\rm Ito}dt+\mathbf{B}d\mathbf{W}$ is equivalent to the Stratonovich SDE $d\mathbf{x}=\mathbf{A}^{\rm strat}dt+\mathbf{B}d\mathbf{W}$ with $\mathbf{A}^{\rm strat}=\mathbf{A}^{\rm Ito}+\mathbf{A}^{\rm corr}$, with 
 \be
 {A}^{\rm corr}_i=-\frac{1}{2}\sum_{jk}B_{kj}\partial_{x_k}B_{ij}
 \label{eq:Acorr}
@@ -173,17 +176,144 @@ The first term on the right side is the Ito integral, and the second is a standa
 \be
 df(\mathbf{x})=\left(\mathbf{A}^{\rm strat}dt+\mathbf{B}d\mathbf{W}\right)f'(\mathbf{x})
 \ee
-
-
+%%%
 \section{Algorithms to integrate stochastic differential equations}
+%%%
+We now consider how to numerically integrate SDEs of the form presented in Eq.~\eqref{eq:sde}.  We will assume we are discussing Ito SDEs in much of what follows, noting that one can convert between formulations via Eq.~\eqref{eq:Acorr}.  Furthermore, most of the discussion assumes a 1-D system of SDEs for simplicity, but we also give the n-D forms of the Explicit and Semi-Implicit Euler algorithms, which are implemented in our SDE integrator code.
+
+Consider a 1-D SDE of the form presented in Eq.~\eqref{eq:ilang}.  Integrating Ito's formula Eq.~\eqref{eq:itos} we have:
+\be
+f({x}(s))=f(x(t_0)) +\int_{t_0}^s\left(A({x}(s'))f'({x}(s'))+ \frac{1}{2} B^2(x(s'))f''({x}(s'))\right)ds'
++\int_{t_0}^sB(x(s'))f'(x(s'))dW(s') \label{eq:itos2}
+\ee
+This can then be used to evaluate $A(x(t))$ and $B(x(t))$ in Eq.~\eqref{eq:ilang}.  Substituting this in and dropping explicit time-dependence of these coefficients for simplicity we have: \cite{Gardiner2004}
+\be
+x(t)=x(t_0)+A(x(t_0))\int_{t_0}^t ds + B(x(t_0))\int_{t_0}^t dW(s) + B(x(t_0))B'(x(t_0))\int_{t_0}^t \int_{t_0}^s dW(s)dW(s') +\mathcal{R}
+\label{eq:Inta}
+\ee
+where $\mathcal{R}$ includes stochastic integrals of order $dW(s)ds'$ and higher in $t-t_0$.  In this form, it is clear that the  numerical integration of  an SDE is arrived at via the mapping $(t_0, t)\to (t_k, t_{k+1})$ in  Eq.~\eqref{eq:Inta}.  Defining the timestep $\Delta t =t_{k+1}- t_{k}$, we have 
+\be
+\int_{t_k}^{t_{k+1}} dW(s)= W(t_{k+1})- W(t_{k})= \Delta W_k=\sqrt{\Delta t}\mathcal{N}(0,1) \label{eq:Winc2}
+\ee
+where we discretized Eq.~\eqref{eq:ItoInt} in the first equality and used the properties of the Weiner process, particularly Eq.~\eqref{eq:probdens} to arrive at the second.  $\mathcal{N}(0,1)$ is a sampling from the Gaussian distribution with zero mean and unit variance, the $\sqrt{\Delta t}$ factor satisfies $\expect{\Delta W_k\Delta W_{k'}}=\Delta t\delta_{k, k'}$ as required from the discussion of the Weiner process.
 
 \subsection{Explicit Euler algorithm}
 
+From here, we can immediately arrive at the Explicit Euler algorithm by retaining and discretizing the two single integrals of Eq.~\eqref{eq:Inta}, resulting in 
+\be
+\boxed{
+{\rm Explicit\, Euler:}\quad x_{k+1} = x_{k} + A(x_k)\Delta t +B(x_k) \Delta W_k \label{eq:EEuleralg}
+}
+\ee
+This is clearly an explicit algorithm, since $x_{k+1}$ depends only on $x_k$.  Since the As we will further ito stochastic integral defines the integrand evaluation at the beginning of each interval, an explicit algorithm is the only self-consistent simulation of an Ito SDE.  As explore in the next section, this algorithm is only convergent to order $\Delta t$ at best due to the discarded terms in $\mathcal{R}$.  Actually, the situation is even worse, since the double stochastic integral which was also discarded has zero mean but is of order $\Delta t$ itself, resulting in sample trajectories only converging to the true solution on order $\sqrt{\Delta t}$.  Despite this flaw, the Explicit Euler algorithm is popular due to its speed, which allows for many trajectories to be simulated simultaneously.  It can also readily be extended to higher dimensions.  For a general, $n$-D system with $m$ independent Weiner increments and potential explicit-time-dependence, the Explicit Euler algorithm is 
+\be
+\boxed{
+{\rm General\, Explicit\, Euler:}\quad \mathbf{x}_{k+1} = \mathbf{x}_{k} + \mathbf{A}(\mathbf{x}_k, t_k)\Delta t +\mathbf{B}(\mathbf{x}_k) \Delta \mathbf{W}_k
+}
+\ee
+where each element of the $m$-dimensional Weiner increment vector is a different random Gaussian sample:
+\be
+(\Delta {W}_k)_i=\sqrt{\Delta t}(\mathcal{N}(0,1))_i
+\ee
+
 \subsection{Milstein algorithm}
+
+The Milstein algorithm is the obvious (at least from the way this discussion was constructed) extension to the Explicit Euler algorithm: we also retain and discretize the third stochastic integral of Eq.~\eqref{eq:Inta}.  In one dimension, this is straightforward to evaluate \cite{Gardiner2004}
+\be
+\int_{t_k}^{t_{k+1}} \int_{t_k}^s dW(s)dW(s')
+=\int_{t_k}^{t_{k+1}}  \big(W(s)-W(t_k)\big)dW(s)
+%=\frac{1}{2}\big(((W(t_{k+1})-W(t_k))^2- (t_{k+1}-t_{k})\big)
+=\frac{1}{2}\big(\Delta W_k^2-\Delta t\big) \label{eq:doubleSint}
+\ee
+
+Adding this resultant term to Eq.~\eqref{eq:EEuleralg} gives 
+\be
+\boxed{
+{\rm Milstein:}\quad x_{k+1} = x_{k} + A(x_k, t_k)\Delta t +B(x_k, t_k) \Delta W_k +C(x_k, t_k) \big(\Delta W_k^2-\Delta t\big)
+ \label{eq:MillAlg}
+}
+\ee
+where
+\be
+C(x, t)=\frac{1}{2}B(x,t)\partial_x B(x, t)
+\ee
+Can either be a function passed directly to the algorithm or be approximated by numerically differentiating $B$.  By definition $\expect{\Delta W_k^2-\Delta t}=0$, so this has the same convergence properties in the distribution to the  explicit Euler algorithm, however for individual trajectories it is now convergent to order $\Delta t$.  This is a striking example of the difference between ODEs and SDEs: because $dW$ is of order $\sqrt{\Delta t}$, we need to evaluate stochastic integrals to twice the order of ordinary integrals to achieve the same convergence.  Further complicating this is the fact that higher-order simulations require the evaluation of stochastic integrals such as $\int_{t_k}^{t_{k+1}} \int_{t_k}^s s dW(s')$ or $ \int_{t_k}^{t_{k+1}} \int_{t_k}^s \int_{t_k}^{s'}dW(s)dW(s')dW(s'')$, none of which can be expressed directly in terms of $\Delta W_k$ and must be computed explicitly \cite{Gardiner2004}.  As a result, one is typically forced to accept that a much smaller time-step is needed to achieve the same accuracy.
+
+The extension of the Milstein algorithm to higher-dimensions is not just difficult analytically; it is also so computationally expensive that is not worthwhile \cite{Haugh2017}.  The difficulty arises in evaluating the higher-dimensional form of Eq.~\eqref{eq:doubleSint}:
+$\int_{t_k}^{t_{k+1}} \int_{t_k}^s dW_i(s)dW_j(s')$, which cannot be expressed in terms of a Weiner increment unless $i=j$
+
 
 \subsection{Semi-Implicit Euler}
 
+The final algorithm we consider in this work is the Semi-Implicit Euler algorithm.  This is best thought of the direct-application of the Euler algorithm to a Stratonovich SDE of the form of  Eq.~\eqref{eq:ilang}.  Recalling that we used Ito's formula to derive Eq.~\eqref{eq:Inta}, in Statonovich calculus the appropriately discretized equation for a scalar Stratonovich SDE is
+\be
+\boxed{
+{\rm Semi-Implicit\, Euler:}\quad x_{k+1} = x_{k} + A^{\rm Strat}(\frac{x_{k+1}+x_k}{2},\frac{t_{k+1}+t_k}{2} )\Delta t +B(\frac{x_{k+1}+x_k}{2}, \frac{t_{k+1}+t_k}{2}) \Delta W_k \label{eq:SEulerAlg}
+}
+\ee
+Where as before, $A^{\rm strat} = A^{\rm Ito}+ A^{\rm corr}$ via Eq.~\eqref{eq:Acorr}.   This algorithm discards the double stochastic integral term, as the Explicit Euler algorithm did, and is only strongly convergent of order $\sqrt{\Delta t}$ as a consequence.  However, it is again weakly convergent of order $\Delta t$ and for many practical problems results are found to converge far quicker than for explicit methods \cite{Drummond1991, Gardiner2004}.  More importantly, it has far better stability than either explicit method considered, as will be discussed in the next section.  Thus, it is often the case that it is worthwhile to transform a set of Ito SDEs to an equivalent set of Stratonovich SDEs and then simulate them via the Semi-Implicit Euler algorithm (Note that $A^{\rm corr}$ can be readily  approximated from an Ito SDE via numerical differentiation).
+
+As with the explicit Euler method, the Semi-Implicit Euler algorithm is also easy to extend to an $n$-dimensional system of SDEs:
+
+\be
+\boxed{
+{\rm Semi-Implicit\, \, Euler:}\quad \mathbf{x}_{k+1} = \mathbf{x}_{k} + \mathbf{A}^{\rm Strat}(\frac{\mathbf{x}_{k+1}+\mathbf{x}_k}{2},\frac{t_{k+1}+t_k}{2})\Delta t 
++\mathbf{B}(\frac{\mathbf{x}_{k+1}+\mathbf{x}_k}{2},\frac{t_{k+1}+t_k}{2}) \Delta \mathbf{W}_k
+} \label{eq:SEulerAlg2}
+\ee
+In order to numerically solve Eq.~\eqref{eq:SEulerAlg2}, the algorithm must employ some kind of root-finding mechanism.  Often simply iterating a few times is sufficient.  Below is a code snippet from our  Semi-Implicit Euler integrator which implements this:
+\begin{lstlisting}
+x[:, 0]=x0
+Weiners = local_state.normal(size=(m, N-1))
+for k in range(N-1):
+  xtemp = x[:, k]
+  for l in range(Niters):
+    xtemp =  x[:, k] + Dt*Af(xtemp, tspan[k]+Dt/2)/2  \
+    + np. sqrt(Dt)*Bf(xtemp, tspan[k]+Dt/2) @ Weiners[:, k]/2
+  x[:, k+1] = 2*xtemp-x[:, k]
+\end{lstlisting}
+
 \section{Convergence and Stability}
+
+\subsection{Stability}
+
+In this section, we very briefly discuss the stability of the numerical schemes presented above when applied to a simple linear SDE:
+\be
+dx= \lambda x dt +dW,
+\ee
+following Ref.~\onlinecite{Gardiner2004}.  For both the Explicit Euler and Milstein algorithms we have
+\be
+x_{k+1}=(1+\lambda \Delta t)x_k + \Delta W_k
+\ee
+If we consider the evolution of an error which occurred at time $k$ for trajectory $x'$ relative to the ``true trajectory'' $x$ we have
+\be
+|x'_{k+1}-x_{k+1}|=|1+\lambda \Delta t||x'_{k}-x_{k}| 
+\ee
+(since the Weiner increments are the same).  After $n$ timesteps this becomes
+
+\be
+|x'_{k+n}-x_{k+n}|=|1+\lambda \Delta t|^n|x'_{k}-x_{k}| .
+\ee
+It is thus apparent that for these explicit schemes, errors will grow exponentially and the algorithm will thus be unstable unless
+\be
+{\rm Explicit\, Schemes}: |1+\lambda \Delta t|<1
+\ee
+The region of stability is thus a disk of radius $1/\Delta t$ centered on $\lambda=-1/\Delta t$.
+
+For the Semi-Implicit Euler algorithm we instead have 
+\be
+x_{k+1}=(1+\lambda \Delta t)\frac{x_{k+1}+x_k}{2} + \Delta W_k
+\ee
+Carrying out the same process as above, it is quickly seen that
+\be
+|x'_{k+n}-x_{k+n}|=\left|\frac{1+\lambda \Delta t/2}{1+\lambda \Delta t/2}\right|^n|x'_{k}-x_{k}| .
+\ee
+and the semi Implicit Euler algorithm is thus stable for  $|{1+\lambda \Delta t/2}|>|{1+\lambda \Delta t/2}|$, equivalently:
+\be
+{\rm Semi-Implicit\, Euler}: {\rm Re}\{\lambda\}<0
+\ee
+Indeed, the Semi-Implicit Euler algorithm is A-stable: whenever the exact solution is stable (sample paths not diverging) the algorithm is as well (error does not grow).  This is in contrast to what was seen for the explicit algorithms, which have a much smaller region of stability and can be unstable even if the SDE itself is not.  This has the effect of significantly restricting the maximum $\Delta t$ beyond what was needed for convergence.
+
 \subsection{Strong and weak convergence}
 
 Just as probability theory has multiple notions of convergence (in distribution, in probability, etc.), there are two notions of convergence in the numerical analysis of stochastic differential equations. The first is strong convergence which is completely analogous to the convergence in $L^1$ norm of probability. Something is strongly convergent if:
@@ -212,7 +342,7 @@ Loosely speaking, it is weakly convergent if the expected absolute difference be
 
 In practice, requiring strong convergence is too much. Chiefly, it is often the case that the actual distribution of the process is unknown. However, we may know the moments of the process in which case weak convergence is readily available to test against. Also, in applications that care only about the end point such as European options pricing, we do not need strong convergence. This is often the case where we do not care how a particle gets to a position as long as the final position is accurate.
 
-For completeness, the rates of convergences for the algorithms discussed are shown bellow:
+For completeness, the rates of convergences for the algorithms discussed are shown below:
 
 \begin{center}
   \begin{tabular}{c | c | c}
@@ -226,7 +356,13 @@ For completeness, the rates of convergences for the algorithms discussed are sho
   \end{tabular}
 \end{center}
 
-\subsection{Stability}
+
+\subsection{Computational resources}
+A nice feature of solving a set of SDEs is that the calculation of large sets of individual trajectories is parallelizable.  Even in this case however, it is worth questioning where one should dedicate computational resources.  If they are used to  reduce the SDE step-size $\Delta t$, the stability and convergence of individual sample paths will increase and they will approach those of the true underlying distribution.  Increasing the number of trajectories calculated (and used to evaluate various functions and moments) reduces the sampling error. It is shown in Ref.~\cite{Haugh2017}  that the mean squared error can be minimized for 
+\be
+N_{\rm steps}= \frac{T}{\Delta t} \propto C^{1/(2\beta+1)} \quad N_{\rm samps} \propto C^{2\beta/(2\beta+1)}
+\ee
+such that the total computational resources $C=N_{\rm steps}N_{\rm samps}$ is fixed.
 
 \section{Results}
   \subsection{Geometric Brownian Motion}
@@ -323,7 +459,7 @@ For completeness, the rates of convergences for the algorithms discussed are sho
     \caption{The histogram of 1000 sample path endpoints. The red line is the estimated normal. The dotted black line is the theoretical distribution.}
   \end{figure}
 
-  Finally, we compare the different schemes and their convergence rates. For the OU process, we are able to analytically determin $\lvert X_T - X_T^{\delta t} \rvert$ because everything is a Gaussian and thus the absolute value of the difference is a well known folded normal distribution. For the Euler scheme, we get that the convergence rates for both strong and weak seems to equal exactly 1.
+  Finally, we compare the different schemes and their convergence rates. For the OU process, we are able to analytically determin $\lvert X_T - X_T^{\delta t} \rvert$ because everything is a Gaussian and thus the absolute value of the difference is a well known folded normal distribution. For the Euler scheme, we get that the convergence rates for both strong and weak seems to equal exactly 1. This is different than the weak convergence rate of 1 and strong convergence rate of 1/2 expected from theory, but the OU process is so well behaved that you do not see the reducting in strong convergence rates.
 
   \begin{figure}[H]
     \centering

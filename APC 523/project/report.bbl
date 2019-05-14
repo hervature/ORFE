@@ -10,4 +10,13 @@ C.~W. Gardiner, {\em {Handbook of Stochastic Methods - For Physics, Chemisty,
   and the Natural Sciences}}.
 \newblock Springer, 3~ed., 2004.
 
+\bibitem{Haugh2017}
+M.~Haugh, {\em {Simulating Stochastic Differential Equations}}.
+\newblock 2017.
+
+\bibitem{Drummond1991}
+P.~D. Drummond and I.~K. Mortimer, ``{Computer simulations of multiplicative
+  stochastic differential equations},'' {\em Journal of Computational Physics},
+  vol.~93, no.~1, pp.~144--170, 1991.
+
 \end{thebibliography}

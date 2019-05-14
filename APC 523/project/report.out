@@ -10,10 +10,11 @@
 \BOOKMARK [2][-]{section*.10}{Milstein algorithm}{section*.8}% 10
 \BOOKMARK [2][-]{section*.11}{Semi-Implicit Euler}{section*.8}% 11
 \BOOKMARK [1][-]{section*.12}{Convergence and Stability}{section*.1}% 12
-\BOOKMARK [2][-]{section*.13}{Strong and weak convergence}{section*.12}% 13
-\BOOKMARK [2][-]{section*.14}{Stability}{section*.12}% 14
-\BOOKMARK [1][-]{section*.15}{Results}{section*.1}% 15
-\BOOKMARK [2][-]{section*.16}{Geometric Brownian Motion}{section*.15}% 16
-\BOOKMARK [2][-]{section*.17}{Ornstein-Uhlenbeck Process}{section*.15}% 17
-\BOOKMARK [1][-]{section*.18}{Conclusions}{section*.1}% 18
-\BOOKMARK [1][-]{section*.19}{References}{section*.1}% 19
+\BOOKMARK [2][-]{section*.13}{Stability}{section*.12}% 13
+\BOOKMARK [2][-]{section*.14}{Strong and weak convergence}{section*.12}% 14
+\BOOKMARK [2][-]{section*.15}{Computational resources}{section*.12}% 15
+\BOOKMARK [1][-]{section*.16}{Results}{section*.1}% 16
+\BOOKMARK [2][-]{section*.17}{Geometric Brownian Motion}{section*.16}% 17
+\BOOKMARK [2][-]{section*.18}{Ornstein-Uhlenbeck Process}{section*.16}% 18
+\BOOKMARK [1][-]{section*.19}{Conclusions}{section*.1}% 19
+\BOOKMARK [1][-]{section*.20}{References}{section*.1}% 20
