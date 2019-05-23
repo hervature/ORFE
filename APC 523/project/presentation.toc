@@ -1,6 +1,0 @@
-\select@language {english}
-\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
-\beamer@subsectionintoc {1}{1}{Background}{4}{0}{1}
-\beamer@sectionintoc {2}{SDE integration algorithms}{7}{0}{2}
-\beamer@sectionintoc {3}{Convergence}{11}{0}{3}
-\beamer@sectionintoc {4}{Results}{13}{0}{4}

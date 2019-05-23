@@ -1,6 +1,0 @@
-\beamer@sectionintoc {1}{Review \& Problem Formulation}{3}{0}{1}
-\beamer@subsectionintoc {1}{1}{Review}{3}{0}{1}
-\beamer@sectionintoc {2}{ADMM and Neural Networks}{5}{0}{2}
-\beamer@subsectionintoc {2}{1}{Toy Example}{5}{0}{2}
-\beamer@subsectionintoc {2}{2}{ADMM and GANs}{7}{0}{2}
-\beamer@subsectionintoc {2}{3}{Problems and Possible Extensions}{9}{0}{2}

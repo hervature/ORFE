@@ -5,3 +5,16 @@ __pycache__/
 *.ipynb_checkpoints
 
 .DS_STORE
+
+# LaTeX files
+*.log
+*.toc
+*.fdb_latexmk
+*.out
+*.nav
+*.blg
+*.fls
+*.bbl
+*.synctex.gz
+*.aux
+*.snm
