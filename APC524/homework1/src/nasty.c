@@ -22,9 +22,9 @@ int main()
     double xold = x;
     double dxold = dx;
     
-    t += dt;
     x += dt * dxold;
     dx += dt * (cos(0.5*t) - xold - 0.5*dxold);
+    t += dt;
     printf("%15.8f %15.8f %15.8f\n", t, x, dx);
   }
   printf("\n");
@@ -39,9 +39,9 @@ int main()
     double xold = x;
     double dxold = dx;
     
-    t += dt;
     x += dt * dxold;
     dx += dt * (cos(0.5*t) - xold - 0.5*dxold);
+    t += dt;
     printf("%15.8f %15.8f %15.8f\n", t, x, dx);
   }
   printf("\n");
@@ -56,9 +56,9 @@ int main()
     double xold = x;
     double dxold = dx;
     
-    t += dt;
     x += dt * dxold;
     dx += dt * (cos(0.5*t) - xold - 0.5*dxold);
+    t += dt;
     printf("%15.8f %15.8f %15.8f\n", t, x, dx);
   }
   printf("\n");
@@ -74,9 +74,9 @@ int main()
     double xold = x;
     double dxold = dx;
     
-    t += dt;
     x += dt * dxold;
     dx += dt * (cos(2.0*t) - xold - 0.5*dxold);
+    t += dt;
     printf("%15.8f %15.8f %15.8f\n", t, x, dx);
   }
   printf("\n");
@@ -91,9 +91,9 @@ int main()
     double xold = x;
     double dxold = dx;
     
-    t += dt;
     x += dt * dxold;
     dx += dt * (cos(2.0*t) - xold - 0.5*dxold);
+    t += dt;
     printf("%15.8f %15.8f %15.8f\n", t, x, dx);
   }
   printf("\n");
@@ -108,9 +108,9 @@ int main()
     double xold = x;
     double dxold = dx;
     
-    t += dt;
     x += dt * dxold;
     dx += dt * (cos(2.0*t) - xold - 0.5*dxold);
+    t += dt;
     printf("%15.8f %15.8f %15.8f\n", t, x, dx);
   }
   printf("\n");
