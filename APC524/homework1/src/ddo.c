@@ -30,10 +30,10 @@ int ddo_dynamics(int n, double t, const double *x, double *Dx)
   // For vectorizing n-th order ODE
   for (int i = 0; i < n - 1; i++)
   {
-    Dx[0] += x[i+1];
+    Dx[0] = x[i+1];
   }
 
-  Dx[n-1] += cos(omega*t) - omega_0*omega_0*x[0] - 2*beta*x[1];
+  Dx[n-1] = cos(omega*t) - omega_0*omega_0*x[0] - 2*beta*x[1];
 
   return 0;
 }
