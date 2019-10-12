@@ -66,8 +66,8 @@ int integrator_step(Integrator *integrator, double t, double *x)
     /* 2nd-order Adams-Bashforth algorithm for dx */
     for (int i = 0; i < n; ++i)
     {
-      x[i] += 3.0/2.0*integrator->dt * fx[i] - 1/2.0*integrator->dt * fx_prev[i];
       integrator->x_prev[i] = x[i];
+      x[i] += 3.0/2.0*integrator->dt * fx[i] - 1/2.0*integrator->dt * fx_prev[i];
     }
   }
   else

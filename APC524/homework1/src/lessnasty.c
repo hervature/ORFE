@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#ifndef M_PI
+  #define M_PI (3.14159265358979323846264338327950288)
+#endif
+
 void ode_path_sim(double t_0, double t_N, double x_0, double dx_0, double omega, int N)
 {
 
