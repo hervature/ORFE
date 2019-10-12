@@ -33,7 +33,7 @@ int ddo_dynamics(int n, double t, const double *x, double *Dx)
     Dx[0] += x[i+1];
   }
 
-  Dx[n-1] += cos(omega*t) - pow(omega_0, 2.0)*x[0] - 2*beta*x[1];
+  Dx[n-1] += cos(omega*t) - omega_0*omega_0*x[0] - 2*beta*x[1];
 
   return 0;
 }
